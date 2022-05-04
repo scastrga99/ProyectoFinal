@@ -10,6 +10,7 @@
 		<class>AppInventario.model.PrestamoLibro</class>
 		<class>AppInventario.model.PrestamoMaterial</class>
 		<class>AppInventario.model.Profesor</class>
+		<class>AppInventario.model.Authority</class>
 		
 	</persistence-unit>
 </persistence>

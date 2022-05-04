@@ -1,19 +1,28 @@
 package AppInventario.controlador;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import AppInventario.model.Profesor;
 
 @Controller
-@RequestMapping("/")
 public class InicioControlador {
 	
-	@GetMapping("/auth/login")
-	public String login(Model model) {
-		model.addAttribute("profesor", new Profesor());
-		
-		return "login";
+	@GetMapping({"/","/login"})
+	public String index() {
+		return "index";
+	}
+	
+	@GetMapping("/menu")
+	public String menu() {
+		return "menu";
+	}
+	
+	@GetMapping("/user")
+	public String user() {
+		return "user";
+	}
+	
+	@GetMapping("/admin")
+	public String admin() {
+		return "admin";
 	}
 
 }

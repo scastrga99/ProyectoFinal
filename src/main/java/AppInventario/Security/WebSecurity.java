@@ -9,38 +9,47 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
-
 @Configuration
 @EnableWebSecurity
-public class WebSecurity extends WebSecurityConfigurerAdapter{
+public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserDetailsServiceImp userDetails;
-	
-	BCryptPasswordEncoder passwordEncoder;
-	
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		passwordEncoder = new BCryptPasswordEncoder(4);
-		return passwordEncoder;
-	}
-	
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetails).passwordEncoder(passwordEncoder());
-	}
+	// Necesario para evitar que la seguridad se aplique a los resources
+	// Como los css, imagenes y javascripts
+	String[] resources = new String[] { "/include/**", "/css/**", "/icons/**", "/img/**", "/js/**", "/layer/**" };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/","/auth/**","/css/**","/js/**").permitAll().anyRequest().authenticated()
-		.and()
-			.formLogin().loginPage("/auth/login").defaultSuccessUrl("/user/index",true).failureUrl("/auth/login?error=true").usernameParameter("correo").passwordParameter("password").loginProcessingUrl("/auth/login-post").permitAll()
-		.and()
-			.logout().logoutUrl("/logout").logoutSuccessUrl("/public/index");
+		http.authorizeRequests().antMatchers(resources).permitAll().antMatchers("/", "/index").permitAll()
+				.antMatchers("/admin*").access("hasRole('ADMIN')").antMatchers("/user*")
+				.access("hasRole('USER') or hasRole('ADMIN')").anyRequest().authenticated().and().formLogin()
+				.loginPage("/login").permitAll().defaultSuccessUrl("/menu").failureUrl("/login?error=true")
+				.usernameParameter("username").passwordParameter("password").and().logout().permitAll()
+				.logoutSuccessUrl("/login?logout");
 	}
 
-	
-	
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	// Crea el encriptador de contraseñas
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		bCryptPasswordEncoder = new BCryptPasswordEncoder(4);
+//El numero 4 representa que tan fuerte quieres la encriptacion.
+//Se puede en un rango entre 4 y 31. 
+//Si no pones un numero el programa utilizara uno aleatoriamente cada vez
+//que inicies la aplicacion, por lo cual tus contrasenas encriptadas no funcionaran bien
+		return bCryptPasswordEncoder;
+	}
+
+	@Autowired
+	public UserDetailsServiceImp userDetailsService;
+
+	// Registra el service para usuarios y el encriptador de contrasena
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+		// Setting Service to find User in the database.
+		// And Setting PassswordEncoder
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+
 }

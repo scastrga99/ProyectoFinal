@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -33,6 +34,10 @@ public class Profesor implements Serializable {
 	private String password;
 
 	private String rol;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "authorities_users", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "authority_id"))
+	private Set<Authority> authority;
 
 	//bi-directional many-to-one association to PrestamoLibro
 	@OneToMany(mappedBy="profesor")
@@ -165,5 +170,14 @@ public class Profesor implements Serializable {
 	public void setDepartamentoBean(Departamento departamentoBean) {
 		this.departamentoBean = departamentoBean;
 	}
+	
+	public Set<Authority> getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(Set<Authority> authority) {
+		this.authority = authority;
+	}
+
 
 }
