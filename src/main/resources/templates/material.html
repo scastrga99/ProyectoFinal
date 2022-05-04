@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Gestion Materiales</title>
+</head>
+<body>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id Material</th>
+                <th>Nombre</th>
+                <th>Numero de serie</th>
+                <th>Marca</th>
+                <th>Descripcion</th>
+                <th>Fecha de alta</th>
+                <th>Fecha de baja</th>
+                <th>Foto</th>
+                <th>Id Profesor encargado</th>
+                <th>Departamento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="libro : ${libro}">
+                <td th:text="${material.Id_material}"></td>
+                <td th:text="${material.Nombre}"></td>
+                <td th:text="${material.Num_serie}"></td>
+               	<td th:text="${material.Marca}"></td>
+                <td th:text="${material.Descripcion}"></td>
+                <td th:text="${material.Fecha_alta}"></td>
+                <td th:text="${material.Fecha_baja}"></td>
+                <td th:text="${material.Foto}"></td>
+                <!-- <input th:field="*{unidades}" type="Number"
+                    placeholder="1" min="1" /> <input th:field="*{producto}"
+                    type="hidden" th:value="${producto.Cod_Prod}" /> <input
+                    th:field="*{pedido}" type="hidden" th:value="1" />-->
+                <!-- Código del formulario para comprar. Da error al intentar 
+                    agregar el producto por POST -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<!-- </form>-->
+
+</body>
+</html>
