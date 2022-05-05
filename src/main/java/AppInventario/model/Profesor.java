@@ -33,7 +33,7 @@ public class Profesor implements Serializable {
 
 	private String password;
 
-	private String rol;
+	private boolean enabled;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "authorities_users", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "authority_id"))
@@ -111,12 +111,12 @@ public class Profesor implements Serializable {
 		this.password = password;
 	}
 
-	public String getRol() {
-		return this.rol;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setRol(String rol) {
-		this.rol = rol;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public List<PrestamoLibro> getPrestamoLibros() {

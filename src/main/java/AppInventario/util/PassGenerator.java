@@ -1,4 +1,4 @@
-package AppInventario.Security;
+package AppInventario.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

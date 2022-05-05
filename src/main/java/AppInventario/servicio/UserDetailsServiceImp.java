@@ -1,4 +1,4 @@
-package AppInventario.Security;
+package AppInventario.servicio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,10 @@ public class UserDetailsServiceImp implements UserDetailsService {
 	    ProfesorRepo userRepository;
 		
 	    @Override
-	     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
 			
 	     //Buscar el usuario con el repositorio y si no existe lanzar una exepcion
-	     Profesor appUser = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No existe usuario"));
+	     Profesor appUser = userRepository.findByCorreo(correo).orElseThrow(() -> new UsernameNotFoundException("No existe usuario"));
 			
 	    //Mapear nuestra lista de Authority con la de spring security 
 	    List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
