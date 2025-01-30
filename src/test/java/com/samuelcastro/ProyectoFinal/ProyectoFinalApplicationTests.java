@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,8 +17,7 @@ public class ProyectoFinalApplicationTests {
     private ProfesorRepository profesorRepository;
 
     @Test
-    @Transactional
-    public void testEntity() {
+    public void testEntityProfesor() {
         // Crear y guardar un profesor
         Profesor profesor = new Profesor();
         profesor.setNombre("Juan");
@@ -54,4 +52,6 @@ public class ProyectoFinalApplicationTests {
         Profesor deletedProfesor = profesorRepository.findById(updatedProfesor.getIdProfesor()).orElse(null);
         assertThat(deletedProfesor).isNull();
     }
+
+    
 }
