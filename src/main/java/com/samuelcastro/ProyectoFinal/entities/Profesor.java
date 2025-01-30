@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Profesor {
@@ -33,10 +31,6 @@ public class Profesor {
     private Date fechaAlta;
 
     private Date fechaBaja;
-
-    @ManyToOne
-    @JoinColumn(name = "departamento")
-    private Departamento departamento;
 
     @Column(nullable = false)
     private String rol;
@@ -95,14 +89,6 @@ public class Profesor {
 
     public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
-    }
-
-    public Departamento getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(Departamento departamento) {
-        this.departamento = departamento;
     }
 
     public String getRol() {
