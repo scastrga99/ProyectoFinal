@@ -27,8 +27,8 @@ public class Departamento {
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Libro> libros = new ArrayList<>();
 
-    // @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Alumno> alumnos = new ArrayList<>();
+    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Alumno> alumnos = new ArrayList<>();
 
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Material> materiales = new ArrayList<>();
@@ -102,6 +102,19 @@ public class Departamento {
     public void removeMaterial(Material material) {
         materiales.remove(material);
         material.setDepartamento(null);
+    }
+
+    public List<Alumno> getAlumnos() {
+        return alumnos;
+    }
+
+    public void setAlumnos(List<Alumno> alumnos) {
+        this.alumnos = alumnos;
+    }
+
+    public void addAlumno(Alumno alumno) {
+        alumnos.add(alumno);
+        alumno.setDepartamento(this);
     }
 
 }

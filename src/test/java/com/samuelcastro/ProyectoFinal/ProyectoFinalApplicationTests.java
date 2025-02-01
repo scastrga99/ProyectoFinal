@@ -1,9 +1,11 @@
 package com.samuelcastro.ProyectoFinal;
 
+import com.samuelcastro.ProyectoFinal.entities.Alumno;
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
 import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.entities.Material;
 import com.samuelcastro.ProyectoFinal.entities.Profesor;
+import com.samuelcastro.ProyectoFinal.repositories.AlumnoRepository;
 import com.samuelcastro.ProyectoFinal.repositories.DepartamentoRepository;
 import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
 import com.samuelcastro.ProyectoFinal.repositories.MaterialRepository;
@@ -33,6 +35,9 @@ public class ProyectoFinalApplicationTests {
 
     @Autowired
     private LibroRepository libroRepository;
+
+    @Autowired
+    private AlumnoRepository alumnoRepository;
 
     @Test
     @Transactional
@@ -102,6 +107,34 @@ public class ProyectoFinalApplicationTests {
         assertThat(fetchedLibro.getIsbn()).isEqualTo("1234567890");
         assertThat(fetchedLibro.getTitulo()).isEqualTo("Ciencia para todos");
         assertThat(fetchedLibro.getDepartamento()).isEqualTo(departamento);
+    }
+
+    @Test
+    @Transactional
+    public void testCreateAndRetrieveAlumno() {
+        // Crear y guardar un departamento
+        Departamento departamento = new Departamento();
+        departamento.setNombre("Ciencias");
+        departamento = departamentoRepository.save(departamento);
+
+        // Crear y guardar un alumno
+        Alumno alumno = new Alumno();
+        alumno.setNombre("Pedro");
+        alumno.setApellidos("Gomez");
+        alumno.setCorreo("pedrogomez@gmail.com");
+        alumno.setFechaAlta(java.sql.Date.valueOf("2021-01-01"));
+        alumno.setFechaBaja(null);
+        alumno.setPassword("123456");
+        alumno.setRol("estudiante");
+        alumno.setDepartamento(departamento);
+        alumno = alumnoRepository.save(alumno);
+
+        // Verificar que el alumno fue guardado correctamente
+        Alumno fetchedAlumno = alumnoRepository.findById(alumno.getIdAlumno()).orElse(null);
+        assertThat(fetchedAlumno).isNotNull();
+        assertThat(fetchedAlumno.getNombre()).isEqualTo("Pedro");
+        assertThat(fetchedAlumno.getApellidos()).isEqualTo("Gomez");
+        assertThat(fetchedAlumno.getDepartamento()).isEqualTo(departamento);
     }
 
     @Test
@@ -255,6 +288,23 @@ public class ProyectoFinalApplicationTests {
         // Guardar el libro
         libro = libroRepository.save(libro);
 
+        // Crear y guardar un alumno
+        Alumno alumno = new Alumno();
+        alumno.setNombre("Pedro");
+        alumno.setApellidos("Gomez");
+        alumno.setCorreo("pedrogomez@gmail.com");
+        alumno.setFechaAlta(java.sql.Date.valueOf("2021-01-01"));
+        alumno.setFechaBaja(null);
+        alumno.setPassword("123456");
+        alumno.setRol("estudiante");
+        alumno.setDepartamento(departamento);
+
+        // Agregar el alumno al departamento
+        departamento.addAlumno(alumno);
+
+        // Guardar el alumno
+        alumno = alumnoRepository.save(alumno);
+
         // Verificar que el profesor fue guardado correctamente
         Profesor fetchedProfesor = profesorRepository.findById(profesor.getIdProfesor()).orElse(null);
         assertThat(fetchedProfesor).isNotNull();
@@ -275,6 +325,13 @@ public class ProyectoFinalApplicationTests {
         assertThat(fetchedLibro.getTitulo()).isEqualTo("Ciencia para todos");
         assertThat(fetchedLibro.getDepartamento()).isEqualTo(departamento);
 
+        // Verificar que el alumno fue guardado correctamente
+        Alumno fetchedAlumno = alumnoRepository.findById(alumno.getIdAlumno()).orElse(null);
+        assertThat(fetchedAlumno).isNotNull();
+        assertThat(fetchedAlumno.getNombre()).isEqualTo("Pedro");
+        assertThat(fetchedAlumno.getApellidos()).isEqualTo("Gomez");
+        assertThat(fetchedAlumno.getDepartamento()).isEqualTo(departamento);
+
         // Verificar que el departamento tiene el profesor en su lista de profesores
         Departamento fetchedDepartamento = departamentoRepository.findById(departamento.getIdDepartamento()).orElse(null);
         assertThat(fetchedDepartamento).isNotNull();
@@ -285,6 +342,9 @@ public class ProyectoFinalApplicationTests {
 
         // Verificar que el departamento tiene el libro en su lista de libros
         assertThat(fetchedDepartamento.getLibros()).contains(libro);
+
+        // Verificar que el departamento tiene el alumno en su lista de alumnos
+        assertThat(fetchedDepartamento.getAlumnos()).contains(alumno);
 
         // Actualizar el profesor
         fetchedProfesor.setNombre("Carlos");
@@ -322,6 +382,15 @@ public class ProyectoFinalApplicationTests {
         assertThat(updatedLibro).isNotNull();
         assertThat(updatedLibro.getTitulo()).isEqualTo("Ciencia avanzada");
 
+        // Actualizar el alumno
+        fetchedAlumno.setNombre("Luis");
+        alumnoRepository.save(fetchedAlumno);
+
+        // Verificar que el alumno fue actualizado correctamente
+        Alumno updatedAlumno = alumnoRepository.findById(fetchedAlumno.getIdAlumno()).orElse(null);
+        assertThat(updatedAlumno).isNotNull();
+        assertThat(updatedAlumno.getNombre()).isEqualTo("Luis");
+
         // Eliminar el profesor
         profesorRepository.delete(updatedProfesor);
 
@@ -342,6 +411,13 @@ public class ProyectoFinalApplicationTests {
         // Verificar que el libro fue eliminado correctamente
         Libro deletedLibro = libroRepository.findById(updatedLibro.getIdLibro()).orElse(null);
         assertThat(deletedLibro).isNull();
+
+        // Eliminar el alumno
+        alumnoRepository.delete(updatedAlumno);
+
+        // Verificar que el alumno fue eliminado correctamente
+        Alumno deletedAlumno = alumnoRepository.findById(updatedAlumno.getIdAlumno()).orElse(null);
+        assertThat(deletedAlumno).isNull();
 
         // Eliminar el departamento
         departamentoRepository.delete(updatedDepartamento);
