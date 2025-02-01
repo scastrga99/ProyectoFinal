@@ -24,8 +24,8 @@ public class Departamento {
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Profesor> profesores = new ArrayList<>();
 
-    // @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Libro> libros = new ArrayList<>();
+    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Libro> libros = new ArrayList<>();
 
     // @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Alumno> alumnos = new ArrayList<>();
@@ -58,13 +58,13 @@ public class Departamento {
         this.profesores = profesores;
     }
 
-    // public List<Libro> getLibros() {
-    //     return libros;
-    // }
+    public List<Libro> getLibros() {
+        return libros;
+    }
 
-    // public void setLibros(List<Libro> libros) {
-    //     this.libros = libros;
-    // }
+    public void setLibros(List<Libro> libros) {
+        this.libros = libros;
+    }
 
     public List<Material> getMateriales() {
         return materiales;
@@ -73,14 +73,6 @@ public class Departamento {
     public void setMateriales(List<Material> materiales) {
         this.materiales = materiales;
     }
-
-    // public List<Alumno> getAlumnos() {
-    //     return alumnos;
-    // }
-
-    // public void setAlumnos(List<Alumno> alumnos) {
-    //     this.alumnos = alumnos;
-    // }
 
     public void addProfesor(Profesor profesor) {
         profesores.add(profesor);
@@ -92,15 +84,15 @@ public class Departamento {
         profesor.setDepartamento(null);
     }
 
-    // public void addLibro(Libro libro) {
-    //     libros.add(libro);
-    //     libro.setDepartamento(this);
-    // }
+    public void addLibro(Libro libro) {
+        libros.add(libro);
+        libro.setDepartamento(this);
+    }
 
-    // public void removeLibro(Libro libro) {
-    //     libros.remove(libro);
-    //     libro.setDepartamento(null);
-    // }
+    public void removeLibro(Libro libro) {
+        libros.remove(libro);
+        libro.setDepartamento(null);
+    }
 
     public void addMaterial(Material material) {
         materiales.add(material);
@@ -112,13 +104,4 @@ public class Departamento {
         material.setDepartamento(null);
     }
 
-    // public void addAlumno(Alumno alumno) {
-    //     alumnos.add(alumno);
-    //     alumno.setDepartamento(this);
-    // }
-
-    // public void removeAlumno(Alumno alumno) {
-    //     alumnos.remove(alumno);
-    //     alumno.setDepartamento(null);
-    // }
 }

@@ -1,9 +1,11 @@
 package com.samuelcastro.ProyectoFinal;
 
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
+import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.entities.Material;
 import com.samuelcastro.ProyectoFinal.entities.Profesor;
 import com.samuelcastro.ProyectoFinal.repositories.DepartamentoRepository;
+import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
 import com.samuelcastro.ProyectoFinal.repositories.MaterialRepository;
 import com.samuelcastro.ProyectoFinal.repositories.ProfesorRepository;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,9 @@ public class ProyectoFinalApplicationTests {
 
     @Autowired
     private MaterialRepository materialRepository;
+
+    @Autowired
+    private LibroRepository libroRepository;
 
     @Test
     @Transactional
@@ -69,6 +74,34 @@ public class ProyectoFinalApplicationTests {
         assertThat(fetchedProfesor.getNombre()).isEqualTo("Juan");
         assertThat(fetchedProfesor.getApellidos()).isEqualTo("Perez");
         assertThat(fetchedProfesor.getDepartamento()).isEqualTo(departamento);
+    }
+
+    @Test
+    @Transactional
+    public void testCreateAndRetrieveLibro() {
+        // Crear y guardar un departamento
+        Departamento departamento = new Departamento();
+        departamento.setNombre("Ciencias");
+        departamento = departamentoRepository.save(departamento);
+
+        // Crear y guardar un libro
+        Libro libro = new Libro();
+        libro.setIsbn("1234567890");
+        libro.setTitulo("Ciencia para todos");
+        libro.setAutor("John Doe");
+        libro.setEditorial("Editorial Ciencia");
+        libro.setFechaAlta(new Date());
+        libro.setFechaBaja(null);
+        libro.setDepartamento(departamento);
+        libro.setFoto("ciencia.jpg");
+        libro = libroRepository.save(libro);
+
+        // Verificar que el libro fue guardado correctamente
+        Libro fetchedLibro = libroRepository.findById(libro.getIdLibro()).orElse(null);
+        assertThat(fetchedLibro).isNotNull();
+        assertThat(fetchedLibro.getIsbn()).isEqualTo("1234567890");
+        assertThat(fetchedLibro.getTitulo()).isEqualTo("Ciencia para todos");
+        assertThat(fetchedLibro.getDepartamento()).isEqualTo(departamento);
     }
 
     @Test
@@ -205,6 +238,23 @@ public class ProyectoFinalApplicationTests {
         // Guardar el material
         material = materialRepository.save(material);
 
+        // Crear y guardar un libro
+        Libro libro = new Libro();
+        libro.setIsbn("1234567890");
+        libro.setTitulo("Ciencia para todos");
+        libro.setAutor("John Doe");
+        libro.setEditorial("Editorial Ciencia");
+        libro.setFechaAlta(new Date());
+        libro.setFechaBaja(null);
+        libro.setDepartamento(departamento);
+        libro.setFoto("ciencia.jpg");
+
+        // Agregar el libro al departamento
+        departamento.addLibro(libro);
+
+        // Guardar el libro
+        libro = libroRepository.save(libro);
+
         // Verificar que el profesor fue guardado correctamente
         Profesor fetchedProfesor = profesorRepository.findById(profesor.getIdProfesor()).orElse(null);
         assertThat(fetchedProfesor).isNotNull();
@@ -218,6 +268,13 @@ public class ProyectoFinalApplicationTests {
         assertThat(fetchedMaterial.getNombre()).isEqualTo("Proyector");
         assertThat(fetchedMaterial.getDepartamento()).isEqualTo(departamento);
 
+        // Verificar que el libro fue guardado correctamente
+        Libro fetchedLibro = libroRepository.findById(libro.getIdLibro()).orElse(null);
+        assertThat(fetchedLibro).isNotNull();
+        assertThat(fetchedLibro.getIsbn()).isEqualTo("1234567890");
+        assertThat(fetchedLibro.getTitulo()).isEqualTo("Ciencia para todos");
+        assertThat(fetchedLibro.getDepartamento()).isEqualTo(departamento);
+
         // Verificar que el departamento tiene el profesor en su lista de profesores
         Departamento fetchedDepartamento = departamentoRepository.findById(departamento.getIdDepartamento()).orElse(null);
         assertThat(fetchedDepartamento).isNotNull();
@@ -225,6 +282,9 @@ public class ProyectoFinalApplicationTests {
 
         // Verificar que el departamento tiene el material en su lista de materiales
         assertThat(fetchedDepartamento.getMateriales()).contains(material);
+
+        // Verificar que el departamento tiene el libro en su lista de libros
+        assertThat(fetchedDepartamento.getLibros()).contains(libro);
 
         // Actualizar el profesor
         fetchedProfesor.setNombre("Carlos");
@@ -253,6 +313,15 @@ public class ProyectoFinalApplicationTests {
         assertThat(updatedMaterial).isNotNull();
         assertThat(updatedMaterial.getNombre()).isEqualTo("Proyector HD");
 
+        // Actualizar el libro
+        fetchedLibro.setTitulo("Ciencia avanzada");
+        libroRepository.save(fetchedLibro);
+
+        // Verificar que el libro fue actualizado correctamente
+        Libro updatedLibro = libroRepository.findById(fetchedLibro.getIdLibro()).orElse(null);
+        assertThat(updatedLibro).isNotNull();
+        assertThat(updatedLibro.getTitulo()).isEqualTo("Ciencia avanzada");
+
         // Eliminar el profesor
         profesorRepository.delete(updatedProfesor);
 
@@ -266,6 +335,13 @@ public class ProyectoFinalApplicationTests {
         // Verificar que el material fue eliminado correctamente
         Material deletedMaterial = materialRepository.findById(updatedMaterial.getIdMaterial()).orElse(null);
         assertThat(deletedMaterial).isNull();
+
+        // Eliminar el libro
+        libroRepository.delete(updatedLibro);
+
+        // Verificar que el libro fue eliminado correctamente
+        Libro deletedLibro = libroRepository.findById(updatedLibro.getIdLibro()).orElse(null);
+        assertThat(deletedLibro).isNull();
 
         // Eliminar el departamento
         departamentoRepository.delete(updatedDepartamento);
