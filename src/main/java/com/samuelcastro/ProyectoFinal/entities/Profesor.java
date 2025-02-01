@@ -1,12 +1,16 @@
 package com.samuelcastro.ProyectoFinal.entities;
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+import java.util.Date;
 
 @Entity
 public class Profesor {
@@ -27,14 +31,21 @@ public class Profesor {
     @Column(nullable = false)
     private String password;
 
+    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fechaAlta;
 
+    @Temporal(TemporalType.DATE)
     private Date fechaBaja;
+
+    @ManyToOne
+    @JoinColumn(name = "departamento", nullable = false)
+    private Departamento departamento;
 
     @Column(nullable = false)
     private String rol;
 
+    // Getters y setters
     public int getIdProfesor() {
         return idProfesor;
     }
@@ -91,6 +102,14 @@ public class Profesor {
         this.fechaBaja = fechaBaja;
     }
 
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -98,8 +117,4 @@ public class Profesor {
     public void setRol(String rol) {
         this.rol = rol;
     }
-
-    // Getters and setters
-
-    
 }
