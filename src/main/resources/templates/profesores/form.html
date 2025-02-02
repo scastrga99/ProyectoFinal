@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Profesor</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <h1 th:text="${profesor.idProfesor} == null ? 'Agregar Profesor' : 'Editar Profesor'"></h1>
+    <form th:action="@{/profesores/save}" th:object="${profesor}" method="post">
+        <input type="hidden" th:field="*{idProfesor}">
+        <div>
+            <label>Nombre:</label>
+            <input type="text" th:field="*{nombre}">
+        </div>
+        <div>
+            <label>Apellidos:</label>
+            <input type="text" th:field="*{apellidos}">
+        </div>
+        <div>
+            <label>Correo:</label>
+            <input type="email" th:field="*{correo}">
+        </div>
+        <div>
+            <label>Fecha Alta:</label>
+            <input type="date" th:field="*{fechaAlta}">
+        </div>
+        <div>
+            <label>Fecha Baja:</label>
+            <input type="date" th:field="*{fechaBaja}">
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="password" th:field="*{password}">
+        </div>
+        <div>
+            <label>Rol:</label>
+            <input type="text" th:field="*{rol}">
+        </div>
+        <div>
+            <label>Departamento:</label>
+            <select th:field="*{departamento.idDepartamento}">
+                <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Guardar</button>
+        </div>
+    </form>
+</body>
+</html>
