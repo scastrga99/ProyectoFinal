@@ -2,18 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Alta Departamento</title>
+    <!-- Enlace al archivo de estilos CSS -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+    <!-- Título de la página -->
     <h1>Alta Departamento</h1>
     <div class="container">
+        <!-- Formulario para crear un nuevo departamento -->
         <form action="#" th:action="@{/api/departamentos}" th:object="${departamento}" method="post">
             <div class="form-group">
+                <!-- Campo de entrada para el nombre del departamento -->
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
             </div>
             <div class="button-container">
+                <!-- Botón para regresar a la lista de departamentos -->
                 <a th:href="@{/api/departamentos}" class="button">Regresar</a>
+                <!-- Botón para guardar el nuevo departamento -->
                 <button type="submit" class="button">Guardar</button>
             </div>
         </form>

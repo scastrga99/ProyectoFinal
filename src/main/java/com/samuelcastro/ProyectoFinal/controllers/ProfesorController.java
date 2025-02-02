@@ -14,26 +14,45 @@ public class ProfesorController {
     @Autowired
     private ProfesorService profesorService;
 
+    /**
+     * Obtener todos los profesores.
+     * 
+     * @return Lista de todos los profesores.
+     */
     @GetMapping
     public List<Profesor> getAllProfesores() {
         return profesorService.findAll();
     }
 
+    /**
+     * Obtener un profesor por su ID.
+     * 
+     * @param id ID del profesor.
+     * @return El profesor con el ID especificado.
+     */
     @GetMapping("/{id}")
     public Profesor getProfesorById(@PathVariable int id) {
         return profesorService.findById(id);
     }
 
-    @GetMapping("/nombre/{nombre}")
-    public List<Profesor> getProfesoresByNombre(@PathVariable String nombre) {
-        return profesorService.findByNombre(nombre);
-    }
-
+    /**
+     * Crear un nuevo profesor.
+     * 
+     * @param profesor Datos del nuevo profesor.
+     * @return El profesor creado.
+     */
     @PostMapping
     public Profesor createProfesor(@RequestBody Profesor profesor) {
         return profesorService.save(profesor);
     }
 
+    /**
+     * Actualizar un profesor existente.
+     * 
+     * @param id ID del profesor a actualizar.
+     * @param profesor Datos actualizados del profesor.
+     * @return El profesor actualizado.
+     */
     @PutMapping("/{id}")
     public Profesor updateProfesor(@PathVariable int id, @RequestBody Profesor profesor) {
         Profesor existingProfesor = profesorService.findById(id);
@@ -42,13 +61,20 @@ public class ProfesorController {
             existingProfesor.setApellidos(profesor.getApellidos());
             existingProfesor.setCorreo(profesor.getCorreo());
             existingProfesor.setPassword(profesor.getPassword());
+            existingProfesor.setFechaAlta(profesor.getFechaAlta());
+            existingProfesor.setFechaBaja(profesor.getFechaBaja());
             existingProfesor.setDepartamento(profesor.getDepartamento());
-            existingProfesor.setRol(profesor.getRol());
             return profesorService.save(existingProfesor);
+        } else {
+            return null; // Manejar el caso donde el profesor no existe
         }
-        return null;
     }
 
+    /**
+     * Eliminar un profesor por su ID.
+     * 
+     * @param id ID del profesor a eliminar.
+     */
     @DeleteMapping("/{id}")
     public void deleteProfesor(@PathVariable int id) {
         profesorService.deleteById(id);

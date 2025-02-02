@@ -72,34 +72,36 @@ table {
     margin: 20px auto; /* Centra la tabla horizontalmente y añade margen superior e inferior */
 }
 
-table, th, td {
-    border: 1px solid #ddd;
-}
-
+/* Estilo para las celdas de la tabla */
 th, td {
     padding: 12px;
     text-align: left;
 }
 
+/* Estilo para las cabeceras de la tabla */
 th {
     background-color: #007BFF;
     color: white;
 }
 
+/* Estilo para las filas pares de la tabla */
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
+/* Estilo para las filas al pasar el ratón por encima */
 tr:hover {
     background-color: #ddd;
 }
 
+/* Contenedor de botones con flexbox para distribuir el espacio */
 .button-container {
     display: flex;
     justify-content: space-between;
     padding: 20px;
 }
 
+/* Estilo para los enlaces y botones dentro del contenedor de botones */
 .button-container a, .button-container button {
     text-decoration: none;
     padding: 10px 20px;
@@ -109,20 +111,24 @@ tr:hover {
     transition: background-color 0.3s ease;
 }
 
+/* Estilo para los enlaces y botones al pasar el ratón por encima */
 .button-container a:hover, .button-container button:hover {
     background-color: #0056b3;
 }
 
+/* Estilo para los grupos de formularios */
 .form-group {
     margin-bottom: 15px;
     text-align: left;
 }
 
+/* Estilo para las etiquetas de los formularios */
 .form-group label {
     display: block;
     margin-bottom: 5px;
 }
 
+/* Estilo para los campos de entrada de los formularios */
 .form-group input {
     width: 100%;
     padding: 10px;

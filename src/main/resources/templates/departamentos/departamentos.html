@@ -2,29 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista de Departamentos</title>
+    <!-- Enlace al archivo de estilos CSS -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+    <!-- Título de la página -->
     <h1>Lista de Departamentos</h1>
+    <!-- Tabla para mostrar la lista de departamentos -->
     <table>
         <thead>
             <tr>
+                <!-- Cabecera de la tabla -->
                 <th>Nombre</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
+            <!-- Iterar sobre la lista de departamentos y mostrar cada uno en una fila -->
             <tr th:each="departamento : ${departamentos}">
                 <td th:text="${departamento.nombre}">Nombre</td>
                 <td>
+                    <!-- Enlace para editar el departamento -->
                     <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}">Editar</a>
+                    <!-- Enlace para borrar el departamento -->
                     <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}">Borrar</a>
                 </td>
             </tr>
         </tbody>
     </table>
+    <!-- Contenedor de botones -->
     <div class="button-container">
+        <!-- Botón para regresar a la página principal -->
         <a th:href="@{/}" class="button">Regresar</a>
+        <!-- Botón para agregar un nuevo departamento -->
         <a th:href="@{/api/departamentos/nuevo}" class="button">Agregar Departamento</a>
     </div>
 </body>
