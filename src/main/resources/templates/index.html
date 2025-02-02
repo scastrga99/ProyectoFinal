@@ -8,11 +8,41 @@
     <h1>Bienvenido al Sistema de Gestión de Inventario del Instituto</h1>
     <nav>
         <ul>
-            <li><a th:href="@{/profesores}">Profesores</a></li>
-            <li><a th:href="@{/materiales}">Materiales</a></li>
-            <li><a th:href="@{/libros}">Libros</a></li>
-            <li><a th:href="@{/alumnos}">Alumnos</a></li>
+            <li><a th:href="@{/api/profesores}">Profesores</a></li>
+            <li><a th:href="@{/api/materiales}">Materiales</a></li>
+            <li><a th:href="@{/api/departamentos}">Departamentos</a></li>
+            <li><a th:href="@{/api/libros}">Libros</a></li>
+            <li><a th:href="@{/api/alumnos}">Alumnos</a></li>
         </ul>
     </nav>
+    <div class="container">
+        <h2>Registro de Operaciones</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Operación</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-01</td>
+                    <td>Alta de Profesor</td>
+                    <td>Profesor Juan Pérez agregado al departamento de Ciencias</td>
+                </tr>
+                <tr>
+                    <td>2023-10-02</td>
+                    <td>Retiro de Libro</td>
+                    <td>Alumno Pedro Gómez retiró el libro "Ciencia para todos"</td>
+                </tr>
+                <tr>
+                    <td>2023-10-03</td>
+                    <td>Alta de Material</td>
+                    <td>Material Proyector HP agregado al departamento de Ciencias</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

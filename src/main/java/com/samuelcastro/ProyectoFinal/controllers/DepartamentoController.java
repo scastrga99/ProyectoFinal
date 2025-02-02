@@ -3,45 +3,54 @@ package com.samuelcastro.ProyectoFinal.controllers;
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/departamentos")
 public class DepartamentoController {
 
     @Autowired
     private DepartamentoService departamentoService;
 
-    @GetMapping
-    public List<Departamento> getAllDepartamentos() {
-        return departamentoService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public Departamento getDepartamentoById(@PathVariable int id) {
-        return departamentoService.findById(id);
+    @GetMapping("/nuevo")
+    public String mostrarFormularioNuevoDepartamento(Model model) {
+        model.addAttribute("departamento", new Departamento());
+        return "departamentos/alta-departamento";
     }
 
     @PostMapping
-    public Departamento createDepartamento(@RequestBody Departamento departamento) {
-        return departamentoService.save(departamento);
+    public String crearDepartamento(Departamento departamento) {
+        departamentoService.save(departamento);
+        return "redirect:/api/departamentos";
     }
 
-    @PutMapping("/{id}")
-    public Departamento updateDepartamento(@PathVariable int id, @RequestBody Departamento departamento) {
-        Departamento existingDepartamento = departamentoService.findById(id);
-        if (existingDepartamento != null) {
-            existingDepartamento.setNombre(departamento.getNombre());
-            // Actualiza otros campos según sea necesario
-            return departamentoService.save(existingDepartamento);
-        }
-        return null;
+    @GetMapping
+    public String listarDepartamentos(Model model) {
+        List<Departamento> departamentos = departamentoService.findAll();
+        model.addAttribute("departamentos", departamentos);
+        return "departamentos/departamentos";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteDepartamento(@PathVariable int id) {
+    @GetMapping("/delete/{id}")
+    public String borrarDepartamento(@PathVariable int id) {
         departamentoService.deleteById(id);
+        return "redirect:/api/departamentos";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String mostrarFormularioEditarDepartamento(@PathVariable int id, Model model) {
+        Departamento departamento = departamentoService.findById(id);
+        model.addAttribute("departamento", departamento);
+        return "departamentos/editar-departamento";
+    }
+
+    @PostMapping("/update")
+    public String actualizarDepartamento(@ModelAttribute Departamento departamento) {
+        departamentoService.save(departamento);
+        return "redirect:/api/departamentos";
     }
 }

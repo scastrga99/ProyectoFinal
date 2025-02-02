@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Departamento</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <h1>Editar Departamento</h1>
+    <div class="container">
+        <form action="#" th:action="@{/api/departamentos/update}" th:object="${departamento}" method="post">
+            <input type="hidden" th:field="*{idDepartamento}" />
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="button">Guardar</button>
+            </div>
+        </form>
+        <br>
+        <a th:href="@{/api/departamentos}" class="button">Regresar</a>
+    </div>
+</body>
+</html>

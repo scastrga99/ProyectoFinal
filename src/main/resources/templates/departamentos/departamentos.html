@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Departamentos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <h1>Lista de Departamentos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="departamento : ${departamentos}">
+                <td th:text="${departamento.nombre}">Nombre</td>
+                <td>
+                    <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}">Editar</a>
+                    <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}">Borrar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="button-container">
+        <a th:href="@{/}" class="button">Regresar</a>
+        <a th:href="@{/api/departamentos/nuevo}" class="button">Agregar Departamento</a>
+    </div>
+</body>
+</html>

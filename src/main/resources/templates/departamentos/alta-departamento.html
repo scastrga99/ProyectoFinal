@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alta Departamento</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <h1>Alta Departamento</h1>
+    <div class="container">
+        <form action="#" th:action="@{/api/departamentos}" th:object="${departamento}" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
+            </div>
+            <div class="button-container">
+                <a th:href="@{/api/departamentos}" class="button">Regresar</a>
+                <button type="submit" class="button">Guardar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
