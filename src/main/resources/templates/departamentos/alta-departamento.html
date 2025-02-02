@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alta Departamento</title>
-    <!-- Enlace al archivo de estilos CSS -->
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <!-- Título de la página -->
-    <h1>Alta Departamento</h1>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    <!-- Contenedor principal con espacio -->
     <div class="container">
+        <!-- Título de la página -->
+        <h1 class="mb-4">Alta Departamento</h1>
         <!-- Formulario para crear un nuevo departamento -->
         <form action="#" th:action="@{/api/departamentos}" th:object="${departamento}" method="post">
             <div class="form-group">
@@ -16,13 +23,17 @@
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
             </div>
-            <div class="button-container">
+            <div class="button-container mt-4">
                 <!-- Botón para regresar a la lista de departamentos -->
-                <a th:href="@{/api/departamentos}" class="button">Regresar</a>
+                <a th:href="@{/api/departamentos}" class="btn btn-dark">Regresar</a>
                 <!-- Botón para guardar el nuevo departamento -->
-                <button type="submit" class="button">Guardar</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
             </div>
         </form>
     </div>
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

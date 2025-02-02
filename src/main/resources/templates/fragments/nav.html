@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragmento de Navegación</title>
+</head>
+<body>
+    <!-- Nav con container-fluid para ocupar el 100% del ancho de la pantalla -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 w-100">
+            <div class="collapse navbar-collapse d-flex justify-content-between">
+                <ul class="navbar-nav d-flex flex-grow-1">
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/profesores}">Profesores</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/materiales}">Materiales</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/departamentos}">Departamentos</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/libros}">Libros</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/alumnos}">Alumnos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

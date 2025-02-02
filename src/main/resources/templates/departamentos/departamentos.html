@@ -1,41 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Departamentos</title>
-    <!-- Enlace al archivo de estilos CSS -->
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <!-- Título de la página -->
-    <h1>Lista de Departamentos</h1>
-    <!-- Tabla para mostrar la lista de departamentos -->
-    <table>
-        <thead>
-            <tr>
-                <!-- Cabecera de la tabla -->
-                <th>Nombre</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Iterar sobre la lista de departamentos y mostrar cada uno en una fila -->
-            <tr th:each="departamento : ${departamentos}">
-                <td th:text="${departamento.nombre}">Nombre</td>
-                <td>
-                    <!-- Enlace para editar el departamento -->
-                    <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}">Editar</a>
-                    <!-- Enlace para borrar el departamento -->
-                    <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}">Borrar</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <!-- Contenedor de botones -->
-    <div class="button-container">
-        <!-- Botón para regresar a la página principal -->
-        <a th:href="@{/}" class="button">Regresar</a>
-        <!-- Botón para agregar un nuevo departamento -->
-        <a th:href="@{/api/departamentos/nuevo}" class="button">Agregar Departamento</a>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    <!-- Contenedor principal con espacio -->
+    <div class="container-fluid">
+        <h1 class="mb-4">Lista de Departamentos</h1>
+        <!-- Tabla para mostrar la lista de departamentos -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <!-- Cabecera de la tabla -->
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Iterar sobre la lista de departamentos y mostrar cada uno en una fila -->
+                <tr th:each="departamento : ${departamentos}">
+                    <td th:text="${departamento.nombre}">Nombre</td>
+                    <td>
+                        <!-- Enlace para editar el departamento -->
+                        <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}" class="btn btn-primary btn-sm">Editar</a>
+                        <!-- Enlace para borrar el departamento -->
+                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm">Borrar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Contenedor de botones -->
+        <div class="button-container mt-4">
+            <!-- Botón para regresar a la página principal -->
+            <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+            <!-- Botón para agregar un nuevo departamento -->
+            <a th:href="@{/api/departamentos/nuevo}" class="btn btn-dark">Agregar Departamento</a>
+        </div>
     </div>
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

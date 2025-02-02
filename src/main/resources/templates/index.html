@@ -1,24 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario del Instituto</title>
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <h1>Bienvenido al Sistema de Gestión de Inventario del Instituto</h1>
-    <nav>
-        <ul>
-            <li><a th:href="@{/api/profesores}">Profesores</a></li>
-            <li><a th:href="@{/api/materiales}">Materiales</a></li>
-            <li><a th:href="@{/api/departamentos}">Departamentos</a></li>
-            <li><a th:href="@{/api/libros}">Libros</a></li>
-            <li><a th:href="@{/api/alumnos}">Alumnos</a></li>
-        </ul>
-    </nav>
+    <!-- Nav con container-fluid para ocupar el 100% del ancho de la pantalla -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 w-100">
+            <div class="collapse navbar-collapse d-flex justify-content-between">
+                <ul class="navbar-nav d-flex flex-grow-1">
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/profesores}">Profesores</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/materiales}">Materiales</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/departamentos}">Departamentos</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/libros}">Libros</a></li>
+                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/alumnos}">Alumnos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- Contenedor principal -->
     <div class="container">
-        <h2>Registro de Operaciones</h2>
-        <table>
-            <thead>
+        <h2 class="mb-4">Registro de Operaciones</h2>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
                     <th>Fecha</th>
                     <th>Operación</th>
@@ -44,5 +54,9 @@
             </tbody>
         </table>
     </div>
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
