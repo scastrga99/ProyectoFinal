@@ -10,20 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <!-- Nav con container-fluid para ocupar el 100% del ancho de la pantalla -->
-    <div class="container-fluid p-0">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 w-100">
-            <div class="collapse navbar-collapse d-flex justify-content-between">
-                <ul class="navbar-nav d-flex flex-grow-1">
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/profesores}">Profesores</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/materiales}">Materiales</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/departamentos}">Departamentos</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/libros}">Libros</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/alumnos}">Alumnos</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
     <!-- Contenedor principal -->
     <div class="container">
         <h2 class="mb-4">Registro de Operaciones</h2>

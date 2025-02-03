@@ -16,6 +16,10 @@ public class ProfesorDetails implements UserDetails {
         this.profesor = profesor;
     }
 
+    public Profesor getProfesor() {
+        return profesor;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(profesor.getRol()));
