@@ -3,6 +3,7 @@ package com.samuelcastro.ProyectoFinal.services;
 import com.samuelcastro.ProyectoFinal.entities.Profesor;
 import com.samuelcastro.ProyectoFinal.repositories.ProfesorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,9 @@ public class ProfesorService {
 
     @Autowired
     private ProfesorRepository profesorRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Obtener todos los profesores.
@@ -49,6 +53,8 @@ public class ProfesorService {
      * @return El profesor guardado.
      */
     public Profesor save(Profesor profesor) {
+        // Codificar la contraseña antes de guardar
+        profesor.setPassword(passwordEncoder.encode(profesor.getPassword()));
         return profesorRepository.save(profesor);
     }
 
