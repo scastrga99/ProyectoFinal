@@ -1,7 +1,9 @@
 package com.samuelcastro.ProyectoFinal.services;
 
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
+import com.samuelcastro.ProyectoFinal.entities.Profesor;
 import com.samuelcastro.ProyectoFinal.repositories.DepartamentoRepository;
+import com.samuelcastro.ProyectoFinal.repositories.ProfesorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,11 @@ public class DepartamentoService {
 
     @Autowired
     private DepartamentoRepository departamentoRepository;
+
+    @Autowired
+    private ProfesorRepository profesorRepository;
+
+    private static final int DEFAULT_DEPARTAMENTO_ID = 1; // ID del departamento "default"
 
     /**
      * Obtener todos los departamentos.
@@ -48,6 +55,23 @@ public class DepartamentoService {
      * @param id ID del departamento a eliminar.
      */
     public void deleteById(int id) {
-        departamentoRepository.deleteById(id);
+        Departamento departamento = findById(id);
+        if (departamento != null) {
+            // Obtener el departamento "default"
+            Departamento defaultDepartamento = departamentoRepository.findById(DEFAULT_DEPARTAMENTO_ID).orElse(null);
+            if (defaultDepartamento == null) {
+                throw new IllegalStateException("Default department not found");
+            }
+
+            // Reasignar profesores al departamento "default"
+            List<Profesor> profesores = departamento.getProfesores();
+            for (Profesor profesor : profesores) {
+                profesor.setDepartamento(defaultDepartamento);
+                profesorRepository.save(profesor);
+            }
+
+            // Eliminar el departamento
+            departamentoRepository.deleteById(id);
+        }
     }
 }
