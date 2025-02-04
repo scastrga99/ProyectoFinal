@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libros</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    
+    <!-- Contenedor principal con espacio -->
+    <div class="container-fluid">
+        <h1 class="mb-4">Lista de Libros</h1>
+        <!-- Tabla para mostrar la lista de libros -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ISBN</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>Fecha Alta Prestamo</th>
+                    <th>Fecha Baja Prestamo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="libro : ${libros}">
+                    <td th:text="${libro.isbn}"></td>
+                    <td th:text="${libro.titulo}"></td>
+                    <td th:text="${libro.autor}"></td>
+                    <td th:text="${libro.editorial}"></td>
+                    <td th:text="${libro.fechaAltaPrestamo}"></td>
+                    <td th:text="${libro.fechaBajaPrestamo}"></td>
+                    <td th:text="${libro.estado}"></td>
+                    <td>
+                        <a th:href="@{/api/libros/editar/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/api/libros/eliminar/{id}(id=${libro.idLibro})}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-container mt-4 d-flex justify-content-between">
+        <!-- Botón para regresar a la página principal -->
+        <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+        <!-- Botón para agregar un nuevo libro -->
+        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark">Agregar Libro</a>
+    </div>
+    
+
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

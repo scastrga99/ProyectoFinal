@@ -3,6 +3,8 @@ package com.samuelcastro.ProyectoFinal.controllers;
 import com.samuelcastro.ProyectoFinal.entities.Profesor;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorService;
+import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,10 @@ public class ProfesorController {
     public String getAllProfesores(Model model) {
         List<Profesor> profesores = profesorService.findAll();
         model.addAttribute("profesores", profesores);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
         return "profesores/profesores";
     }
 
@@ -31,6 +37,10 @@ public class ProfesorController {
     public String mostrarFormularioNuevoProfesor(Model model) {
         model.addAttribute("profesor", new Profesor());
         model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
         return "profesores/alta-profesor";
     }
 
@@ -45,6 +55,10 @@ public class ProfesorController {
         Profesor profesor = profesorService.findById(id);
         model.addAttribute("profesor", profesor);
         model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
         return "profesores/editar-profesor";
     }
 

@@ -8,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -33,18 +31,16 @@ public class Libro {
     private String editorial;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    private Date fechaAlta;
+    private Date fechaAltaPrestamo;
 
     @Temporal(TemporalType.DATE)
-    private Date fechaBaja;
-
-    @ManyToOne
-    @JoinColumn(name = "departamento", nullable = false)
-    private Departamento departamento;
+    private Date fechaBajaPrestamo;
 
     @Column
     private String foto;
+
+    @Column(nullable = false)
+    private String estado;
 
     // Getters y setters
     public int getIdLibro() {
@@ -87,28 +83,20 @@ public class Libro {
         this.editorial = editorial;
     }
 
-    public Date getFechaAlta() {
-        return fechaAlta;
+    public Date getFechaAltaPrestamo() {
+        return fechaAltaPrestamo;
     }
 
-    public void setFechaAlta(Date fechaAlta) {
-        this.fechaAlta = fechaAlta;
+    public void setFechaAltaPrestamo(Date fechaAltaPrestamo) {
+        this.fechaAltaPrestamo = fechaAltaPrestamo;
     }
 
-    public Date getFechaBaja() {
-        return fechaBaja;
+    public Date getFechaBajaPrestamo() {
+        return fechaBajaPrestamo;
     }
 
-    public void setFechaBaja(Date fechaBaja) {
-        this.fechaBaja = fechaBaja;
-    }
-
-    public Departamento getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(Departamento departamento) {
-        this.departamento = departamento;
+    public void setFechaBajaPrestamo(Date fechaBajaPrestamo) {
+        this.fechaBajaPrestamo = fechaBajaPrestamo;
     }
 
     public String getFoto() {
@@ -117,5 +105,13 @@ public class Libro {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

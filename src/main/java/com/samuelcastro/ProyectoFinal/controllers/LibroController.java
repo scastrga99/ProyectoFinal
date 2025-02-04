@@ -1,83 +1,86 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Libro;
+import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
+import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/libros")
 public class LibroController {
 
     @Autowired
     private LibroService libroService;
 
-    /**
-     * Obtener todos los libros.
-     * 
-     * @return Lista de todos los libros.
-     */
+    @Autowired
+    private DepartamentoService departamentoService;
+
     @GetMapping
-    public List<Libro> getAllLibros() {
-        return libroService.findAll();
+    public String getAllLibros(Model model) {
+        List<Libro> libros = libroService.findAll();
+        model.addAttribute("libros", libros);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "libros/libros";
     }
 
-    /**
-     * Obtener un libro por su ID.
-     * 
-     * @param id ID del libro.
-     * @return El libro con el ID especificado.
-     */
-    @GetMapping("/{id}")
-    public Libro getLibroById(@PathVariable int id) {
-        return libroService.findById(id);
+    @GetMapping("/nuevo")
+    public String mostrarFormularioNuevoLibro(Model model) {
+        model.addAttribute("libro", new Libro());
+        model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "libros/alta-libro";
     }
 
-    /**
-     * Crear un nuevo libro.
-     * 
-     * @param libro Datos del nuevo libro.
-     * @return El libro creado.
-     */
     @PostMapping
-    public Libro createLibro(@RequestBody Libro libro) {
-        return libroService.save(libro);
+    public String crearLibro(@ModelAttribute Libro libro) {
+        libroService.save(libro);
+        return "redirect:/api/libros";
     }
 
-    /**
-     * Actualizar un libro existente.
-     * 
-     * @param id ID del libro a actualizar.
-     * @param libro Datos actualizados del libro.
-     * @return El libro actualizado.
-     */
-    @PutMapping("/{id}")
-    public Libro updateLibro(@PathVariable int id, @RequestBody Libro libro) {
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditarLibro(@PathVariable int id, Model model) {
+        Libro libro = libroService.findById(id);
+        model.addAttribute("libro", libro);
+        model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "libros/editar-libro";
+    }
+
+    @PostMapping("/{id}")
+    public String actualizarLibro(@PathVariable int id, @ModelAttribute Libro libro) {
         Libro existingLibro = libroService.findById(id);
         if (existingLibro != null) {
             existingLibro.setIsbn(libro.getIsbn());
             existingLibro.setTitulo(libro.getTitulo());
             existingLibro.setAutor(libro.getAutor());
             existingLibro.setEditorial(libro.getEditorial());
-            existingLibro.setFechaAlta(libro.getFechaAlta());
-            existingLibro.setFechaBaja(libro.getFechaBaja());
-            existingLibro.setDepartamento(libro.getDepartamento());
-            existingLibro.setFoto(libro.getFoto());
-            return libroService.save(existingLibro);
-        } else {
-            return null; // Manejar el caso donde el libro no existe
+            existingLibro.setFechaAltaPrestamo(libro.getFechaAltaPrestamo());
+            existingLibro.setFechaBajaPrestamo(libro.getFechaBajaPrestamo());
+            existingLibro.setEstado(libro.getEstado());
+            libroService.save(existingLibro);
         }
+        return "redirect:/api/libros";
     }
 
-    /**
-     * Eliminar un libro por su ID.
-     * 
-     * @param id ID del libro a eliminar.
-     */
-    @DeleteMapping("/{id}")
-    public void deleteLibro(@PathVariable int id) {
+    @GetMapping("/eliminar/{id}")
+    public String eliminarLibro(@PathVariable int id) {
         libroService.deleteById(id);
+        return "redirect:/api/libros";
     }
 }
