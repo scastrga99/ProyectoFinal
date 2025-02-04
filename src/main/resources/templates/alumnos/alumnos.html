@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumnos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    
+    <!-- Contenedor principal con espacio -->
+    <div class="container-fluid">
+        <h1 class="mb-4">Lista de Alumnos</h1>
+        <!-- Tabla para mostrar la lista de alumnos -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Fecha Alta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="alumno : ${alumnos}">
+                    <td th:text="${alumno.nombre}"></td>
+                    <td th:text="${alumno.apellidos}"></td>
+                    <td th:text="${alumno.correo}"></td>
+                    <td th:text="${alumno.fechaAlta}"></td>
+                    <td>
+                        <a th:href="@{/api/alumnos/editar/{id}(id=${alumno.idAlumno})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/api/alumnos/eliminar/{id}(id=${alumno.idAlumno})}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-container mt-4">
+        <!-- Botón para regresar a la página principal -->
+        <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+        <!-- Botón para agregar un nuevo departamento -->
+        <a th:href="@{/api/alumnos/nuevo}" class="btn btn-dark">Agregar Alumno</a>
+    </div>
+    
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

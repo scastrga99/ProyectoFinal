@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -28,12 +29,14 @@ public class Alumno {
     @Column(nullable = false)
     private String correo;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+   @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
+
+    @PrePersist
+    protected void onCreate() {
+        fechaAlta = new Date();
+    }
 
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
@@ -76,14 +79,6 @@ public class Alumno {
 
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Date getFechaAlta() {

@@ -2,81 +2,84 @@ package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Alumno;
 import com.samuelcastro.ProyectoFinal.services.AlumnoService;
+import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
+import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/alumnos")
 public class AlumnoController {
 
     @Autowired
     private AlumnoService alumnoService;
 
-    /**
-     * Obtener todos los alumnos.
-     * 
-     * @return Lista de todos los alumnos.
-     */
+    @Autowired
+    private DepartamentoService departamentoService;
+
     @GetMapping
-    public List<Alumno> getAllAlumnos() {
-        return alumnoService.findAll();
+    public String getAllAlumnos(Model model) {
+        List<Alumno> alumnos = alumnoService.findAll();
+        model.addAttribute("alumnos", alumnos);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "alumnos/alumnos";
     }
 
-    /**
-     * Obtener un alumno por su ID.
-     * 
-     * @param id ID del alumno.
-     * @return El alumno con el ID especificado.
-     */
-    @GetMapping("/{id}")
-    public Alumno getAlumnoById(@PathVariable int id) {
-        return alumnoService.findById(id);
+    @GetMapping("/nuevo")
+    public String mostrarFormularioNuevoAlumno(Model model) {
+        model.addAttribute("alumno", new Alumno());
+        model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "alumnos/alta-alumno";
     }
 
-    /**
-     * Crear un nuevo alumno.
-     * 
-     * @param alumno Datos del nuevo alumno.
-     * @return El alumno creado.
-     */
     @PostMapping
-    public Alumno createAlumno(@RequestBody Alumno alumno) {
-        return alumnoService.save(alumno);
+    public String crearAlumno(@ModelAttribute Alumno alumno) {
+        alumnoService.save(alumno);
+        return "redirect:/api/alumnos";
     }
 
-    /**
-     * Actualizar un alumno existente.
-     * 
-     * @param id ID del alumno a actualizar.
-     * @param alumno Datos actualizados del alumno.
-     * @return El alumno actualizado.
-     */
-    @PutMapping("/{id}")
-    public Alumno updateAlumno(@PathVariable int id, @RequestBody Alumno alumno) {
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditarAlumno(@PathVariable int id, Model model) {
+        Alumno alumno = alumnoService.findById(id);
+        model.addAttribute("alumno", alumno);
+        model.addAttribute("departamentos", departamentoService.findAll());
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+        }
+        return "alumnos/editar-alumno";
+    }
+
+    @PostMapping("/{id}")
+    public String actualizarAlumno(@PathVariable int id, @ModelAttribute Alumno alumno) {
         Alumno existingAlumno = alumnoService.findById(id);
         if (existingAlumno != null) {
             existingAlumno.setNombre(alumno.getNombre());
             existingAlumno.setApellidos(alumno.getApellidos());
             existingAlumno.setCorreo(alumno.getCorreo());
-            existingAlumno.setPassword(alumno.getPassword());
-            existingAlumno.setFechaAlta(alumno.getFechaAlta());
-            existingAlumno.setFechaBaja(alumno.getFechaBaja());
+            existingAlumno.setRol(alumno.getRol());
             existingAlumno.setDepartamento(alumno.getDepartamento());
-            return alumnoService.save(existingAlumno);
-        } else {
-            return null; // Manejar el caso donde el alumno no existe
+            alumnoService.save(existingAlumno);
         }
+        return "redirect:/api/alumnos";
     }
 
-    /**
-     * Eliminar un alumno por su ID.
-     * 
-     * @param id ID del alumno a eliminar.
-     */
-    @DeleteMapping("/{id}")
-    public void deleteAlumno(@PathVariable int id) {
+    @GetMapping("/eliminar/{id}")
+    public String eliminarAlumno(@PathVariable int id) {
         alumnoService.deleteById(id);
+        return "redirect:/api/alumnos";
     }
 }
