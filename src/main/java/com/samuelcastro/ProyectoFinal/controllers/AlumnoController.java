@@ -5,12 +5,16 @@ import com.samuelcastro.ProyectoFinal.services.AlumnoService;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
-
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -80,6 +84,57 @@ public class AlumnoController {
     @GetMapping("/eliminar/{id}")
     public String eliminarAlumno(@PathVariable int id) {
         alumnoService.deleteById(id);
+        return "redirect:/api/alumnos";
+    }
+
+    @GetMapping("/subir")
+    public String mostrarFormularioSubirAlumnos(Model model) {
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails != null) {
+            model.addAttribute("profesor", profesorDetails.getProfesor());
+            if (profesorDetails.getProfesor().getRol().equals("ROLE_ADMIN")) {
+                return "alumnos/subir-alumnos";
+            }
+        }
+        return "redirect:/api/alumnos";
+    }
+
+    @PostMapping("/subir")
+    public String subirAlumnos(@RequestParam("file") MultipartFile file, Model model) {
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        if (profesorDetails == null || !profesorDetails.getProfesor().getRol().equals("ROLE_ADMIN")) {
+            return "redirect:/api/alumnos";
+        }
+
+        if (file.isEmpty()) {
+            model.addAttribute("message", "Por favor, selecciona un archivo para subir.");
+            return "alumnos/subir-alumnos";
+        }
+
+        try (InputStream is = file.getInputStream(); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (row.getRowNum() == 0) {
+                    continue; // Saltar la fila de encabezado
+                }
+
+                Alumno alumno = new Alumno();
+                alumno.setNombre(row.getCell(0).getStringCellValue());
+                alumno.setApellidos(row.getCell(1).getStringCellValue());
+                alumno.setCorreo(row.getCell(2).getStringCellValue());
+                alumno.setRol(row.getCell(3).getStringCellValue());
+                // Asigna el departamento según sea necesario
+                alumno.setDepartamento(departamentoService.findById((int) row.getCell(4).getNumericCellValue()));
+                alumnoService.save(alumno);
+            }
+        } catch (Exception e) {
+            model.addAttribute("message", "Error al procesar el archivo: " + e.getMessage());
+            return "error";
+        }
+
         return "redirect:/api/alumnos";
     }
 }

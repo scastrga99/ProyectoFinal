@@ -24,6 +24,7 @@
                     <th>Apellidos</th>
                     <th>Correo</th>
                     <th>Departamento</th>
+                    <th>Rol</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -33,7 +34,8 @@
                     <td th:text="${profesor.nombre}">Nombre</td>
                     <td th:text="${profesor.apellidos}">Apellidos</td>
                     <td th:text="${profesor.correo}">Correo</td>
-                    <td th:text="${profesor.departamento.nombre}">Correo</td>
+                    <td th:text="${profesor.departamento.nombre}">Departamento</td>
+                    <td th:text="${profesor.rol}">Rol</td>
                     <td>
                         <!-- Enlace para editar el profesor -->
                         <a th:href="@{/api/profesores/editar/{id}(id=${profesor.idProfesor})}" class="btn btn-primary btn-sm">Editar</a>

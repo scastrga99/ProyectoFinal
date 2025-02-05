@@ -41,6 +41,21 @@
         </table>
     </div>
 
+    <!-- Contenedor para subir alumnos desde un archivo, visible solo para ROLE_ADMIN -->
+    <div class="container mt-5" th:if="${profesor.rol == 'ROLE_ADMIN'}">
+        <h1 class="mb-4">Subir Alumnos desde archivo</h1>
+        <form action="#" th:action="@{/api/alumnos/subir}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Seleccionar archivo:</label>
+                <input type="file" id="file" name="file" class="form-control" required />
+            </div>
+            <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/alumnos}" class="btn btn-dark">Regresar</a>
+                <button type="submit" class="btn btn-success">Subir</button>
+            </div>
+        </form>
+    </div>
+
     <div class="button-container mt-4">
         <!-- Botón para regresar a la página principal -->
         <a th:href="@{/}" class="btn btn-dark">Regresar</a>

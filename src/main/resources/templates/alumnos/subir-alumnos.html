@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Alumnos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    
+    <!-- Contenedor principal con espacio -->
+    <div class="container mt-5">
+        <h1 class="mb-4">Subir Alumnos</h1>
+        <form action="#" th:action="@{/api/alumnos/subir}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Seleccionar archivo:</label>
+                <input type="file" id="file" name="file" class="form-control" required />
+            </div>
+            <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/alumnos}" class="btn btn-dark">Regresar</a>
+                <button type="submit" class="btn btn-success">Subir</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">© 2023 Mi Proyecto. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
