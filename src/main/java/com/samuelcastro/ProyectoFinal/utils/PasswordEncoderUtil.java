@@ -1,4 +1,4 @@
-package com.samuelcastro.ProyectoFinal;
+package com.samuelcastro.ProyectoFinal.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

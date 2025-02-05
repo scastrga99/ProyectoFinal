@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libros</title>
+    <title>Préstamos</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -13,30 +13,29 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     
     <!-- Contenedor principal con espacio -->
-    <div class="container-fluid">
-        <h1 class="mb-4">Lista de Libros</h1>
-        <!-- Tabla para mostrar la lista de libros -->
+    <div class="container mt-5">
+        <h1 class="mb-4">Lista de Préstamos</h1>
+        <!-- Tabla para mostrar la lista de préstamos -->
         <table class="table table-striped">
-            <thead class="thead-dark">
+            <thead>
                 <tr>
-                    <th>ISBN</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editorial</th>
-                    <th>Estado</th>
+                    <th>Profesor</th>
+                    <th>Alumno</th>
+                    <th>Libro</th>
+                    <th>Fecha Préstamo</th>
+                    <th>Fecha Devolución</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="libro : ${libros}">
-                    <td th:text="${libro.isbn}"></td>
-                    <td th:text="${libro.titulo}"></td>
-                    <td th:text="${libro.autor}"></td>
-                    <td th:text="${libro.editorial}"></td>
-                    <td th:text="${libro.estado}"></td>
+                <tr th:each="prestamo : ${prestamos}">
+                    <td th:text="${prestamo.profesor.nombre}"></td>
+                    <td th:text="${prestamo.alumno.nombre}"></td>
+                    <td th:text="${prestamo.libro.titulo}"></td>
+                    <td th:text="${prestamo.fechaPrestamo}"></td>
+                    <td th:text="${prestamo.fechaDevolucion}"></td>
                     <td>
-                        <a th:href="@{/api/libros/editar/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/api/libros/eliminar/{id}(id=${libro.idLibro})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/api/prestamos/eliminar/{id}(id=${prestamo.idPrestamo})}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
             </tbody>
@@ -47,9 +46,8 @@
         <!-- Botón para regresar a la página principal -->
         <a th:href="@{/}" class="btn btn-dark">Regresar</a>
         <!-- Botón para agregar un nuevo libro -->
-        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark">Agregar Libro</a>
+        <a th:href="@{/api/prestamos/nuevo}" class="btn btn-dark">Nuevo Prestamo</a>
     </div>
-    
 
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

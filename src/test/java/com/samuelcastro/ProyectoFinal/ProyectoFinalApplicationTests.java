@@ -1,35 +1,18 @@
 package com.samuelcastro.ProyectoFinal;
 
-import com.samuelcastro.ProyectoFinal.entities.*;
-import com.samuelcastro.ProyectoFinal.services.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
+
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class ProyectoFinalApplicationTests {
 
-    @Autowired
-    private ProfesorService profesorService;
-
-    @Autowired
-    private DepartamentoService departamentoService;
-
-    @Autowired
-    private MaterialService materialService;
-
-    @Autowired
-    private LibroService libroService;
-
-    @Autowired
-    private AlumnoService alumnoService;
 
     @Test
     @Transactional

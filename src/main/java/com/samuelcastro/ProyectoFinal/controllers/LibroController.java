@@ -70,8 +70,6 @@ public class LibroController {
             existingLibro.setTitulo(libro.getTitulo());
             existingLibro.setAutor(libro.getAutor());
             existingLibro.setEditorial(libro.getEditorial());
-            existingLibro.setFechaAltaPrestamo(libro.getFechaAltaPrestamo());
-            existingLibro.setFechaBajaPrestamo(libro.getFechaBajaPrestamo());
             existingLibro.setEstado(libro.getEstado());
             libroService.save(existingLibro);
         }
