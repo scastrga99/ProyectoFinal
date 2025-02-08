@@ -1,8 +1,10 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Alumno;
+import com.samuelcastro.ProyectoFinal.entities.Prestamo;
 import com.samuelcastro.ProyectoFinal.services.AlumnoService;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
+import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -26,6 +28,9 @@ public class AlumnoController {
 
     @Autowired
     private DepartamentoService departamentoService;
+
+    @Autowired
+    private PrestamoService prestamoService;
 
     @GetMapping
     public String getAllAlumnos(Model model) {
@@ -83,6 +88,10 @@ public class AlumnoController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarAlumno(@PathVariable int id) {
+        List<Prestamo> prestamos = prestamoService.findByAlumnoId(id);
+        for (Prestamo prestamo : prestamos) {
+            prestamoService.deleteById(prestamo.getIdPrestamo());
+        }
         alumnoService.deleteById(id);
         return "redirect:/api/alumnos";
     }

@@ -36,13 +36,20 @@ public class Prestamo {
     @Column(nullable = false)
     private Date fechaPrestamo;
 
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date fechaPlazo;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaDevolucion;
+
+    @Column(nullable = false)
+    private boolean devuelto;
+
     @PrePersist
     public void prePersist() {
         fechaPrestamo = new Date();
     }
-
-    @Temporal(TemporalType.DATE)
-    private Date fechaDevolucion;
 
     // Getters y setters
     public int getIdPrestamo() {
@@ -85,11 +92,27 @@ public class Prestamo {
         this.fechaPrestamo = fechaPrestamo;
     }
 
+    public Date getFechaPlazo() {
+        return fechaPlazo;
+    }
+
+    public void setFechaPlazo(Date fechaPlazo) {
+        this.fechaPlazo = fechaPlazo;
+    }
+
     public Date getFechaDevolucion() {
         return fechaDevolucion;
     }
 
     public void setFechaDevolucion(Date fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
+    }
+
+    public boolean isDevuelto() {
+        return devuelto;
+    }
+
+    public void setDevuelto(boolean devuelto) {
+        this.devuelto = devuelto;
     }
 }
