@@ -56,6 +56,7 @@ public class AlumnoController {
 
     @PostMapping
     public String crearAlumno(@ModelAttribute Alumno alumno) {
+        alumno.setRol("ROLE_USER"); // Establecer el rol predeterminado
         alumnoService.save(alumno);
         return "redirect:/api/alumnos";
     }
@@ -134,8 +135,7 @@ public class AlumnoController {
                 alumno.setNombre(row.getCell(0).getStringCellValue());
                 alumno.setApellidos(row.getCell(1).getStringCellValue());
                 alumno.setCorreo(row.getCell(2).getStringCellValue());
-                alumno.setRol(row.getCell(3).getStringCellValue());
-                // Asigna el departamento según sea necesario
+                alumno.setRol("ROLE_USER"); // Establecer el rol predeterminado
                 alumno.setDepartamento(departamentoService.findById((int) row.getCell(4).getNumericCellValue()));
                 alumnoService.save(alumno);
             }
