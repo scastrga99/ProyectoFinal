@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProfesorRepository extends JpaRepository<Profesor, Integer> {
     List<Profesor> findByNombre(String nombre);
     Profesor findByCorreo(String nombre);
+    boolean existsByRol(String rol);
 }
