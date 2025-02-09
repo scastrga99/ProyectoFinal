@@ -66,4 +66,15 @@ public class PrestamoController {
         prestamoService.deleteById(id);
         return "redirect:/api/prestamos";
     }
+
+    @GetMapping("/devolver/{id}")
+    public String devolverPrestamo(@PathVariable int id) {
+        Prestamo prestamo = prestamoService.findById(id);
+        if (prestamo != null) {
+            prestamo.setDevuelto(true);
+            prestamo.setFechaDevolucion(new Date());
+            prestamoService.save(prestamo);
+        }
+        return "redirect:/api/prestamos";
+    }
 }

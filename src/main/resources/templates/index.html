@@ -14,29 +14,33 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     <!-- Contenedor principal -->
     <div class="container">
-        <div th:if="${profesor.rol == 'ROLE_ADMIN'}">
-            <h2 class="mt-5">Registros de Operaciones</h2>
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Entidad</th>
-                        <th>Nombre de la entidad</th>
-                        <th>Operación</th>
-                        <th>Profesor que realiza la operación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="registro : ${registros}">
-                        <td th:text="${#dates.format(registro.fecha, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td th:text="${registro.entidad}"></td>
-                        <td th:text="${registro.detalles}"></td>
-                        <td th:text="${registro.operacion}"></td>
-                        <td th:text="${registro.nombreProfesor}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <h2 class="mb-4">Registro de Operaciones</h2>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Operación</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-01</td>
+                    <td>Alta de Profesor</td>
+                    <td>Profesor Juan Pérez agregado al departamento de Ciencias</td>
+                </tr>
+                <tr>
+                    <td>2023-10-02</td>
+                    <td>Retiro de Libro</td>
+                    <td>Alumno Pedro Gómez retiró el libro "Ciencia para todos"</td>
+                </tr>
+                <tr>
+                    <td>2023-10-03</td>
+                    <td>Alta de Material</td>
+                    <td>dddddd</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

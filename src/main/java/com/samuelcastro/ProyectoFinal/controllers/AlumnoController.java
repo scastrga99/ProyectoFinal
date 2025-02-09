@@ -1,11 +1,11 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Alumno;
-import com.samuelcastro.ProyectoFinal.entities.Registro;
+import com.samuelcastro.ProyectoFinal.entities.Prestamo;
 import com.samuelcastro.ProyectoFinal.services.AlumnoService;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
+import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
-import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,7 +30,7 @@ public class AlumnoController {
     private DepartamentoService departamentoService;
 
     @Autowired
-    private RegistroService registroService;
+    private PrestamoService prestamoService;
 
     @GetMapping
     public String getAllAlumnos(Model model) {
@@ -57,7 +57,6 @@ public class AlumnoController {
     @PostMapping
     public String crearAlumno(@ModelAttribute Alumno alumno) {
         alumnoService.save(alumno);
-        registrarOperacion("CREAR", "Alumno", alumno.getIdAlumno(), alumno.getNombre());
         return "redirect:/api/alumnos";
     }
 
@@ -83,14 +82,16 @@ public class AlumnoController {
             existingAlumno.setRol(alumno.getRol());
             existingAlumno.setDepartamento(alumno.getDepartamento());
             alumnoService.save(existingAlumno);
-            registrarOperacion("ACTUALIZAR", "Alumno", existingAlumno.getIdAlumno(), existingAlumno.getNombre());
         }
         return "redirect:/api/alumnos";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarAlumno(@PathVariable int id) {
-        registrarOperacion("ELIMINAR", "Alumno", id, alumnoService.findById(id).getNombre());
+        List<Prestamo> prestamos = prestamoService.findByAlumnoId(id);
+        for (Prestamo prestamo : prestamos) {
+            prestamoService.deleteById(prestamo.getIdPrestamo());
+        }
         alumnoService.deleteById(id);
         return "redirect:/api/alumnos";
     }
@@ -134,29 +135,15 @@ public class AlumnoController {
                 alumno.setApellidos(row.getCell(1).getStringCellValue());
                 alumno.setCorreo(row.getCell(2).getStringCellValue());
                 alumno.setRol(row.getCell(3).getStringCellValue());
+                // Asigna el departamento según sea necesario
                 alumno.setDepartamento(departamentoService.findById((int) row.getCell(4).getNumericCellValue()));
                 alumnoService.save(alumno);
-                registrarOperacion("SUBIR", "Alumno", alumno.getIdAlumno(), alumno.getNombre());
             }
         } catch (Exception e) {
             model.addAttribute("message", "Error al procesar el archivo: " + e.getMessage());
-            return "alumnos/subir-alumnos";
+            return "error";
         }
 
         return "redirect:/api/alumnos";
-    }
-
-    private void registrarOperacion(String operacion, String entidad, int entidadId, String detalles) {
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            Registro registro = new Registro();
-            registro.setProfesor(profesorDetails.getProfesor());
-            registro.setNombreProfesor(profesorDetails.getProfesor().getNombre());
-            registro.setOperacion(operacion);
-            registro.setEntidad(entidad);
-            registro.setEntidadId(entidadId);
-            registro.setDetalles(detalles);
-            registroService.save(registro);
-        }
     }
 }

@@ -28,4 +28,8 @@ public class PrestamoService {
     public void deleteById(int id) {
         prestamoRepository.deleteById(id);
     }
+
+    public List<Prestamo> findByAlumnoId(int alumnoId) {
+        return prestamoRepository.findByAlumnoId(alumnoId);
+    }
 }

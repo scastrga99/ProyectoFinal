@@ -17,13 +17,15 @@
         <h1 class="mb-4">Lista de Préstamos</h1>
         <!-- Tabla para mostrar la lista de préstamos -->
         <table class="table table-striped">
-            <thead>
+            <thead class="thead-dark">
                 <tr>
                     <th>Profesor</th>
                     <th>Alumno</th>
                     <th>Libro</th>
                     <th>Fecha Préstamo</th>
+                    <th>Fecha Plazo</th>
                     <th>Fecha Devolución</th>
+                    <th>Devuelto</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -33,15 +35,17 @@
                     <td th:text="${prestamo.alumno.nombre}"></td>
                     <td th:text="${prestamo.libro.titulo}"></td>
                     <td th:text="${prestamo.fechaPrestamo}"></td>
+                    <td th:text="${prestamo.fechaPlazo}"></td>
                     <td th:text="${prestamo.fechaDevolucion}"></td>
+                    <td th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
                     <td>
-                        <a th:href="@{/api/prestamos/eliminar/{id}(id=${prestamo.idPrestamo})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success" th:if="${!prestamo.devuelto}">Devolver</a>
+                        <h4 th:if="${prestamo.devuelto}">-</h4>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-
     <div class="button-container mt-4 d-flex justify-content-between">
         <!-- Botón para regresar a la página principal -->
         <a th:href="@{/}" class="btn btn-dark">Regresar</a>
