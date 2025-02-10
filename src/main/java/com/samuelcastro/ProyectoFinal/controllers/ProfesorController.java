@@ -3,6 +3,7 @@ package com.samuelcastro.ProyectoFinal.controllers;
 import com.samuelcastro.ProyectoFinal.entities.Profesor;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorService;
+import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ProfesorController {
 
     @Autowired
     private DepartamentoService departamentoService;
+
+    @Autowired
+    private RegistroService registroService;
 
     @GetMapping
     public String getAllProfesores(Model model) {
@@ -47,6 +51,8 @@ public class ProfesorController {
     @PostMapping
     public String crearProfesor(@ModelAttribute Profesor profesor) {
         profesorService.save(profesor);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Profesor", profesor.getIdProfesor(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", profesor.getNombre() + " " + profesor.getApellidos());
         return "redirect:/api/profesores";
     }
 
@@ -73,13 +79,20 @@ public class ProfesorController {
             existingProfesor.setRol(profesor.getRol());
             existingProfesor.setDepartamento(profesor.getDepartamento());
             profesorService.save(existingProfesor);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Profesor", existingProfesor.getIdProfesor(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR ", existingProfesor.getNombre() + " " + existingProfesor.getApellidos());
         }
         return "redirect:/api/profesores";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarProfesor(@PathVariable int id) {
-        profesorService.deleteById(id);
+        Profesor profesor = profesorService.findById(id);
+        if (profesor != null) {
+            profesorService.deleteById(id);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Profesor", id, profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR ", profesor.getNombre() + " " + profesor.getApellidos());
+        }
         return "redirect:/api/profesores";
     }
 }

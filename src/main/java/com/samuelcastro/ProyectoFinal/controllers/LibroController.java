@@ -3,6 +3,7 @@ package com.samuelcastro.ProyectoFinal.controllers;
 import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
+import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class LibroController {
 
     @Autowired
     private DepartamentoService departamentoService;
+
+    @Autowired
+    private RegistroService registroService;
 
     @GetMapping
     public String getAllLibros(Model model) {
@@ -47,6 +51,8 @@ public class LibroController {
     @PostMapping
     public String crearLibro(@ModelAttribute Libro libro) {
         libroService.save(libro);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Libro", libro.getIdLibro(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", libroService.findById(libro.getIdLibro()).getTitulo());
         return "redirect:/api/libros";
     }
 
@@ -72,13 +78,20 @@ public class LibroController {
             existingLibro.setEditorial(libro.getEditorial());
             existingLibro.setEstado(libro.getEstado());
             libroService.save(existingLibro);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Libro", existingLibro.getIdLibro(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR ", existingLibro.getTitulo());
         }
         return "redirect:/api/libros";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarLibro(@PathVariable int id) {
-        libroService.deleteById(id);
+        Libro libro = libroService.findById(id);
+        if (libro != null) {
+            libroService.deleteById(id);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Libro", id, profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR ", libro.getTitulo());
+        }
         return "redirect:/api/libros";
     }
 }

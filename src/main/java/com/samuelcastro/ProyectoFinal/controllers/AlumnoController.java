@@ -5,6 +5,7 @@ import com.samuelcastro.ProyectoFinal.entities.Prestamo;
 import com.samuelcastro.ProyectoFinal.services.AlumnoService;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.PrestamoService;
+import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -32,6 +33,9 @@ public class AlumnoController {
     @Autowired
     private PrestamoService prestamoService;
 
+    @Autowired
+    private RegistroService registroService;
+
     @GetMapping
     public String getAllAlumnos(Model model) {
         List<Alumno> alumnos = alumnoService.findAll();
@@ -58,6 +62,8 @@ public class AlumnoController {
     public String crearAlumno(@ModelAttribute Alumno alumno) {
         alumno.setRol("ROLE_USER"); // Establecer el rol predeterminado
         alumnoService.save(alumno);
+        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Alumno", alumno.getIdAlumno(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", alumno.getNombre() + " " + alumno.getApellidos());
         return "redirect:/api/alumnos";
     }
 
@@ -80,9 +86,10 @@ public class AlumnoController {
             existingAlumno.setNombre(alumno.getNombre());
             existingAlumno.setApellidos(alumno.getApellidos());
             existingAlumno.setCorreo(alumno.getCorreo());
-            existingAlumno.setRol(alumno.getRol());
             existingAlumno.setDepartamento(alumno.getDepartamento());
             alumnoService.save(existingAlumno);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Alumno", existingAlumno.getIdAlumno(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR ", existingAlumno.getNombre() + " " + existingAlumno.getApellidos());
         }
         return "redirect:/api/alumnos";
     }
@@ -93,7 +100,12 @@ public class AlumnoController {
         for (Prestamo prestamo : prestamos) {
             prestamoService.deleteById(prestamo.getIdPrestamo());
         }
-        alumnoService.deleteById(id);
+        Alumno alumno = alumnoService.findById(id);
+        if (alumno != null) {
+            alumnoService.deleteById(id);
+            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Alumno", id, profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR ", alumno.getNombre() + " " + alumno.getApellidos());
+        }
         return "redirect:/api/alumnos";
     }
 
@@ -138,6 +150,7 @@ public class AlumnoController {
                 alumno.setRol("ROLE_USER"); // Establecer el rol predeterminado
                 alumno.setDepartamento(departamentoService.findById((int) row.getCell(4).getNumericCellValue()));
                 alumnoService.save(alumno);
+                registroService.registrarOperacion("Alumno", alumno.getIdAlumno(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", alumno.getNombre() + " " + alumno.getApellidos());
             }
         } catch (Exception e) {
             model.addAttribute("message", "Error al procesar el archivo: " + e.getMessage());
