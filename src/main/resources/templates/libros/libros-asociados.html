@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libros Asociados</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Enlace al archivo CSS de DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <!-- Incluir el fragmento de navegación -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    
+    <!-- Contenedor principal con espacio -->
+    <div class="container mt-5">
+        <h1 class="mb-4">Libros Asociados</h1>
+        <!-- Tabla para mostrar la lista de libros asociados -->
+        <table id="librosAsociadosTable" class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ISBN</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="libro : ${libros}">
+                    <td th:text="${libro.isbn}"></td>
+                    <td th:text="${libro.titulo}"></td>
+                    <td th:text="${libro.autor}"></td>
+                    <td th:text="${libro.editorial}"></td>
+                    <td th:text="${libro.estado}"></td>
+                    <td>
+                        <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/api/libros/eliminar/{key}(key=${libro.titulo} + ' - ' + ${libro.autor} + ' - ' + ${libro.editorial})}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-container mt-4 d-flex justify-content-between">
+        <!-- Botón para regresar a la lista de libros -->
+        <a th:href="@{/api/libros}" class="btn btn-dark">Regresar</a>
+    </div>
+    
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Enlace a los archivos JavaScript de DataTables -->
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#librosAsociadosTable').DataTable();
+        });
+    </script>
+</body>
+</html>

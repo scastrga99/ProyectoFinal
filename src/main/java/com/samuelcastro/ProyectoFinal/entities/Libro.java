@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+
 
 @Entity
 public class Libro {
@@ -25,8 +27,8 @@ public class Libro {
     @Column(nullable = false)
     private String editorial;
 
-    @Column
-    private String foto;
+    @Lob
+    private byte[] foto;
 
     @Column(nullable = false)
     private String estado;
@@ -72,19 +74,19 @@ public class Libro {
         this.editorial = editorial;
     }
 
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
     public String getEstado() {
         return estado;
     }
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
     }
 }

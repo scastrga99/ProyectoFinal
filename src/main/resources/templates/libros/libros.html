@@ -7,8 +7,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!-- Enlace al archivo CSS de DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -17,32 +15,28 @@
     <!-- Contenedor principal con espacio -->
     <div class="container-fluid">
         <h1 class="mb-4">Lista de Libros</h1>
-        <!-- Tabla para mostrar la lista de libros -->
-        <table id="librosTable" class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ISBN</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editorial</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="libro : ${libros}">
-                    <td th:text="${libro.isbn}"></td>
-                    <td th:text="${libro.titulo}"></td>
-                    <td th:text="${libro.autor}"></td>
-                    <td th:text="${libro.editorial}"></td>
-                    <td th:text="${libro.estado}"></td>
-                    <td>
-                        <a th:href="@{/api/libros/editar/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/api/libros/eliminar/{id}(id=${libro.idLibro})}" class="btn btn-danger">Eliminar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Contenedor de tarjetas -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4">
+            <div class="col mb-4" th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}">
+                <div class="card h-100">
+                    <div class="row no-gutters">
+                        <div class="col-6">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${parts[0]}"></h5>
+                                <h6 class="card-subtitle mb-2 text-muted" th:text="${parts[1]}"></h6>
+                                <p class="card-text" th:text="${parts[2]}"></p>
+                                <p class="card-text"><strong>Cantidad:</strong> <span th:text="${#lists.size(entry.value)}"></span></p>
+                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning">Editar</a>
+                                <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger">Eliminar</a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <img th:src="@{/api/libros/foto/{id}(id=${entry.value[0].idLibro})}" class="card-img" alt="Imagen del libro" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="button-container mt-4 d-flex justify-content-between">
@@ -56,12 +50,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Enlace a los archivos JavaScript de DataTables -->
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#librosTable').DataTable();
-        });
-    </script>
 </body>
 </html>

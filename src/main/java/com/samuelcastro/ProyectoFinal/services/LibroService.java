@@ -51,4 +51,16 @@ public class LibroService {
     public void deleteById(int id) {
         libroRepository.deleteById(id);
     }
+
+    /**
+     * Obtener libros por título, autor y editorial.
+     * 
+     * @param titulo Título del libro.
+     * @param autor Autor del libro.
+     * @param editorial Editorial del libro.
+     * @return Lista de libros que coinciden con los criterios especificados.
+     */
+    public List<Libro> findByTituloAndAutorAndEditorial(String titulo, String autor, String editorial) {
+        return libroRepository.findByTituloAndAutorAndEditorial(titulo, autor, editorial);
+    }
 }
