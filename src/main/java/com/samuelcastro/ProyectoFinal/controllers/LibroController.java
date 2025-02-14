@@ -46,7 +46,14 @@ public class LibroController {
                 .collect(Collectors.groupingBy(
                         libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial()
                 ));
+        Map<String, Long> librosLibres = libros.stream()
+                .filter(libro -> "Libre".equals(libro.getEstado()))
+                .collect(Collectors.groupingBy(
+                        libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial(),
+                        Collectors.counting()
+                ));
         model.addAttribute("librosAgrupados", librosAgrupados);
+        model.addAttribute("librosLibres", librosLibres);
         ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
         if (profesorDetails != null) {
             model.addAttribute("profesor", profesorDetails.getProfesor());

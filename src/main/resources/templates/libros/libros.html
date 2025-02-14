@@ -31,7 +31,9 @@
                                 <h5 class="card-title" th:text="${parts[0]}"></h5>
                                 <h6 class="card-subtitle mb-2 text-muted" th:text="${parts[1]}"></h6>
                                 <p class="card-text" th:text="${parts[2]}"></p>
-                                <p class="card-text"><strong>Cantidad:</strong> <span th:text="${#lists.size(entry.value)}"></span></p>
+                                <p class="card-text"><strong>Cantidad:</strong> 
+                                    <span th:text="${librosLibres[entry.key]}"></span>
+                                </p>
                                 <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning">Editar</a>
                                 <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger">Eliminar</a>
                             </div>

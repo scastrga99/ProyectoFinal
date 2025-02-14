@@ -1,6 +1,7 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Prestamo;
+import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.services.AlumnoService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
 import com.samuelcastro.ProyectoFinal.services.PrestamoService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/prestamos")
@@ -46,7 +49,12 @@ public class PrestamoController {
     public String mostrarFormularioNuevoPrestamo(Model model) {
         model.addAttribute("prestamo", new Prestamo());
         model.addAttribute("alumnos", alumnoService.findAll());
-        model.addAttribute("libros", libroService.findAll());
+        Map<String, List<Libro>> librosAgrupados = libroService.findAll().stream()
+                .filter(libro -> "Libre".equals(libro.getEstado()))
+                .collect(Collectors.groupingBy(
+                        libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial()
+                ));
+        model.addAttribute("librosAgrupados", librosAgrupados);
         ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
         if (profesorDetails != null) {
             model.addAttribute("profesor", profesorDetails.getProfesor());
@@ -61,7 +69,10 @@ public class PrestamoController {
             prestamo.setProfesor(profesorDetails.getProfesor());
         }
         prestamo.setFechaPrestamo(new Date());
-        registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), prestamo.getProfesor().getNombre() + " " + prestamo.getProfesor().getApellidos() + " EJECUTA CREAR SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+        Libro libro = libroService.findById(prestamo.getLibro().getIdLibro());
+        libro.setEstado("Prestado");
+        libroService.save(libro);
+        registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), prestamo.getProfesor().getNombre() + " " + prestamo.getProfesor().getApellidos() + " EJECUTA CREAR SOBRE ", libro.getTitulo());
         prestamoService.save(prestamo);
         return "redirect:/api/prestamos";
     }
@@ -111,6 +122,9 @@ public class PrestamoController {
         if (prestamo != null) {
             prestamo.setDevuelto(true);
             prestamo.setFechaDevolucion(new Date());
+            Libro libro = libroService.findById(prestamo.getLibro().getIdLibro());
+            libro.setEstado("Libre");
+            libroService.save(libro);
             prestamoService.save(prestamo);
             ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
             registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
