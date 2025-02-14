@@ -20,7 +20,7 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item mx-2">
-                        <span class="nav-link text-white text-center" th:text="${profesor.nombre}">Usuario</span>
+                        <span class="nav-link text-white text-center" th:text="${profesor.nombre} + ' ' + ${profesor.apellidos}">Usuario</span>
                     </li>
                     <li class="nav-item mx-2">
                         <form th:action="@{/logout}" method="post">

@@ -43,26 +43,43 @@
         </table>
     </div>
 
-    <!-- Contenedor para subir alumnos desde un archivo, visible solo para ROLE_ADMIN -->
-    <div class="container mt-5" th:if="${profesor.rol == 'ROLE_ADMIN'}">
-        <h1 class="mb-4">Subir Alumnos desde archivo</h1>
-        <form action="#" th:action="@{/api/alumnos/subir}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="file">Seleccionar archivo:</label>
-                <input type="file" id="file" name="file" class="form-control" required />
+    <!-- Modal para subir alumnos desde archivo -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Subir Alumnos desde Archivo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" th:action="@{/api/alumnos/subir}" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Seleccionar archivo:</label>
+                            <input type="file" id="file" name="file" class="form-control" required />
+                        </div>
+                        <div class="button-container mt-4 d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Subir</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="button-container mt-4 d-flex justify-content-between">
-                <a th:href="@{/}" class="btn btn-dark">Regresar</a>
-                <button type="submit" class="btn btn-success">Subir</button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <div class="button-container mt-4">
         <!-- Botón para regresar a la página principal -->
         <a th:href="@{/}" class="btn btn-dark">Regresar</a>
-        <!-- Botón para agregar un nuevo alumno -->
-        <a th:href="@{/api/alumnos/nuevo}" class="btn btn-dark">Agregar Alumno</a>
+        <div>
+            <!-- Botón para agregar un nuevo alumno -->
+            <a th:href="@{/api/alumnos/nuevo}" class="btn btn-dark">Agregar Alumno</a>
+            <!-- Botón para abrir el modal de subir alumnos desde archivo, visible solo para ROLE_ADMIN -->
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#uploadModal">
+                Agregar Alumnos desde Archivo
+            </button>
+        </div>
     </div>
     
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
