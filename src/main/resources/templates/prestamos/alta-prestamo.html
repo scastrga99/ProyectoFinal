@@ -7,6 +7,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -18,23 +20,42 @@
         <form action="#" th:action="@{/api/prestamos}" th:object="${prestamo}" method="post">
             <div class="form-group">
                 <label for="alumno">Alumno:</label>
-                <select id="alumno" th:field="*{alumno.idAlumno}" class="form-control">
-                    <option th:each="alumno : ${alumnos}" th:value="${alumno.idAlumno}" th:text="${alumno.nombre}"></option>
-                </select>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-user-graduate"></i></span>
+                    </div>
+                    <select id="alumno" th:field="*{alumno.idAlumno}" class="form-control">
+                        <option th:each="alumno : ${alumnos}" th:value="${alumno.idAlumno}" th:text="${alumno.nombre}"></option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="libro">Libro:</label>
-                <select id="libro" th:field="*{libro.idLibro}" class="form-control">
-                    <option th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:value="${entry.value[0].idLibro}" th:text="${parts[0]} + ' (Cantidad: ' + ${#lists.size(entry.value)} + ')'"></option>
-                </select>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-book"></i></span>
+                    </div>
+                    <select id="libro" th:field="*{libro.idLibro}" class="form-control">
+                        <option th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:value="${entry.value[0].idLibro}" th:text="${parts[0]} + ' (Cantidad: ' + ${#lists.size(entry.value)} + ')'"></option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="fechaPlazo">Fecha Plazo:</label>
-                <input type="date" id="fechaPlazo" th:field="*{fechaPlazo}" class="form-control" />
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="date" id="fechaPlazo" th:field="*{fechaPlazo}" class="form-control" />
+                </div>
             </div>
             <div class="button-container mt-4 d-flex justify-content-between">
-                <a th:href="@{/api/prestamos}" class="btn btn-dark">Regresar</a>
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <a th:href="@{/api/prestamos}" class="btn btn-dark">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
             </div>
         </form>
     </div>

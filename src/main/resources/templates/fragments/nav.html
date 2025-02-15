@@ -4,32 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fragmento de Navegación</title>
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Enlace a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @media (max-width: 991px) {
+            .nav-link span {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Nav con container-fluid para ocupar el 100% del ancho de la pantalla -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 w-100">
-            <div class="collapse navbar-collapse d-flex justify-content-between">
+            <!-- Contenido del menú de navegación -->
+            <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNav">
                 <ul class="navbar-nav d-flex flex-grow-1">
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/profesores}">Profesores</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/materiales}">Materiales</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/departamentos}">Departamentos</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/libros}">Libros</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/prestamos}">Prestamos</a></li>
-                    <li class="nav-item mx-2 flex-grow-1"><a class="nav-link text-white text-center" th:href="@{/api/alumnos}">Alumnos</a></li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/}">
+                            <i class="fas fa-home"></i> <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/profesores}">
+                            <i class="fas fa-chalkboard-teacher"></i> <span>Profesores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/materiales}">
+                            <i class="fas fa-boxes"></i> <span>Materiales</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/departamentos}">
+                            <i class="fas fa-building"></i> <span>Departamentos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/libros}">
+                            <i class="fas fa-book"></i> <span>Libros</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/prestamos}">
+                            <i class="fas fa-handshake"></i> <span>Prestamos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2 flex-grow-1">
+                        <a class="nav-link text-white text-center" th:href="@{/api/alumnos}">
+                            <i class="fas fa-user-graduate"></i> <span>Alumnos</span>
+                        </a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto d-flex align-items-center">
                     <li class="nav-item mx-2">
-                        <span class="nav-link text-white text-center" th:text="${profesor.nombre} + ' ' + ${profesor.apellidos}">Usuario</span>
+                        <span class="nav-link text-white text-center" th:text="${profesor.nombre} + ' ' + ${profesor.apellidos}">
+                            <i class="fas fa-user"></i> <span>Usuario</span>
+                        </span>
                     </li>
                     <li class="nav-item mx-2">
                         <form th:action="@{/logout}" method="post">
-                            <button type="submit" class="btn btn-link nav-link text-white">Logout</button>
+                            <button type="submit" class="btn btn-link nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                            </button>
                         </form>
                     </li>
                 </ul>
             </div>
         </nav>
     </div>
+
+    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

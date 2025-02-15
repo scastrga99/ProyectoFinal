@@ -7,6 +7,48 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .card-subtitle {
+            font-size: 1rem;
+            color: #555;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .card-img {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .table-view {
+            display: none;
+        }
+        .toggle-view-btn {
+            background: none;
+            border: none;
+            color: #343a40;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -16,26 +58,29 @@
     <div class="container-fluid">
         <h1 class="mb-4">Lista de Libros</h1>
         
-        <!-- Campo de búsqueda -->
-        <div class="mb-4">
-            <input type="text" id="searchInput" class="form-control" placeholder="Buscar libros...">
+        <!-- Botón para cambiar entre vistas -->
+        <div class="mb-4 d-flex">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar libros..." style="max-width: 300px;">
+            <button id="toggleViewBtn" class="toggle-view-btn">
+                <i class="fas fa-table"></i>
+            </button>
         </div>
 
         <!-- Contenedor de tarjetas -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4" id="librosContainer">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4 card-view" id="librosContainer">
             <div class="col mb-4" th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}">
                 <div class="card h-100">
                     <div class="row no-gutters">
                         <div class="col-6">
                             <div class="card-body">
-                                <h5 class="card-title" th:text="${parts[0]}"></h5>
-                                <h6 class="card-subtitle mb-2 text-muted" th:text="${parts[1]}"></h6>
-                                <p class="card-text" th:text="${parts[2]}"></p>
+                                <h5 class="card-title" th:text="'Titulo: ' + ${parts[0]}"></h5>
+                                <h6 class="card-subtitle mb-2 text-muted" th:text="'Autor: ' + ${parts[1]}"></h6>
+                                <h6 class="card-subtitle mb-2 text-muted" th:text="'Editorial: ' + ${parts[2]}"></h6>
                                 <p class="card-text"><strong>Cantidad:</strong> 
                                     <span th:text="${librosLibres[entry.key]}"></span>
                                 </p>
-                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning">Editar</a>
-                                <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger">Eliminar</a>
+                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
+                                <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
                             </div>
                         </div>
                         <div class="col-6">
@@ -45,13 +90,44 @@
                 </div>
             </div>
         </div>
+
+        <!-- Vista en modo tabla -->
+        <div class="table-view">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Editorial</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="libro : ${libros}">
+                        <td th:text="${libro.isbn}"></td>
+                        <td th:text="${libro.titulo}"></td>
+                        <td th:text="${libro.autor}"></td>
+                        <td th:text="${libro.editorial}"></td>
+                        <td>
+                            <a th:href="@{/api/libros/editar/{id}(id=${libro.idLibro})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                            <a th:href="@{/api/libros/eliminar/{id}(id=${libro.idLibro})}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="button-container mt-4 d-flex justify-content-between">
         <!-- Botón para regresar a la página principal -->
-        <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+        <a th:href="@{/}" class="btn btn-dark">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
         <!-- Botón para agregar un nuevo libro -->
-        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark">Agregar Libro</a>
+        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark">
+            <i class="fas fa-plus"></i> Nuevo Libro
+        </a>
     </div>
     
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
@@ -73,6 +149,24 @@
                     card.style.display = 'none';
                 }
             });
+        });
+
+        // JavaScript para cambiar entre vistas
+        document.getElementById('toggleViewBtn').addEventListener('click', function() {
+            var cardView = document.querySelector('.card-view');
+            var tableView = document.querySelector('.table-view');
+            var icon = this.querySelector('i');
+            if (cardView.style.display === 'none') {
+                cardView.style.display = 'flex';
+                tableView.style.display = 'none';
+                icon.classList.remove('fa-th-large');
+                icon.classList.add('fa-table');
+            } else {
+                cardView.style.display = 'none';
+                tableView.style.display = 'block';
+                icon.classList.remove('fa-table');
+                icon.classList.add('fa-th-large');
+            }
         });
     </script>
 </body>

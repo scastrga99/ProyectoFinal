@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <!-- Enlace al archivo CSS de DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -32,9 +34,13 @@
                     <td th:text="${departamento.nombre}">Nombre</td>
                     <td>
                         <!-- Enlace para editar el departamento -->
-                        <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}" class="btn btn-primary btn-sm">Editar</a>
+                        <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
                         <!-- Enlace para borrar el departamento -->
-                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm">Borrar</a>
+                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt"></i> Borrar
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -42,9 +48,13 @@
         <!-- Contenedor de botones -->
         <div class="button-container mt-4">
             <!-- Botón para regresar a la página principal -->
-            <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+            <a th:href="@{/}" class="btn btn-dark">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
             <!-- Botón para agregar un nuevo departamento -->
-            <a th:href="@{/api/departamentos/nuevo}" class="btn btn-dark">Agregar Departamento</a>
+            <a th:href="@{/api/departamentos/nuevo}" class="btn btn-dark">
+                <i class="fas fa-plus"></i> Agregar Departamento
+            </a>
         </div>
     </div>
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->

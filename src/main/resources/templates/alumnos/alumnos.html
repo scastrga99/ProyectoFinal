@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <!-- Enlace al archivo CSS de DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -35,8 +37,12 @@
                     <td th:text="${alumno.correo}"></td>
                     <td th:text="${alumno.fechaAlta}"></td>
                     <td>
-                        <a th:href="@{/api/alumnos/editar/{id}(id=${alumno.idAlumno})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/api/alumnos/eliminar/{id}(id=${alumno.idAlumno})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/api/alumnos/editar/{id}(id=${alumno.idAlumno})}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a th:href="@{/api/alumnos/eliminar/{id}(id=${alumno.idAlumno})}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -71,13 +77,17 @@
 
     <div class="button-container mt-4">
         <!-- Botón para regresar a la página principal -->
-        <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+        <a th:href="@{/}" class="btn btn-dark">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
         <div>
             <!-- Botón para agregar un nuevo alumno -->
-            <a th:href="@{/api/alumnos/nuevo}" class="btn btn-dark">Agregar Alumno</a>
+            <a th:href="@{/api/alumnos/nuevo}" class="btn btn-dark">
+                <i class="fas fa-plus"></i> Agregar Alumno
+            </a>
             <!-- Botón para abrir el modal de subir alumnos desde archivo, visible solo para ROLE_ADMIN -->
             <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#uploadModal">
-                Agregar Alumnos desde Archivo
+                <i class="fas fa-file-upload"></i> Agregar Alumnos desde Archivo
             </button>
         </div>
     </div>
@@ -88,6 +98,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Enlace a los archivos JavaScript de DataTables -->
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
         $(document).ready(function() {
             $('#alumnosTable').DataTable();

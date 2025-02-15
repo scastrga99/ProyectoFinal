@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <!-- Enlace al archivo CSS de DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -20,10 +22,10 @@
         <table id="registrosTable" class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>Fecha</th>
-                    <th>Entidad</th>
-                    <th>Operación</th>
-                    <th>Detalles</th>
+                    <th><i class="fas fa-calendar-alt"></i> Fecha</th>
+                    <th><i class="fas fa-building"></i> Entidad</th>
+                    <th><i class="fas fa-tasks"></i> Operación</th>
+                    <th><i class="fas fa-info-circle"></i> Detalles</th>
                 </tr>
             </thead>
             <tbody>

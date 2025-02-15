@@ -54,6 +54,7 @@ public class LibroController {
                 ));
         model.addAttribute("librosAgrupados", librosAgrupados);
         model.addAttribute("librosLibres", librosLibres);
+        model.addAttribute("libros", libros);
         ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
         if (profesorDetails != null) {
             model.addAttribute("profesor", profesorDetails.getProfesor());

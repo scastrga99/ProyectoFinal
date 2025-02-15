@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <!-- Enlace al archivo CSS de DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -40,18 +42,26 @@
                     <td th:text="${profesor.rol}">Rol</td>
                     <td>
                         <!-- Enlace para editar el profesor -->
-                        <a th:href="@{/api/profesores/editar/{id}(id=${profesor.idProfesor})}" class="btn btn-primary btn-sm">Editar</a>
+                        <a th:href="@{/api/profesores/editar/{id}(id=${profesor.idProfesor})}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
                         <!-- Enlace para borrar el profesor -->
-                        <a th:href="@{/api/profesores/eliminar/{id}(id=${profesor.idProfesor})}" class="btn btn-danger btn-sm">Eliminar</a>
+                        <a th:href="@{/api/profesores/eliminar/{id}(id=${profesor.idProfesor})}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </a>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div class="button-container mt-4">
             <!-- Botón para regresar a la página principal -->
-            <a th:href="@{/}" class="btn btn-dark">Regresar</a>
+            <a th:href="@{/}" class="btn btn-dark">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
             <!-- Botón para agregar un nuevo profesor -->
-            <a th:href="@{/api/profesores/nuevo}" class="btn btn-dark">Agregar Profesor</a>
+            <a th:href="@{/api/profesores/nuevo}" class="btn btn-dark">
+                <i class="fas fa-plus"></i> Agregar Profesor
+            </a>
         </div>
     </div>
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
