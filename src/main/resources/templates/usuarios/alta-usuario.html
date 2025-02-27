@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Profesor</title>
-    <!-- Enlace al archivo CSS de Bootstrap -->
+    <title>Nuevo Usuario</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Enlace a tu archivo de estilos CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!-- Enlace a Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <!-- Incluir el fragmento de navegación -->
     <div th:replace="~{fragments/nav :: nav}"></div>
-    <!-- Contenedor principal con espacio -->
+    
     <div class="container mt-5">
-        <!-- Título de la página -->
-        <h1 class="mb-4">Editar Profesor</h1>
-        <!-- Formulario para editar un profesor existente -->
-        <form action="#" th:action="@{/api/profesores/{id}(id=${profesor.idProfesor})}" th:object="${profesor}" method="post">
+        <h1 class="mb-4">Nuevo Usuario</h1>
+        <form action="#" th:action="@{/api/usuarios}" th:object="${usuario}" method="post">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <div class="input-group">
@@ -58,37 +52,29 @@
             </div>
             <div class="form-group">
                 <label for="rol">Rol:</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                    </div>
-                    <input type="text" id="rol" th:field="*{rol}" class="form-control" />
-                </div>
+                <select id="rol" th:field="*{rol}" class="form-control">
+                    <option value="ROLE_USER">Usuario</option>
+                    <option value="ROLE_PROFESOR">Profesor</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="departamento">Departamento:</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-building"></i></span>
-                    </div>
-                    <select id="departamento" th:field="*{departamento.idDepartamento}" class="form-control">
-                        <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
-                    </select>
-                </div>
+                <select id="departamento" th:field="*{departamento.idDepartamento}" class="form-control">
+                    <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
+                </select>
             </div>
             <div class="button-container mt-4 d-flex justify-content-between">
-                <!-- Botón para regresar a la lista de profesores -->
-                <a th:href="@{/api/profesores}" class="btn btn-dark">
+                <a th:href="@{/api/usuarios}" class="btn btn-dark">
                     <i class="fas fa-arrow-left"></i> Regresar
                 </a>
-                <!-- Botón para guardar los cambios -->
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-save"></i> Guardar
                 </button>
             </div>
         </form>
     </div>
-    <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -3,7 +3,7 @@ package com.samuelcastro.ProyectoFinal.controllers;
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
-import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,8 +32,8 @@ public class DepartamentoController {
     @PostMapping
     public String crearDepartamento(Departamento departamento) {
         departamentoService.save(departamento);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", departamento.getNombre());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", departamento.getNombre());
         return "redirect:/api/departamentos";
     }
 
@@ -56,8 +56,8 @@ public class DepartamentoController {
     @PostMapping("/update")
     public String actualizarDepartamento(Departamento departamento) {
         departamentoService.save(departamento);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR ", departamento.getNombre());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR ", departamento.getNombre());
         return "redirect:/api/departamentos";
     }
 
@@ -66,16 +66,16 @@ public class DepartamentoController {
         Departamento departamento = departamentoService.findById(id);
         if (departamento != null) {
             departamentoService.deleteById(id);
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Departamento", id, profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR ", departamento.getNombre());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Departamento", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", departamento.getNombre());
         }
         return "redirect:/api/departamentos";
     }
 
     private void addAuthenticatedUserToModel(Model model) {
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
     }
 }

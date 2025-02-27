@@ -1,9 +1,9 @@
 package com.samuelcastro.ProyectoFinal.services;
 
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
-import com.samuelcastro.ProyectoFinal.entities.Profesor;
+import com.samuelcastro.ProyectoFinal.entities.Usuario;
 import com.samuelcastro.ProyectoFinal.repositories.DepartamentoRepository;
-import com.samuelcastro.ProyectoFinal.repositories.ProfesorRepository;
+import com.samuelcastro.ProyectoFinal.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class DepartamentoService {
     private DepartamentoRepository departamentoRepository;
 
     @Autowired
-    private ProfesorRepository profesorRepository;
+    private UsuarioRepository usuarioRepository;
 
     private static final int DEFAULT_DEPARTAMENTO_ID = 1; // ID del departamento "default"
 
@@ -63,11 +63,11 @@ public class DepartamentoService {
                 throw new IllegalStateException("Default department not found");
             }
 
-            // Reasignar profesores al departamento "default"
-            List<Profesor> profesores = departamento.getProfesores();
-            for (Profesor profesor : profesores) {
-                profesor.setDepartamento(defaultDepartamento);
-                profesorRepository.save(profesor);
+            // Reasignar usuarios al departamento "default"
+            List<Usuario> usuarios = departamento.getUsuarios();
+            for (Usuario usuario : usuarios) {
+                usuario.setDepartamento(defaultDepartamento);
+                usuarioRepository.save(usuario);
             }
 
             // Eliminar el departamento

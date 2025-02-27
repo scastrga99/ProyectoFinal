@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    
+    <div class="container-fluid">
+        <h1 class="mb-4">Lista de Usuarios</h1>
+        <table id="usuariosTable" class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.nombre}"></td>
+                    <td th:text="${usuario.apellidos}"></td>
+                    <td th:text="${usuario.correo}"></td>
+                    <td th:text="${usuario.rol}"></td>
+                    <td>
+                        <a th:href="@{/api/usuarios/editar/{id}(id=${usuario.idUsuario})}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a th:href="@{/api/usuarios/eliminar/{id}(id=${usuario.idUsuario})}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="button-container mt-4">
+            <a th:href="@{/}" class="btn btn-dark">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
+            <a th:href="@{/api/usuarios/nuevo}" class="btn btn-dark">
+                <i class="fas fa-plus"></i> Agregar Usuario
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

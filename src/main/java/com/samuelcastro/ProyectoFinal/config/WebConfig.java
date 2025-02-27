@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
      * @param registry el registro de formateadores donde se añaden los formateadores personalizados
      */
     @Override
-    public void addFormatters(FormatterRegistry registry) {
+    public void addFormatters(@SuppressWarnings("null") FormatterRegistry registry) {
         // Registrar el formateador de fechas personalizado
         registry.addFormatter(dateFormatter);
     }

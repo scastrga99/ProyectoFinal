@@ -23,10 +23,7 @@ public class Departamento {
     private String nombre;
 
     @OneToMany(mappedBy = "departamento", fetch = FetchType.EAGER)
-    private List<Profesor> profesores = new ArrayList<>();
-
-    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Alumno> alumnos = new ArrayList<>();
+    private List<Usuario> usuarios = new ArrayList<>();
 
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Material> materiales = new ArrayList<>();
@@ -48,12 +45,12 @@ public class Departamento {
         this.nombre = nombre;
     }
 
-    public List<Profesor> getProfesores() {
-        return profesores;
+    public List<Usuario> getUsuarios() {
+        return usuarios;
     }
 
-    public void setProfesores(List<Profesor> profesores) {
-        this.profesores = profesores;
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
     }
 
     public List<Material> getMateriales() {
@@ -64,14 +61,14 @@ public class Departamento {
         this.materiales = materiales;
     }
 
-    public void addProfesor(Profesor profesor) {
-        profesores.add(profesor);
-        profesor.setDepartamento(this);
+    public void addUsuario(Usuario usuario) {
+        usuarios.add(usuario);
+        usuario.setDepartamento(this);
     }
 
-    public void removeProfesor(Profesor profesor) {
-        profesores.remove(profesor);
-        profesor.setDepartamento(null);
+    public void removeUsuario(Usuario usuario) {
+        usuarios.remove(usuario);
+        usuario.setDepartamento(null);
     }
 
     public void addMaterial(Material material) {
@@ -83,18 +80,4 @@ public class Departamento {
         materiales.remove(material);
         material.setDepartamento(null);
     }
-
-    public List<Alumno> getAlumnos() {
-        return alumnos;
-    }
-
-    public void setAlumnos(List<Alumno> alumnos) {
-        this.alumnos = alumnos;
-    }
-
-    public void addAlumno(Alumno alumno) {
-        alumnos.add(alumno);
-        alumno.setDepartamento(this);
-    }
-
 }

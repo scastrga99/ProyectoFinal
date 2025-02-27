@@ -2,7 +2,7 @@ package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Registro;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
-import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +19,9 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
 
         List<Registro> registros = registroService.findAll();

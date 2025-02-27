@@ -19,13 +19,13 @@
         <h1 class="mb-4">Nuevo Préstamo</h1>
         <form action="#" th:action="@{/api/prestamos}" th:object="${prestamo}" method="post">
             <div class="form-group">
-                <label for="alumno">Alumno:</label>
+                <label for="usuarioRecibe">Usuario que recibe:</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-user-graduate"></i></span>
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
                     </div>
-                    <select id="alumno" th:field="*{alumno.idAlumno}" class="form-control">
-                        <option th:each="alumno : ${alumnos}" th:value="${alumno.idAlumno}" th:text="${alumno.nombre}"></option>
+                    <select id="usuarioRecibe" th:field="*{usuarioRecibe.idUsuario}" class="form-control">
+                        <option th:each="usuario : ${usuarios}" th:value="${usuario.idUsuario}" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></option>
                     </select>
                 </div>
             </div>
@@ -64,14 +64,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Seleccionar automáticamente el primer libro disponible
-        document.addEventListener('DOMContentLoaded', function() {
-            var libroSelect = document.getElementById('libro');
-            if (libroSelect.options.length > 0) {
-                libroSelect.selectedIndex = 0;
-            }
-        });
-    </script>
 </body>
 </html>

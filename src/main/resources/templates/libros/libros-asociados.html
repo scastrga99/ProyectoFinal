@@ -38,7 +38,7 @@
                     <td th:text="${libro.estado}"></td>
                     <td>
                         <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/api/libros/eliminar/{key}(key=${libro.titulo} + ' - ' + ${libro.autor} + ' - ' + ${libro.editorial})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro})}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
             </tbody>

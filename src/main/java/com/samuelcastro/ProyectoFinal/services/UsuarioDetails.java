@@ -1,6 +1,6 @@
 package com.samuelcastro.ProyectoFinal.services;
 
-import com.samuelcastro.ProyectoFinal.entities.Profesor;
+import com.samuelcastro.ProyectoFinal.entities.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,31 +8,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class ProfesorDetails implements UserDetails {
+public class UsuarioDetails implements UserDetails {
 
-    private Profesor profesor;
+    private Usuario usuario;
 
-    public ProfesorDetails(Profesor profesor) {
-        this.profesor = profesor;
+    public UsuarioDetails(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Profesor getProfesor() {
-        return profesor;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(profesor.getRol()));
+        return Collections.singleton(new SimpleGrantedAuthority(usuario.getRol()));
     }
 
     @Override
     public String getPassword() {
-        return profesor.getPassword();
+        return usuario.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return profesor.getCorreo();
+        return usuario.getCorreo();
     }
 
     @Override

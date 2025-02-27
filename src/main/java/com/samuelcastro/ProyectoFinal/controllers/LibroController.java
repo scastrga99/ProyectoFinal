@@ -4,8 +4,9 @@ import com.samuelcastro.ProyectoFinal.editors.MultipartFileToByteArrayEditor;
 import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
+import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
-import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,9 @@ public class LibroController {
     @Autowired
     private RegistroService registroService;
 
+    @Autowired
+    private PrestamoService prestamoService;
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(byte[].class, new MultipartFileToByteArrayEditor());
@@ -55,9 +59,9 @@ public class LibroController {
         model.addAttribute("librosAgrupados", librosAgrupados);
         model.addAttribute("librosLibres", librosLibres);
         model.addAttribute("libros", libros);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "libros/libros";
     }
@@ -66,9 +70,9 @@ public class LibroController {
     public String mostrarFormularioNuevoLibro(Model model) {
         model.addAttribute("libro", new Libro());
         model.addAttribute("departamentos", departamentoService.findAll());
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "libros/alta-libro";
     }
@@ -77,8 +81,8 @@ public class LibroController {
     public String crearLibro(@ModelAttribute Libro libro, Model model) {
         libro.setEstado("Libre");
         libroService.save(libro);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        registroService.registrarOperacion("Libro", libro.getIdLibro(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA CREAR ", libroService.findById(libro.getIdLibro()).getTitulo());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", libroService.findById(libro.getIdLibro()).getTitulo());
         return "redirect:/api/libros";
     }
 
@@ -91,9 +95,9 @@ public class LibroController {
         List<Libro> libros = libroService.findByTituloAndAutorAndEditorial(titulo, autor, editorial);
         model.addAttribute("libros", libros);
         model.addAttribute("key", key);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "libros/libros-asociados";
     }
@@ -103,9 +107,9 @@ public class LibroController {
         Libro libro = libroService.findById(id);
         model.addAttribute("libro", libro);
         model.addAttribute("departamentos", departamentoService.findAll());
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "libros/editar-libro";
     }
@@ -127,14 +131,14 @@ public class LibroController {
                 }
             }
             libroService.save(existingLibro);
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Libro", existingLibro.getIdLibro(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR ", existingLibro.getTitulo());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Libro", existingLibro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR ", existingLibro.getTitulo());
         }
         return "redirect:/api/libros";
     }
 
     @GetMapping("/eliminar/{key}")
-    public String eliminarLibro(@PathVariable String key) {
+    public String eliminarLibrosPorClave(@PathVariable String key) {
         String[] parts = key.split(" - ");
         if (parts.length < 3) {
             throw new IllegalArgumentException("La clave debe contener título, autor y editorial separados por ' - '");
@@ -144,10 +148,21 @@ public class LibroController {
         String editorial = parts[2];
         List<Libro> libros = libroService.findByTituloAndAutorAndEditorial(titulo, autor, editorial);
         for (Libro libro : libros) {
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", libro.getTitulo());
+            prestamoService.reasignarPrestamosPorLibro(libro.getIdLibro(), "missingLibro");
             libroService.deleteById(libro.getIdLibro());
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Libro", libro.getIdLibro(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR ", libro.getTitulo());
         }
+        return "redirect:/api/libros";
+    }
+
+    @GetMapping("/eliminar/libro/{id}")
+    public String eliminarLibroPorId(@PathVariable int id) {
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        Libro libro = libroService.findById(id);
+        registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", libro.getTitulo());
+        prestamoService.reasignarPrestamosPorLibro(id, "missingLibro");
+        libroService.deleteById(id);
         return "redirect:/api/libros";
     }
 

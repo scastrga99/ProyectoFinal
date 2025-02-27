@@ -29,8 +29,8 @@
                         </a>
                     </li>
                     <li class="nav-item mx-2 flex-grow-1">
-                        <a class="nav-link text-white text-center" th:href="@{/api/profesores}">
-                            <i class="fas fa-chalkboard-teacher"></i> <span>Profesores</span>
+                        <a class="nav-link text-white text-center" th:href="@{/api/usuarios}">
+                            <i class="fas fa-users"></i> <span>Usuarios</span>
                         </a>
                     </li>
                     <li class="nav-item mx-2 flex-grow-1">
@@ -53,15 +53,10 @@
                             <i class="fas fa-handshake"></i> <span>Prestamos</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1">
-                        <a class="nav-link text-white text-center" th:href="@{/api/alumnos}">
-                            <i class="fas fa-user-graduate"></i> <span>Alumnos</span>
-                        </a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav ml-auto d-flex align-items-center">
                     <li class="nav-item mx-2">
-                        <span class="nav-link text-white text-center" th:text="${profesor.nombre} + ' ' + ${profesor.apellidos}">
+                        <span class="nav-link text-white text-center" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}">
                             <i class="fas fa-user"></i> <span>Usuario</span>
                         </span>
                     </li>

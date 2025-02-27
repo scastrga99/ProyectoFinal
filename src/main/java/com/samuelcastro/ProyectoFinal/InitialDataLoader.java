@@ -1,9 +1,11 @@
 package com.samuelcastro.ProyectoFinal;
 
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
-import com.samuelcastro.ProyectoFinal.entities.Profesor;
+import com.samuelcastro.ProyectoFinal.entities.Libro;
+import com.samuelcastro.ProyectoFinal.entities.Usuario;
 import com.samuelcastro.ProyectoFinal.repositories.DepartamentoRepository;
-import com.samuelcastro.ProyectoFinal.repositories.ProfesorRepository;
+import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
+import com.samuelcastro.ProyectoFinal.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +18,10 @@ public class InitialDataLoader implements CommandLineRunner {
     private DepartamentoRepository departamentoRepository;
 
     @Autowired
-    private ProfesorRepository profesorRepository;
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private LibroRepository libroRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -30,16 +35,39 @@ public class InitialDataLoader implements CommandLineRunner {
             departamentoRepository.save(departamento);
         }
 
-        // Crear un profesor con rol "ROLE_ADMIN" si no existe
-        if (!profesorRepository.existsByRol("ROLE_ADMIN")) {
-            Profesor profesor = new Profesor();
-            profesor.setNombre("Samuel");
-            profesor.setApellidos("Castro");
-            profesor.setCorreo("samuelcastrogarciagm@gmail.com");
-            profesor.setPassword(passwordEncoder.encode("admin")); // Encriptar la contraseña
-            profesor.setRol("ROLE_ADMIN");
-            profesor.setDepartamento(departamentoRepository.findByNombre("Sin departamento"));
-            profesorRepository.save(profesor);
+        // Crear un usuario con rol "ROLE_ADMIN" si no existe
+        if (!usuarioRepository.existsByRol("ROLE_ADMIN")) {
+            Usuario usuario = new Usuario();
+            usuario.setNombre("Samuel");
+            usuario.setApellidos("Castro");
+            usuario.setCorreo("samuelcastrogarciagm@gmail.com");
+            usuario.setPassword(passwordEncoder.encode("admin")); // Encriptar la contraseña
+            usuario.setRol("ROLE_ADMIN");
+            usuario.setDepartamento(departamentoRepository.findByNombre("Sin departamento"));
+            usuarioRepository.save(usuario);
+        }
+
+        // Crear un usuario con rol "ROLE_DATOS" si no existe
+        if (!usuarioRepository.existsByRol("ROLE_DATOS")) {
+            Usuario usuario = new Usuario();
+            usuario.setNombre("missingUser");
+            usuario.setApellidos("missingUser");
+            usuario.setCorreo("missingUser@gmail.com");
+            usuario.setPassword(passwordEncoder.encode("missingUser")); // Encriptar la contraseña
+            usuario.setRol("ROLE_DATOS");
+            usuario.setDepartamento(departamentoRepository.findByNombre("Sin departamento"));
+            usuarioRepository.save(usuario);
+        }
+
+        // Crear un libro con título "missingLibro" si no existe
+        if (!libroRepository.existsByTitulo("missingLibro")) {
+            Libro libro = new Libro();
+            libro.setTitulo("missingLibro");
+            libro.setAutor("Desconocido");
+            libro.setEditorial("Desconocida");
+            libro.setIsbn("0000000000");
+            libro.setEstado("Libre");
+            libroRepository.save(libro);
         }
     }
 }

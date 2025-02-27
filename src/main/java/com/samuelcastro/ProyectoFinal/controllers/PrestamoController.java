@@ -2,11 +2,11 @@ package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Prestamo;
 import com.samuelcastro.ProyectoFinal.entities.Libro;
-import com.samuelcastro.ProyectoFinal.services.AlumnoService;
+import com.samuelcastro.ProyectoFinal.services.UsuarioService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
 import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
-import com.samuelcastro.ProyectoFinal.services.ProfesorDetails;
+import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class PrestamoController {
     private PrestamoService prestamoService;
 
     @Autowired
-    private AlumnoService alumnoService;
+    private UsuarioService usuarioService;
 
     @Autowired
     private LibroService libroService;
@@ -38,9 +38,9 @@ public class PrestamoController {
     public String getAllPrestamos(Model model) {
         List<Prestamo> prestamos = prestamoService.findAll();
         model.addAttribute("prestamos", prestamos);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "prestamos/prestamos";
     }
@@ -48,31 +48,31 @@ public class PrestamoController {
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoPrestamo(Model model) {
         model.addAttribute("prestamo", new Prestamo());
-        model.addAttribute("alumnos", alumnoService.findAll());
+        model.addAttribute("usuarios", usuarioService.findAll());
         Map<String, List<Libro>> librosAgrupados = libroService.findAll().stream()
                 .filter(libro -> "Libre".equals(libro.getEstado()))
                 .collect(Collectors.groupingBy(
                         libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial()
                 ));
         model.addAttribute("librosAgrupados", librosAgrupados);
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "prestamos/alta-prestamo";
     }
 
     @PostMapping
     public String crearPrestamo(@ModelAttribute Prestamo prestamo) {
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            prestamo.setProfesor(profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            prestamo.setUsuarioRealiza(usuarioDetails.getUsuario());
         }
         prestamo.setFechaPrestamo(new Date());
         Libro libro = libroService.findById(prestamo.getLibro().getIdLibro());
         libro.setEstado("Prestado");
         libroService.save(libro);
-        registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), prestamo.getProfesor().getNombre() + " " + prestamo.getProfesor().getApellidos() + " EJECUTA CREAR SOBRE ", libro.getTitulo());
+        registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), prestamo.getUsuarioRealiza().getNombre() + " " + prestamo.getUsuarioRealiza().getApellidos() + " EJECUTA CREAR SOBRE ", libro.getTitulo());
         prestamoService.save(prestamo);
         return "redirect:/api/prestamos";
     }
@@ -81,11 +81,11 @@ public class PrestamoController {
     public String mostrarFormularioEditarPrestamo(@PathVariable int id, Model model) {
         Prestamo prestamo = prestamoService.findById(id);
         model.addAttribute("prestamo", prestamo);
-        model.addAttribute("alumnos", alumnoService.findAll());
+        model.addAttribute("usuarios", usuarioService.findAll());
         model.addAttribute("libros", libroService.findAll());
-        ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-        if (profesorDetails != null) {
-            model.addAttribute("profesor", profesorDetails.getProfesor());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
         }
         return "prestamos/editar-prestamo";
     }
@@ -99,8 +99,8 @@ public class PrestamoController {
             existingPrestamo.setFechaDevolucion(prestamo.getFechaDevolucion());
             existingPrestamo.setDevuelto(prestamo.isDevuelto());
             prestamoService.save(existingPrestamo);
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", existingPrestamo.getIdPrestamo(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ACTUALIZAR SOBRE ", libroService.findById(existingPrestamo.getLibro().getIdLibro()).getTitulo());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Prestamo", existingPrestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR SOBRE ", libroService.findById(existingPrestamo.getLibro().getIdLibro()).getTitulo());
         }
         return "redirect:/api/prestamos";
     }
@@ -110,8 +110,8 @@ public class PrestamoController {
         Prestamo prestamo = prestamoService.findById(id);
         if (prestamo != null) {
             prestamoService.deleteById(id);
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", id, profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA ELIMINAR SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Prestamo", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
         }
         return "redirect:/api/prestamos";
     }
@@ -126,8 +126,8 @@ public class PrestamoController {
             libro.setEstado("Libre");
             libroService.save(libro);
             prestamoService.save(prestamo);
-            ProfesorDetails profesorDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), profesorDetails.getProfesor().getNombre() + " " + profesorDetails.getProfesor().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
         }
         return "redirect:/api/prestamos";
     }

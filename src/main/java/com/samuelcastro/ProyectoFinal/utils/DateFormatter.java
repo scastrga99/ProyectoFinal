@@ -28,6 +28,7 @@ public class DateFormatter implements Formatter<Date> {
      * @return el objeto Date resultante de la conversión
      * @throws ParseException si la cadena de texto no puede ser convertida en una fecha
      */
+    @SuppressWarnings("null")
     @Override
     public Date parse(String text, Locale locale) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -41,6 +42,7 @@ public class DateFormatter implements Formatter<Date> {
      * @param locale el locale actual
      * @return la cadena de texto resultante de la conversión
      */
+    @SuppressWarnings("null")
     @Override
     public String print(Date object, Locale locale) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

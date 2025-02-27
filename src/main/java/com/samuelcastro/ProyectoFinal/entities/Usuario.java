@@ -1,24 +1,14 @@
 package com.samuelcastro.ProyectoFinal.entities;
 
+import jakarta.persistence.*;
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-
 @Entity
-public class Alumno {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAlumno;
+    private int idUsuario;
 
     @Column(nullable = false)
     private String nombre;
@@ -29,32 +19,35 @@ public class Alumno {
     @Column(nullable = false)
     private String correo;
 
-   @Column(nullable = false)
+    @Column(nullable = false)
+    private String password;
+
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private Date fechaAlta;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaBaja;
+
+    @ManyToOne
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departamento departamento;
+
+    @Column(nullable = false)
+    private String rol; // "PROFESOR" o "ALUMNO"
 
     @PrePersist
     protected void onCreate() {
         fechaAlta = new Date();
     }
 
-    @Temporal(TemporalType.DATE)
-    private Date fechaBaja;
-
-    @ManyToOne
-    @JoinColumn(name = "departamento", nullable = false)
-    private Departamento departamento;
-
-    @Column(nullable = false)
-    private String rol;
-
     // Getters y setters
-    public int getIdAlumno() {
-        return idAlumno;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setIdAlumno(int idAlumno) {
-        this.idAlumno = idAlumno;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombre() {
@@ -79,6 +72,14 @@ public class Alumno {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Date getFechaAlta() {

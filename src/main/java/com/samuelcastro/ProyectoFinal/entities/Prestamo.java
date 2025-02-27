@@ -21,12 +21,12 @@ public class Prestamo {
     private int idPrestamo;
 
     @ManyToOne
-    @JoinColumn(name = "profesor_id", nullable = false)
-    private Profesor profesor;
+    @JoinColumn(name = "usuario_realiza_id", nullable = false)
+    private Usuario usuarioRealiza;
 
     @ManyToOne
-    @JoinColumn(name = "alumno_id", nullable = false)
-    private Alumno alumno;
+    @JoinColumn(name = "usuario_recibe_id", nullable = false)
+    private Usuario usuarioRecibe;
 
     @ManyToOne
     @JoinColumn(name = "libro_id", nullable = false)
@@ -60,20 +60,20 @@ public class Prestamo {
         this.idPrestamo = idPrestamo;
     }
 
-    public Profesor getProfesor() {
-        return profesor;
+    public Usuario getUsuarioRealiza() {
+        return usuarioRealiza;
     }
 
-    public void setProfesor(Profesor profesor) {
-        this.profesor = profesor;
+    public void setUsuarioRealiza(Usuario usuarioRealiza) {
+        this.usuarioRealiza = usuarioRealiza;
     }
 
-    public Alumno getAlumno() {
-        return alumno;
+    public Usuario getUsuarioRecibe() {
+        return usuarioRecibe;
     }
 
-    public void setAlumno(Alumno alumno) {
-        this.alumno = alumno;
+    public void setUsuarioRecibe(Usuario usuarioRecibe) {
+        this.usuarioRecibe = usuarioRecibe;
     }
 
     public Libro getLibro() {

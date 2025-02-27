@@ -23,8 +23,8 @@
         <table id="prestamosTable" class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>Profesor</th>
-                    <th>Alumno</th>
+                    <th>Usuario Realiza</th>
+                    <th>Usuario Recibe</th>
                     <th>Libro</th>
                     <th>Fecha Préstamo</th>
                     <th>Fecha Plazo</th>
@@ -35,8 +35,8 @@
             </thead>
             <tbody>
                 <tr th:each="prestamo : ${prestamos}">
-                    <td th:text="${prestamo.profesor.nombre}"></td>
-                    <td th:text="${prestamo.alumno.nombre}"></td>
+                    <td th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
+                    <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
                     <td th:text="${prestamo.libro.titulo}"></td>
                     <td th:text="${prestamo.fechaPrestamo}"></td>
                     <td th:text="${prestamo.fechaPlazo}"></td>

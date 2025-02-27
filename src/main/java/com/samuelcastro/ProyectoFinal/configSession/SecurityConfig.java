@@ -19,13 +19,13 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/login","/resources/**").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**").permitAll() // Permitir acceso sin autenticación
+                    .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
             )
             .formLogin(formLogin ->
                 formLogin
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/", true)
+                    .loginPage("/login") // Página de inicio de sesión personalizada
+                    .defaultSuccessUrl("/", true) // Redirigir a la página principal después de iniciar sesión
                     .permitAll()
             )
             .logout(logout ->
