@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="usuario : ${usuarios}">
+                <tr th:each="usuario : ${usuarios}" th:if="${usuario.nombre} != 'missingUser'">
                     <td th:text="${usuario.nombre}"></td>
                     <td th:text="${usuario.apellidos}"></td>
                     <td th:text="${usuario.correo}"></td>

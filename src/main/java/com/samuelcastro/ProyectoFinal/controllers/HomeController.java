@@ -22,6 +22,7 @@ public class HomeController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
 
         List<Registro> registros = registroService.findAll();

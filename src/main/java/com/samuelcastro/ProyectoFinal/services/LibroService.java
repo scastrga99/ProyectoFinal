@@ -1,12 +1,11 @@
 package com.samuelcastro.ProyectoFinal.services;
 
-import java.util.List;
-
+import com.samuelcastro.ProyectoFinal.entities.Libro;
+import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.samuelcastro.ProyectoFinal.entities.Libro;
-import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
+import java.util.List;
 
 @Service
 public class LibroService {
@@ -62,5 +61,30 @@ public class LibroService {
      */
     public List<Libro> findByTituloAndAutorAndEditorial(String titulo, String autor, String editorial) {
         return libroRepository.findByTituloAndAutorAndEditorial(titulo, autor, editorial);
+    }
+
+    public void agregarLibroPorIsbn(String isbn, String key) {
+        String[] parts = key.split(" - ");
+        String titulo = parts[0];
+        String autor = parts[1];
+        String editorial = parts[2];
+        List<Libro> libros = libroRepository.findByTituloAndAutorAndEditorial(titulo, autor, editorial);
+        if (!libros.isEmpty()) {
+            Libro libroExistente = libros.get(0);
+            Libro nuevoLibro = new Libro();
+            nuevoLibro.setIsbn(isbn);
+            nuevoLibro.setTitulo(libroExistente.getTitulo());
+            nuevoLibro.setAutor(libroExistente.getAutor());
+            nuevoLibro.setEditorial(libroExistente.getEditorial());
+            nuevoLibro.setEstado(libroExistente.getEstado());
+            nuevoLibro.setFoto(libroExistente.getFoto());
+            libroRepository.save(nuevoLibro);
+        }
+    }
+
+    public void agregarMultiplesLibrosPorIsbn(List<String> isbnList, String key) {
+        for (String isbn : isbnList) {
+            agregarLibroPorIsbn(isbn, key);
+        }
     }
 }

@@ -39,6 +39,7 @@ public class UsuarioController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "usuarios/usuarios";
     }
@@ -50,6 +51,7 @@ public class UsuarioController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "usuarios/alta-usuario";
     }
@@ -65,11 +67,12 @@ public class UsuarioController {
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditarUsuario(@PathVariable int id, Model model) {
         Usuario usuario = usuarioService.findById(id);
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuarioActual", usuario);
         model.addAttribute("departamentos", departamentoService.findAll());
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "usuarios/editar-usuario";
     }
@@ -81,7 +84,9 @@ public class UsuarioController {
             existingUsuario.setNombre(usuario.getNombre());
             existingUsuario.setApellidos(usuario.getApellidos());
             existingUsuario.setCorreo(usuario.getCorreo());
-            existingUsuario.setPassword(usuario.getPassword());
+            if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+                existingUsuario.setPassword(usuario.getPassword());
+            }
             existingUsuario.setRol(usuario.getRol());
             existingUsuario.setDepartamento(usuario.getDepartamento());
             usuarioService.save(existingUsuario);

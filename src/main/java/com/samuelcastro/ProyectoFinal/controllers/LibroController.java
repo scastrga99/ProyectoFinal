@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,12 +57,27 @@ public class LibroController {
                         libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial(),
                         Collectors.counting()
                 ));
+
+        // Lógica para seleccionar una imagen de un libro que tenga foto
+        Map<String, String> fotosLibros = librosAgrupados.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .filter(libro -> libro.getFoto() != null)
+                                .findFirst()
+                                .map(libro -> "/api/libros/foto/" + libro.getIdLibro())
+                                .orElse("")
+                ));
+
         model.addAttribute("librosAgrupados", librosAgrupados);
         model.addAttribute("librosLibres", librosLibres);
         model.addAttribute("libros", libros);
+        model.addAttribute("fotosLibros", fotosLibros);
+
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "libros/libros";
     }
@@ -73,13 +89,23 @@ public class LibroController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "libros/alta-libro";
     }
 
     @PostMapping
-    public String crearLibro(@ModelAttribute Libro libro, Model model) {
+    public String crearLibro(@ModelAttribute Libro libro, @RequestParam("foto") MultipartFile foto, Model model) {
         libro.setEstado("Libre");
+        if (!foto.isEmpty()) {
+            try {
+                libro.setFoto(foto.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            libro.setFoto(null); // Asegurarse de que la foto sea null si no se proporciona
+        }
         libroService.save(libro);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", libroService.findById(libro.getIdLibro()).getTitulo());
@@ -98,6 +124,7 @@ public class LibroController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "libros/libros-asociados";
     }
@@ -110,6 +137,7 @@ public class LibroController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "libros/editar-libro";
     }
@@ -176,5 +204,18 @@ public class LibroController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/agregar")
+    public String agregarLibroPorIsbn(@RequestParam("isbn") String isbn, @RequestParam("key") String key, Model model) {
+        libroService.agregarLibroPorIsbn(isbn, key);
+        return "redirect:/api/libros";
+    }
+
+    @PostMapping("/agregar-multiples")
+    public String agregarMultiplesLibrosPorIsbn(@RequestParam("isbns") String isbns, @RequestParam("key") String key, Model model) {
+        List<String> isbnList = Arrays.asList(isbns.split(","));
+        libroService.agregarMultiplesLibrosPorIsbn(isbnList, key);
+        return "redirect:/api/libros";
     }
 }

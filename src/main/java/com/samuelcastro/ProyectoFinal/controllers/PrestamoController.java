@@ -41,6 +41,7 @@ public class PrestamoController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "prestamos/prestamos";
     }
@@ -58,6 +59,7 @@ public class PrestamoController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "prestamos/alta-prestamo";
     }
@@ -86,6 +88,7 @@ public class PrestamoController {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "prestamos/editar-prestamo";
     }

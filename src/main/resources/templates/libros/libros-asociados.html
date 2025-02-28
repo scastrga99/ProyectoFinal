@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <!-- Enlace al archivo CSS de DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Incluir el fragmento de navegación -->
@@ -17,6 +19,65 @@
     <!-- Contenedor principal con espacio -->
     <div class="container mt-5">
         <h1 class="mb-4">Libros Asociados</h1>
+        
+        <!-- Botones para mostrar los formularios -->
+        <div class="mb-4">
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#agregarLibroModal">
+                <i class="fas fa-plus"></i> Agregar Libro por ISBN
+            </button>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#agregarMultiplesLibrosModal">
+                <i class="fas fa-plus"></i> Agregar Múltiples Libros por ISBN
+            </button>
+        </div>
+
+        <!-- Modal para agregar un libro por ISBN -->
+        <div class="modal fade" id="agregarLibroModal" tabindex="-1" role="dialog" aria-labelledby="agregarLibroModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="agregarLibroModalLabel">Agregar Libro por ISBN</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/api/libros/agregar}" method="post">
+                            <input type="hidden" name="key" th:value="${key}">
+                            <div class="form-group">
+                                <label for="isbn">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn" required>
+                            </div>
+                            <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i> Agregar Libro</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para agregar múltiples libros por ISBN -->
+        <div class="modal fade" id="agregarMultiplesLibrosModal" tabindex="-1" role="dialog" aria-labelledby="agregarMultiplesLibrosModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="agregarMultiplesLibrosModalLabel">Agregar Múltiples Libros por ISBN</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/api/libros/agregar-multiples}" method="post">
+                            <input type="hidden" name="key" th:value="${key}">
+                            <div class="form-group">
+                                <label for="isbns">ISBNs (separados por comas)</label>
+                                <textarea class="form-control" id="isbns" name="isbns" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i> Agregar Libros</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tabla para mostrar la lista de libros asociados -->
         <table id="librosAsociadosTable" class="table table-striped">
             <thead class="thead-dark">
@@ -37,8 +98,8 @@
                     <td th:text="${libro.editorial}"></td>
                     <td th:text="${libro.estado}"></td>
                     <td>
-                        <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
+                        <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
                     </td>
                 </tr>
             </tbody>
@@ -47,7 +108,7 @@
 
     <div class="button-container mt-4 d-flex justify-content-between">
         <!-- Botón para regresar a la lista de libros -->
-        <a th:href="@{/api/libros}" class="btn btn-dark">Regresar</a>
+        <a th:href="@{/api/libros}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
     </div>
     
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->

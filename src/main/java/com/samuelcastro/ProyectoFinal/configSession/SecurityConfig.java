@@ -20,6 +20,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**").permitAll() // Permitir acceso sin autenticación
+                    .requestMatchers("/api/usuarios", "/api/departamentos").hasRole("ADMIN")
+                    .requestMatchers("/api/materiales", "/api/libros", "/api/prestamos").hasAnyRole("USER", "ADMIN", "PROFESOR")
                     .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
             )
             .formLogin(formLogin ->

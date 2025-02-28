@@ -59,7 +59,7 @@
         <h1 class="mb-4">Lista de Libros</h1>
         
         <!-- Botón para cambiar entre vistas -->
-        <div class="mb-4 d-flex">
+        <div class="mb-4 d-flex" th:if="${(libros.size() - 1) > 0}">
             <input type="text" id="searchInput" class="form-control" placeholder="Buscar libros..." style="max-width: 300px;">
             <button id="toggleViewBtn" class="toggle-view-btn">
                 <i class="fas fa-table"></i>
@@ -68,7 +68,7 @@
 
         <!-- Contenedor de tarjetas -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4 card-view" id="librosContainer">
-            <div class="col mb-4" th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}">
+            <div class="col mb-4" th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:if="${entry.key.split(' - ')[0] != 'missingLibro'}">
                 <div class="card h-100">
                     <div class="row no-gutters">
                         <div class="col-6">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <img th:src="@{/api/libros/foto/{id}(id=${entry.value[0].idLibro})}" class="card-img" alt="Imagen del libro" style="width: 100%; height: auto;">
+                            <img th:src="${fotosLibros[entry.key]}" class="card-img" alt="Imagen del libro" style="width: 100%; height: auto;">
                         </div>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="libro : ${libros}">
+                    <tr th:each="libro : ${libros}" th:if="${libro.titulo} != 'missingLibro'">
                         <td th:text="${libro.isbn}"></td>
                         <td th:text="${libro.titulo}"></td>
                         <td th:text="${libro.autor}"></td>

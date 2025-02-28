@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="prestamo : ${prestamos}">
+                <tr th:each="prestamo : ${prestamos}" >
                     <td th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
                     <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
                     <td th:text="${prestamo.libro.titulo}"></td>
