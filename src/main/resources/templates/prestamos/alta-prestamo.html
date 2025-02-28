@@ -25,7 +25,7 @@
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                     </div>
                     <select id="usuarioRecibe" th:field="*{usuarioRecibe.idUsuario}" class="form-control">
-                        <option th:each="usuario : ${usuarios}" th:value="${usuario.idUsuario}" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></option>
+                        <option th:each="usuario : ${usuarios}" th:if="${usuario.nombre != 'missingUser'}" th:value="${usuario.idUsuario}" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></option>
                     </select>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                         <span class="input-group-text"><i class="fas fa-book"></i></span>
                     </div>
                     <select id="libro" th:field="*{libro.idLibro}" class="form-control">
-                        <option th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:value="${entry.value[0].idLibro}" th:text="${parts[0]} + ' (Cantidad: ' + ${#lists.size(entry.value)} + ')'"></option>
+                        <option th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:if="${entry.key.split(' - ')[0] != 'missingLibro'}" th:value="${entry.value[0].idLibro}" th:text="${parts[0]} + ' (Cantidad: ' + ${#lists.size(entry.value)} + ')'"></option>
                     </select>
                 </div>
             </div>
