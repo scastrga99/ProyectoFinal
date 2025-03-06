@@ -79,11 +79,11 @@
                                 <p class="card-text"><strong>Cantidad Disponible:</strong> 
                                     <span th:text="${librosLibres[entry.key] != null ? librosLibres[entry.key] : 0}"></span>
                                 </p>
-                                <p class="card-text"><strong>Cantidad Total:</strong> 
+                                <p class="card-text" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><strong>Cantidad Total:</strong> 
                                     <span th:text="${entry.value.size()}"></span>
                                 </p>
-                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                                <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><i class="fas fa-edit"></i> Editar</a>
+                                <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><i class="fas fa-trash-alt"></i> Eliminar</a>
                             </div>
                         </div>
                         <div class="col-6">
@@ -103,7 +103,7 @@
                         <th>Título</th>
                         <th>Autor</th>
                         <th>Editorial</th>
-                        <th>Acciones</th>
+                        <th th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,7 +112,7 @@
                         <td th:text="${libro.titulo}"></td>
                         <td th:text="${libro.autor}"></td>
                         <td th:text="${libro.editorial}"></td>
-                        <td>
+                        <td th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
                             <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                             <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro})}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
                         </td>
