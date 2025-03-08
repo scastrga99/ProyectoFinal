@@ -7,6 +7,7 @@ import com.samuelcastro.ProyectoFinal.services.LibroService;
 import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
+import com.samuelcastro.ProyectoFinal.services.EmailService;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,9 @@ public class PrestamoController {
 
     @Autowired
     private RegistroService registroService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping
     public String getAllPrestamos(Model model) {
@@ -131,6 +135,15 @@ public class PrestamoController {
             prestamoService.save(prestamo);
             UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
             registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+        }
+        return "redirect:/api/prestamos";
+    }
+
+    @GetMapping("/recordatorio/{id}")
+    public String enviarRecordatorio(@PathVariable int id) {
+        Prestamo prestamo = prestamoService.findById(id);
+        if (prestamo != null && prestamo.getUsuarioRecibe().getRol().equals("ROLE_USER")) {
+            emailService.enviarRecordatorio(prestamo.getUsuarioRecibe().getCorreo(), prestamo.getUsuarioRecibe().getNombre()+" "+prestamo.getUsuarioRecibe().getApellidos(), prestamo.getLibro().getTitulo());
         }
         return "redirect:/api/prestamos";
     }

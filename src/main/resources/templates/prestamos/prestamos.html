@@ -30,28 +30,11 @@
                     <th>Fecha Plazo</th>
                     <th>Fecha Devolución</th>
                     <th>Devuelto</th>
-                    <th th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody th:if="${roles.contains('ROLE_USER') or roles.contains('ROLE_PROFESOR')}">
-                <tr th:each="prestamo : ${prestamos}" th:if="(prestamo.libro.titulo != 'missingLibro' and prestamo.usuarioRealiza.nombre != 'missingUser' and prestamo.usuarioRecibe.nombre != 'missingUser') and ${prestamo.usuarioRealiza.idUsuario == usuario.idUsuario or prestamo.usuarioRecibe.idUsuario == usuario.idUsuario}">
-                    <td th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
-                    <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
-                    <td th:text="${prestamo.libro.titulo}"></td>
-                    <td th:text="${prestamo.fechaPrestamo}"></td>
-                    <td th:text="${prestamo.fechaPlazo}"></td>
-                    <td th:text="${prestamo.fechaDevolucion}"></td>
-                    <td th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
-                    <td th:if="${roles.contains('ROLE_PROFESOR')}">
-                        <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success" th:if="${!prestamo.devuelto}">
-                            <i class="fas fa-undo-alt"></i> Devolver
-                        </a>
-                        <h4 th:if="${prestamo.devuelto}">-</h4>
-                    </td>
-                </tr>
-            </tbody>
-            <tbody th:if="${roles.contains('ROLE_ADMIN')}">
-                <tr th:each="prestamo : ${prestamos}">
+            <tbody>
+                <tr th:each="prestamo : ${prestamos}" th:if="${roles.contains('ROLE_ADMIN') or (prestamo.libro.titulo != 'missingLibro' and prestamo.usuarioRealiza.nombre != 'missingUser' and prestamo.usuarioRecibe.nombre != 'missingUser')}">
                     <td th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
                     <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
                     <td th:text="${prestamo.libro.titulo}"></td>
@@ -64,6 +47,9 @@
                             <i class="fas fa-undo-alt"></i> Devolver
                         </a>
                         <h4 th:if="${prestamo.devuelto}">-</h4>
+                        <a th:href="@{/api/prestamos/recordatorio/{id}(id=${prestamo.idPrestamo})}" class="btn btn-warning" th:if="${(roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')) and !prestamo.devuelto}">
+                            <i class="fas fa-envelope"></i> Recordatorio
+                        </a>
                     </td>
                 </tr>
             </tbody>
