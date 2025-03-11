@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Material</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    <div class="container mt-5">
+        <h1 class="mb-4">Nuevo Material</h1>
+        <form th:action="@{/api/materiales}" th:object="${material}" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="numSerie">Número de Serie:</label>
+                <input type="text" id="numSerie" th:field="*{numSerie}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="marca">Marca:</label>
+                <input type="text" id="marca" th:field="*{marca}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" th:field="*{descripcion}" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <input type="text" id="estado" th:field="*{estado}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaAlta">Fecha Alta:</label>
+                <input type="date" id="fechaAlta" th:field="*{fechaAlta}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaBaja">Fecha Baja:</label>
+                <input type="date" id="fechaBaja" th:field="*{fechaBaja}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="departamento">Departamento:</label>
+                <select id="departamento" th:field="*{departamento.idDepartamento}" class="form-control">
+                    <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
+                </select>
+            </div>
+            <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

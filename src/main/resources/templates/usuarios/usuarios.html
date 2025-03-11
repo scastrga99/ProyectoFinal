@@ -21,6 +21,7 @@
                     <th>Apellidos</th>
                     <th>Correo</th>
                     <th>Rol</th>
+                    <th>Departamento</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -30,6 +31,7 @@
                     <td th:text="${usuario.apellidos}"></td>
                     <td th:text="${usuario.correo}"></td>
                     <td th:text="${usuario.rol}"></td>
+                    <td th:text="${usuario.departamento.nombre}"></td>
                     <td>
                         <a th:href="@{/api/usuarios/editar/{id}(id=${usuario.idUsuario})}" class="btn btn-warning">
                             <i class="fas fa-edit"></i> Editar

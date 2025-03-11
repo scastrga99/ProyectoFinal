@@ -11,11 +11,11 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void enviarRecordatorio(String destinatario, String nombrePersona, String tituloLibro) {
+    public void enviarRecordatorio(String destinatario, String nombrePersona, String tituloLibro, String fechaDevolucion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
         mensaje.setTo(destinatario);
         mensaje.setSubject("Recordatorio de Devolución de Libro");
-        mensaje.setText("Estimado " + nombrePersona + ",\n\nLe recordamos que debe devolver el libro titulado '" + tituloLibro + "'.\n\nGracias.");
+        mensaje.setText("Estimado " + nombrePersona + ",\n\nLe recordamos que debe devolver el libro titulado " + tituloLibro + " con fecha de devolucion el dia " + fechaDevolucion +".\n\nGracias.");
         mailSender.send(mensaje);
     }
 }

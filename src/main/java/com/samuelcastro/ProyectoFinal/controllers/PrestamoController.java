@@ -143,7 +143,8 @@ public class PrestamoController {
     public String enviarRecordatorio(@PathVariable int id) {
         Prestamo prestamo = prestamoService.findById(id);
         if (prestamo != null && prestamo.getUsuarioRecibe().getRol().equals("ROLE_USER")) {
-            emailService.enviarRecordatorio(prestamo.getUsuarioRecibe().getCorreo(), prestamo.getUsuarioRecibe().getNombre()+" "+prestamo.getUsuarioRecibe().getApellidos(), prestamo.getLibro().getTitulo());
+            String fechaPlazoStr = new java.text.SimpleDateFormat("dd/MM/yyyy").format(prestamo.getFechaPlazo());
+            emailService.enviarRecordatorio(prestamo.getUsuarioRecibe().getCorreo(), prestamo.getUsuarioRecibe().getNombre() + " " + prestamo.getUsuarioRecibe().getApellidos(), prestamo.getLibro().getTitulo(), fechaPlazoStr);
         }
         return "redirect:/api/prestamos";
     }

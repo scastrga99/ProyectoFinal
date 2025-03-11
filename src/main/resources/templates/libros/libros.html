@@ -103,6 +103,7 @@
                         <th>Título</th>
                         <th>Autor</th>
                         <th>Editorial</th>
+                        <th>Estado</th>
                         <th th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">Acciones</th>
                     </tr>
                 </thead>
@@ -112,6 +113,7 @@
                         <td th:text="${libro.titulo}"></td>
                         <td th:text="${libro.autor}"></td>
                         <td th:text="${libro.editorial}"></td>
+                        <td th:text="${libro.estado}"></td>
                         <td th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
                             <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                             <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro})}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>

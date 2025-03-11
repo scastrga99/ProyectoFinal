@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -25,11 +26,14 @@ public class Material {
     @Column(nullable = false)
     private String numSerie;
 
-    @Column(nullable = false)
+    @Column
     private String marca;
 
     @Column
     private String descripcion;
+
+    @Column(nullable = false)
+    private String estado;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
@@ -42,8 +46,8 @@ public class Material {
     @JoinColumn(name = "departamento", nullable = false)
     private Departamento departamento;
 
-    @Column
-    private String foto;
+    @Lob
+    private byte[] foto;
 
     // Getters y setters
     public int getIdMaterial() {
@@ -110,11 +114,19 @@ public class Material {
         this.departamento = departamento;
     }
 
-    public String getFoto() {
+    public byte[] getFoto() {
         return foto;
     }
 
-    public void setFoto(String foto) {
+    public void setFoto(byte[] foto) {
         this.foto = foto;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

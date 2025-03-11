@@ -95,3 +95,11 @@ tr:hover {
     border-radius: 5px;
     box-sizing: border-box;
 }
+
+.btn-fixed-width {
+    width: 140px; /* Ajusta el ancho según tus necesidades */
+}
+
+.text-center {
+    text-align: center;
+}

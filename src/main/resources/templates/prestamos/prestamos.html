@@ -17,37 +17,37 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     
     <!-- Contenedor principal con espacio -->
-    <div class="container mt-5">
+    <div class="container-fluid">
         <h1 class="mb-4">Lista de Préstamos</h1>
         <!-- Tabla para mostrar la lista de préstamos -->
         <table id="prestamosTable" class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>Usuario Realiza</th>
-                    <th>Usuario Recibe</th>
-                    <th>Libro</th>
-                    <th>Fecha Préstamo</th>
-                    <th>Fecha Plazo</th>
-                    <th>Fecha Devolución</th>
-                    <th>Devuelto</th>
-                    <th>Acciones</th>
+                    <th class="text-center">Usuario Realiza</th>
+                    <th class="text-center">Usuario Recibe</th>
+                    <th class="text-center">Libro</th>
+                    <th class="text-center">Fecha Préstamo</th>
+                    <th class="text-center">Fecha Plazo</th>
+                    <th class="text-center">Fecha Devolución</th>
+                    <th class="text-center">Devuelto</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="prestamo : ${prestamos}" th:if="${roles.contains('ROLE_ADMIN') or (prestamo.libro.titulo != 'missingLibro' and prestamo.usuarioRealiza.nombre != 'missingUser' and prestamo.usuarioRecibe.nombre != 'missingUser')}">
-                    <td th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
-                    <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
-                    <td th:text="${prestamo.libro.titulo}"></td>
-                    <td th:text="${prestamo.fechaPrestamo}"></td>
-                    <td th:text="${prestamo.fechaPlazo}"></td>
-                    <td th:text="${prestamo.fechaDevolucion}"></td>
-                    <td th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
-                    <td>
-                        <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success" th:if="${!prestamo.devuelto}">
+                    <td class="text-center" th:text="${prestamo.usuarioRealiza.nombre} + ' ' + ${prestamo.usuarioRealiza.apellidos}"></td>
+                    <td class="text-center" th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
+                    <td class="text-center" th:text="${prestamo.libro.titulo}"></td>
+                    <td class="text-center" th:text="${prestamo.fechaPrestamo}"></td>
+                    <td class="text-center" th:text="${prestamo.fechaPlazo}"></td>
+                    <td class="text-center" th:text="${prestamo.fechaDevolucion}"></td>
+                    <td class="text-center" th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
+                    <td class="text-center">
+                        <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success btn-fixed-width" th:if="${!prestamo.devuelto}">
                             <i class="fas fa-undo-alt"></i> Devolver
                         </a>
                         <h4 th:if="${prestamo.devuelto}">-</h4>
-                        <a th:href="@{/api/prestamos/recordatorio/{id}(id=${prestamo.idPrestamo})}" class="btn btn-warning" th:if="${(roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')) and !prestamo.devuelto}">
+                        <a th:href="@{/api/prestamos/recordatorio/{id}(id=${prestamo.idPrestamo})}" class="btn btn-warning btn-fixed-width" th:if="${(roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')) and !prestamo.devuelto}">
                             <i class="fas fa-envelope"></i> Recordatorio
                         </a>
                     </td>

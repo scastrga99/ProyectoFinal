@@ -50,4 +50,14 @@ public class MaterialService {
     public void deleteById(int id) {
         materialRepository.deleteById(id);
     }
+
+    /**
+     * Verificar si un material existe por su número de serie.
+     * 
+     * @param numSerie Número de serie del material.
+     * @return true si el material existe, false en caso contrario.
+     */
+    public boolean existsByNumSerie(String numSerie) {
+        return materialRepository.existsByNumSerie(numSerie);
+    }
 }
