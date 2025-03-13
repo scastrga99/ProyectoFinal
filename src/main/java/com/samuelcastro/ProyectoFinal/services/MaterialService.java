@@ -13,51 +13,32 @@ public class MaterialService {
     @Autowired
     private MaterialRepository materialRepository;
 
-    /**
-     * Obtener todos los materiales.
-     * 
-     * @return Lista de todos los materiales.
-     */
     public List<Material> findAll() {
         return materialRepository.findAll();
     }
 
-    /**
-     * Obtener un material por su ID.
-     * 
-     * @param id ID del material.
-     * @return El material con el ID especificado, o null si no se encuentra.
-     */
     public Material findById(int id) {
         return materialRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Guardar un nuevo material o actualizar uno existente.
-     * 
-     * @param material Datos del material a guardar.
-     * @return El material guardado.
-     */
     public Material save(Material material) {
         return materialRepository.save(material);
     }
 
-    /**
-     * Eliminar un material por su ID.
-     * 
-     * @param id ID del material a eliminar.
-     */
     public void deleteById(int id) {
         materialRepository.deleteById(id);
     }
 
-    /**
-     * Verificar si un material existe por su número de serie.
-     * 
-     * @param numSerie Número de serie del material.
-     * @return true si el material existe, false en caso contrario.
-     */
     public boolean existsByNumSerie(String numSerie) {
         return materialRepository.existsByNumSerie(numSerie);
     }
+
+    public List<Material> findByDepartamentoId(int departamentoId) {
+        return materialRepository.findByDepartamentoId(departamentoId);
+    }
+
+    public List<Material> findByNombreAndMarca(String nombre, String marca) {
+        return materialRepository.findByNombreAndMarca(nombre, marca);
+    }
+
 }

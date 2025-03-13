@@ -74,4 +74,8 @@ public class DepartamentoService {
             departamentoRepository.deleteById(id);
         }
     }
+
+    public List<Departamento> findDepartamentosConMateriales() {
+        return departamentoRepository.findDepartamentosConMateriales();
+    }
 }
