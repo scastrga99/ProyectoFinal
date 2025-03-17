@@ -18,4 +18,12 @@ public class EmailService {
         mensaje.setText("Estimado " + nombrePersona + ",\n\nLe recordamos que debe devolver el libro titulado " + tituloLibro + " con fecha de devolucion el dia " + fechaDevolucion +".\n\nGracias.");
         mailSender.send(mensaje);
     }
+
+    public void enviarNuevaContraseña(String destinatario, String nuevaContraseña) {
+        SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setTo(destinatario);
+        mensaje.setSubject("Nueva Contraseña");
+        mensaje.setText("Su nueva contraseña es: " + nuevaContraseña + "\n\nPor favor, cambie su contraseña después de iniciar sesión.");
+        mailSender.send(mensaje);
+    }
 }

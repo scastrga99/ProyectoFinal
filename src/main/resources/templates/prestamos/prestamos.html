@@ -61,7 +61,7 @@
             <i class="fas fa-arrow-left"></i> Regresar
         </a>
         <!-- Botón para agregar un nuevo préstamo -->
-        <a th:href="@{/api/prestamos/nuevo}" class="btn btn-dark">
+        <a th:href="@{/api/prestamos/nuevo}" class="btn btn-dark" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
             <i class="fas fa-plus"></i> Nuevo Préstamo
         </a>
     </div>

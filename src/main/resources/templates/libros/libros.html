@@ -130,7 +130,7 @@
             <i class="fas fa-arrow-left"></i> Regresar
         </a>
         <!-- Botón para agregar un nuevo libro -->
-        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark">
+        <a th:href="@{/api/libros/nuevo}" class="btn btn-dark" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
             <i class="fas fa-plus"></i> Nuevo Libro
         </a>
     </div>
