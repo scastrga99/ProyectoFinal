@@ -1,6 +1,7 @@
 package com.samuelcastro.ProyectoFinal.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.Date;
 
 @Entity
@@ -10,15 +11,23 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUsuario;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
     @Column(nullable = false)
     private String nombre;
 
+    @NotBlank(message = "Los apellidos son obligatorios")
+    @Size(min = 2, max = 100, message = "Los apellidos deben tener entre 2 y 100 caracteres")
     @Column(nullable = false)
     private String apellidos;
 
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "El correo debe ser válido")
     @Column(nullable = false)
     private String correo;
 
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     @Column(nullable = false)
     private String password;
 
@@ -29,16 +38,29 @@ public class Usuario {
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
 
+    @NotNull(message = "El departamento es obligatorio")
     @ManyToOne
     @JoinColumn(name = "departamento_id", nullable = false)
     private Departamento departamento;
 
+    @NotBlank(message = "El rol es obligatorio")
+    @Pattern(regexp = "ROLE_USER|ROLE_PROFESOR|ROLE_ADMIN", message = "Rol no válido")
     @Column(nullable = false)
-    private String rol; // "PROFESOR" o "ALUMNO"
+    private String rol; // Roles: "ROLE_USER", "ROLE_PROFESOR", "ROLE_ADMIN"
+
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[a-zA-Z]{2,}(?:\\.[a-zA-Z]{2,})?$");
 
     @PrePersist
     protected void onCreate() {
         fechaAlta = new Date();
+    }
+
+    public Usuario save(Usuario usuario) {
+        if (!EMAIL_PATTERN.matcher(usuario.getCorreo()).matches()) {
+            throw new IllegalArgumentException("El correo no es válido");
+        }
+        // Save logic here
+        return usuario;
     }
 
     // Getters y setters

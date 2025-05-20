@@ -43,6 +43,10 @@ public class PrestamoService {
         return prestamoRepository.findByUsuarioId(usuarioId);
     }
 
+    public List<Prestamo> findByUsuarioRealizaId(int usuarioId) {
+        return prestamoRepository.findByUsuarioRealizaId(usuarioId);
+    }
+
     public void deleteByLibroId(int libroId) {
         prestamoRepository.deleteByLibroId(libroId);
     }

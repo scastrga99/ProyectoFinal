@@ -7,29 +7,117 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>
 <body>
     <div th:replace="~{fragments/nav :: nav}"></div>
-    <div class="container mt-5">
+    <div class="container-fluid">
         <h1 class="mb-4">Materiales del Departamento</h1>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <!-- Buscador y botón de cambio de vista -->
+        <div class="mb-4 d-flex align-items-center">
+            <input type="text" id="searchMaterialInput" class="form-control" placeholder="Buscar materiales..." style="max-width: 300px;">
+            <button id="toggleMaterialViewBtn" class="toggle-view-btn ml-2">
+                <i class="fas fa-table"></i>
+            </button>
+        </div>
+        <!-- Vista de tarjetas -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 card-view" id="materialesContainer">
             <div class="col mb-4" th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="'Nombre: ' + ${parts[0]}"></h5>
-                        <h6 class="card-subtitle mb-2 text-muted" th:text="'Marca: ' + ${parts[1]}"></h6>
-                        <p class="card-text"><strong>Cantidad Disponible:</strong> 
-                            <span th:text="${entry.value.size()}"></span>
-                        </p>
-                        <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                        <button type="button" class="btn btn-dark" data-toggle="modal" th:data-target="'#ajustarMaterialesModal-' + ${entry.key.replace(' ', '-')}" th:if="${entry.value[0].numSerie == 'XX'}"><i class="fas fa-plus"></i> Ajustar Materiales</button>
+                <div class="card h-100 shadow-sm d-flex flex-column">
+                    <div class="card-body h-100 d-flex flex-column">
+                        <div class="row h-100 flex-grow-1">
+                            <!-- Columna de texto -->
+                            <div class="col-12 col-md-7 d-flex flex-column justify-content-center">
+                                <h5 class="font-weight-bold mb-1" th:text="${parts[0]}"></h5>
+                                <div class="text-secondary mb-2" th:text="'Marca: ' + ${parts[1]}"></div>
+                                <div class="mb-2"><span class="font-weight-bold">Cantidad:</span> <span th:text="${entry.value.size()}"></span></div>
+                                <div class="mb-3" th:if="${entry.value[0].descripcion != null}">
+                                    <span class="font-weight-bold">Descripción:</span>
+                                    <span th:text="${entry.value[0].descripcion}"></span>
+                                </div>
+                            </div>
+                            <!-- Columna de imagen -->
+                            <div class="col-12 col-md-5 d-flex align-items-center justify-content-center">
+                                <div style="width:100%; display:flex; justify-content:center;">
+                                    <img th:if="${entry.value[0].foto != null}"
+                                         th:src="@{/api/materiales/foto/{id}(id=${entry.value[0].idMaterial})}"
+                                         alt="Imagen"
+                                         class="img-fluid rounded"
+                                         style="max-width: 100%; max-height: 300px; object-fit: contain;" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botones alineados abajo y ocupando todo el ancho -->
+                        <div class="row mt-4 w-100">
+                            <div class="col-6 pr-1">
+                                <a th:href="@{/api/materiales/editar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-warning btn-block">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                            </div>
+                            <div class="col-6 pl-1">
+                                <a th:href="@{/api/materiales/eliminar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-danger btn-block">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <button type="button"
+                                    class="btn btn-info btn-block"
+                                    data-toggle="modal"
+                                    th:data-target="'#ajustarMaterialesModal-' + ${entry.key.replace(' ', '-')}"
+                                >
+                                    <i class="fas fa-sliders-h"></i> Ajustar Cantidad
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Vista en modo tabla -->
+        <div class="table-view" style="display: none;">
+            <table id="materialesTable" class="table table-striped rounded-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Cantidad</th>
+                        <th>Descripción</th>
+                        <th>Departamento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
+                        <td th:text="${parts[0]}"></td>
+                        <td th:text="${parts[1]}"></td>
+                        <td th:text="${entry.value.size()}"></td>
+                        <td th:text="${entry.value[0].descripcion}"></td>
+                        <td th:text="${entry.value[0].departamento.nombre}"></td>
+                        <td>
+                            <a th:href="@{/api/materiales/editar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a th:href="@{/api/materiales/eliminar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Botón para agregar material (abre modal o redirige a alta-material) -->
         <div class="button-container mt-4 d-flex justify-content-between">
-            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#nuevoMaterialModal"><i class="fas fa-plus"></i> Nuevo Material</button>
-            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#agregarMultiplesMaterialesModal"><i class="fas fa-plus"></i> Agregar Múltiples Materiales</button>
+            <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
+            <div>
+                <!-- Botón para abrir modal de agregar múltiples materiales -->
+                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#agregarMultiplesMaterialesModal">
+                    <i class="fas fa-layer-group"></i> Agregar Múltiples
+                </button>
+                <!-- Botón para abrir modal de nuevo material -->
+                <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#nuevoMaterialModal">
+                    <i class="fas fa-plus"></i> Nuevo Material
+                </button>
+            </div>
         </div>
     </div>
 
@@ -44,7 +132,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form th:action="@{/api/materiales}" method="post">
+                    <form th:action="@{/api/materiales}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="nombre">Nombre:</label>
                             <input type="text" id="nombre" name="nombre" class="form-control" required>
@@ -78,6 +166,10 @@
                             <select id="departamento" name="departamento" class="form-control">
                                 <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="foto">Imagen:</label>
+                            <input type="file" id="foto" name="foto" class="form-control" />
                         </div>
                         <div class="button-container mt-4 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -174,5 +266,64 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script>
+        // Filtrado para tarjetas y tabla
+        document.getElementById('searchMaterialInput').addEventListener('input', function() {
+            var searchValue = this.value.toLowerCase();
+            // Filtrar tarjetas
+            var cards = document.querySelectorAll('#materialesContainer .col');
+            cards.forEach(function(card) {
+                var nombre = card.querySelector('h5').textContent.toLowerCase();
+                var marca = card.querySelector('.text-secondary').textContent.toLowerCase();
+                var descripcion = card.querySelector('.mb-3') ? card.querySelector('.mb-3').textContent.toLowerCase() : '';
+                if (nombre.includes(searchValue) || marca.includes(searchValue) || descripcion.includes(searchValue)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            // Filtrar tabla
+            var tableRows = document.querySelectorAll('.table-view tbody tr');
+            tableRows.forEach(function(row) {
+                var nombre = row.children[0].textContent.toLowerCase();
+                var marca = row.children[1].textContent.toLowerCase();
+                var descripcion = row.children[3].textContent.toLowerCase();
+                if (
+                    nombre.includes(searchValue) ||
+                    marca.includes(searchValue) ||
+                    descripcion.includes(searchValue)
+                ) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Cambio de vista tarjetas/tabla
+        document.getElementById('toggleMaterialViewBtn').addEventListener('click', function() {
+            var cardView = document.querySelector('.card-view');
+            var tableView = document.querySelector('.table-view');
+            var icon = this.querySelector('i');
+            if (cardView.style.display === 'none') {
+                cardView.style.display = 'flex';
+                tableView.style.display = 'none';
+                icon.classList.remove('fa-th-large');
+                icon.classList.add('fa-table');
+            } else {
+                cardView.style.display = 'none';
+                tableView.style.display = 'block';
+                icon.classList.remove('fa-table');
+                icon.classList.add('fa-th-large');
+            }
+        });
+
+        $(document).ready(function() {
+            $('#materialesTable').DataTable({
+                searching: false // Desactiva el buscador de DataTables
+            });
+        });
+    </script>
 </body>
 </html>

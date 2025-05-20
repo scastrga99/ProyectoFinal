@@ -181,17 +181,19 @@ public class LibroController {
             prestamoService.reasignarPrestamosPorLibro(libro.getIdLibro(), "missingLibro");
             libroService.deleteById(libro.getIdLibro());
         }
-        return "redirect:/api/libros";
+        // Mantenerse en la misma vista de libros asociados
+        return "redirect:/api/libros/editar/" + key;
     }
 
     @GetMapping("/eliminar/libro/{id}")
-    public String eliminarLibroPorId(@PathVariable int id) {
+    public String eliminarLibroPorId(@PathVariable int id, @RequestParam("key") String key) {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         Libro libro = libroService.findById(id);
         registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", libro.getTitulo());
         prestamoService.reasignarPrestamosPorLibro(id, "missingLibro");
         libroService.deleteById(id);
-        return "redirect:/api/libros";
+        // Mantenerse en la misma vista de libros asociados
+        return "redirect:/api/libros/editar/" + key;
     }
 
     @GetMapping("/foto/{id}")
@@ -206,16 +208,23 @@ public class LibroController {
         }
     }
 
-    @PostMapping("/agregar")
-    public String agregarLibroPorIsbn(@RequestParam("isbn") String isbn, @RequestParam("key") String key, Model model) {
-        libroService.agregarLibroPorIsbn(isbn, key);
-        return "redirect:/api/libros";
-    }
-
     @PostMapping("/agregar-multiples")
-    public String agregarMultiplesLibrosPorIsbn(@RequestParam("isbns") String isbns, @RequestParam("key") String key, Model model) {
-        List<String> isbnList = Arrays.asList(isbns.split(","));
-        libroService.agregarMultiplesLibrosPorIsbn(isbnList, key);
-        return "redirect:/api/libros";
+    public String agregarMultiplesLibros(@RequestParam("isbns") String isbns, @RequestParam("key") String key) {
+        String[] isbnArray = isbns.split(",");
+        // Extraer título, autor y editorial del key
+        String[] parts = key.split(" - ");
+        String titulo = parts.length > 0 ? parts[0] : "";
+        String autor = parts.length > 1 ? parts[1] : "";
+        String editorial = parts.length > 2 ? parts[2] : "";
+        for (String isbn : isbnArray) {
+            Libro libro = new Libro();
+            libro.setIsbn(isbn.trim());
+            libro.setTitulo(titulo);
+            libro.setAutor(autor);
+            libro.setEditorial(editorial);
+            libro.setEstado("Libre");
+            libroService.save(libro);
+        }
+        return "redirect:/api/libros/editar/" + key;
     }
 }

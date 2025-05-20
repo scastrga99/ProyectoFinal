@@ -1,5 +1,6 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
+import com.samuelcastro.ProyectoFinal.editors.MultipartFileToByteArrayEditor;
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
 import com.samuelcastro.ProyectoFinal.entities.Material;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
@@ -9,8 +10,13 @@ import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +33,15 @@ public class MaterialController {
     @Autowired
     private DepartamentoService departamentoService;
 
+    @InitBinder
+    public void InitBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(byte[].class, new MultipartFileToByteArrayEditor());
+    }
+
+
     @GetMapping
     public String getAllDepartamentosConMateriales(Model model) {
-        List<Departamento> departamentos = departamentoService.findDepartamentosConMateriales();
-        if (departamentos.isEmpty()) {
-            return "redirect:/api/materiales/nuevo";
-        }
+        List<Departamento> departamentos = departamentoService.findAll();
         model.addAttribute("departamentos", departamentos);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
@@ -52,6 +61,7 @@ public class MaterialController {
         model.addAttribute("materialesAgrupados", materialesAgrupados);
         List<Departamento> departamentos = departamentoService.findAll();
         model.addAttribute("departamentos", departamentos);
+        model.addAttribute("departamento", departamentoService.findById(id));
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
@@ -61,10 +71,9 @@ public class MaterialController {
     }
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevoMaterial(Model model) {
+    public String mostrarFormularioNuevoMaterial(@RequestParam("departamentoId") int departamentoId, Model model) {
         model.addAttribute("material", new Material());
-        List<Departamento> departamentos = departamentoService.findAll();
-        model.addAttribute("departamentos", departamentos);
+        model.addAttribute("departamentoId", departamentoId);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
@@ -74,12 +83,29 @@ public class MaterialController {
     }
 
     @PostMapping
-    public String crearMaterial(@ModelAttribute Material material) {
+    public String crearMaterial(
+        @ModelAttribute Material material,
+        @RequestParam("foto") MultipartFile foto,
+        @RequestParam("departamentoId") int departamentoId
+    ) {
         if (material.getNumSerie() == null || material.getNumSerie().isEmpty()) {
             material.setNumSerie(generarNumeroDeSerieUnico());
         }
+        if (!foto.isEmpty()) {
+            try {
+                material.setFoto(foto.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            material.setFoto(null);
+        }
+        // Asigna el departamento seleccionado
+        Departamento departamento = departamentoService.findById(departamentoId);
+        material.setDepartamento(departamento);
+
         materialService.save(material);
-        return "redirect:/api/materiales";
+        return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
     @PostMapping("/agregar-multiples")
@@ -157,7 +183,7 @@ public class MaterialController {
     }
 
     @PostMapping("/{id}")
-    public String actualizarMaterial(@PathVariable int id, @ModelAttribute Material material) {
+    public String actualizarMaterial(@PathVariable int id, @ModelAttribute Material material, @RequestParam(value = "foto", required = false) MultipartFile foto) {
         Material existingMaterial = materialService.findById(id);
         if (existingMaterial != null) {
             existingMaterial.setNombre(material.getNombre());
@@ -168,7 +194,13 @@ public class MaterialController {
             existingMaterial.setFechaAlta(material.getFechaAlta());
             existingMaterial.setFechaBaja(material.getFechaBaja());
             existingMaterial.setDepartamento(material.getDepartamento());
-            existingMaterial.setFoto(material.getFoto());
+            if (foto != null && !foto.isEmpty()) {
+                try {
+                    existingMaterial.setFoto(foto.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             materialService.save(existingMaterial);
         }
         return "redirect:/api/materiales";
@@ -178,6 +210,18 @@ public class MaterialController {
     public String eliminarMaterial(@PathVariable int id) {
         materialService.deleteById(id);
         return "redirect:/api/materiales";
+    }
+
+    @GetMapping("/foto/{id}")
+    public ResponseEntity<byte[]> obtenerFoto(@PathVariable int id) {
+        Material material = materialService.findById(id);
+        if (material != null && material.getFoto() != null) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                    .body(material.getFoto());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private String generarNumeroDeSerieUnico() {

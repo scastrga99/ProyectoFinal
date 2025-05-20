@@ -1,5 +1,8 @@
+/* Importa la fuente Inter y Roboto desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Inter', 'Roboto', Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -42,8 +45,17 @@ nav ul li a:hover {
 
 table {
     width: 90%; /* Reduce el ancho de la tabla para añadir espacio a los lados */
-    border-collapse: collapse;
+    border-collapse: separate; /* Cambia a separate para permitir border-radius */
+    border-spacing: 0;
     margin: 20px auto; /* Centra la tabla horizontalmente y añade margen superior e inferior */
+    border-radius: 12px; /* Esquinas redondeadas */
+    overflow: hidden;    /* Oculta bordes sobresalientes */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+/* Elimina el borde inferior añadido por DataTables */
+table.dataTable.no-footer {
+    border-bottom: none !important;
 }
 
 /* Estilo para las celdas de la tabla */
@@ -56,6 +68,20 @@ th, td {
 th {
     background-color: #007BFF;
     color: white;
+}
+
+/* Esquinas redondeadas solo en las cabeceras y la última fila */
+th:first-child {
+    border-top-left-radius: 12px;
+}
+th:last-child {
+    border-top-right-radius: 12px;
+}
+tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
 }
 
 /* Estilo para las filas pares de la tabla */
@@ -73,6 +99,19 @@ tr:hover {
     display: flex;
     justify-content: space-between;
     padding: 20px;
+}
+
+/* Espaciado lateral para container-fluid */
+.container-fluid {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+@media (max-width: 991px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
 
 /* Estilo para los grupos de formularios */
@@ -102,4 +141,138 @@ tr:hover {
 
 .text-center {
     text-align: center;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+.card:hover {
+    transform: scale(1.03);
+}
+.card-body {
+    padding: 20px;
+}
+.card-title {
+    font-size: 1.15rem;
+    font-weight: bold;
+}
+.card-subtitle {
+    font-size: 1rem;
+    color: #555;
+}
+.card-text {
+    font-size: 0.95rem;
+    color: #777;
+}
+.btn {
+    min-width: 120px;
+}
+.button-container .btn {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+@media (max-width: 991px) {
+    .button-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .button-container .btn {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.toggle-view-btn {
+    background: none;
+    border: none;
+    color: #343a40;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.card-img {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 100%;
+    height: auto;
+}
+.card-view {
+    display: flex;
+    flex-wrap: wrap;
+}
+.table-view {
+    display: none;
+}
+@media (max-width: 991px) {
+    .card-view {
+        flex-direction: column;
+    }
+}
+
+/* Elimina el borde inferior añadido por DataTables */
+table.dataTable.no-footer {
+    border-bottom: none !important;
+}
+.rounded-table tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Relación de aspecto más baja y ancho máximo para tarjetas */
+.aspect-ratio-custom {
+    position: relative;
+    width: 100%;
+    padding-top: 32%; /* Más bajo que 16:9 para menos altura */
+    max-width: 340px;
+    margin: 0 auto;
+}
+.aspect-ratio-custom > .card-body {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+}
+.card-title {
+    text-align: center;
+    font-size: 1.05rem;
+    word-break: break-word;
+}
+
+.buscador-departamento-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.buscador-departamento-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    transition: border-color 0.2s;
+}
+
+.buscador-departamento-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.oculto {
+    display: none !important;
 }

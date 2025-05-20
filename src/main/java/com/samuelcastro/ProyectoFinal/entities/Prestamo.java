@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Prestamo {
@@ -45,6 +46,9 @@ public class Prestamo {
 
     @Column(nullable = false)
     private boolean devuelto;
+
+    @Transient
+    private long diasRestantes;
 
     @PrePersist
     public void prePersist() {
@@ -114,5 +118,13 @@ public class Prestamo {
 
     public void setDevuelto(boolean devuelto) {
         this.devuelto = devuelto;
+    }
+
+    public long getDiasRestantes() {
+        return diasRestantes;
+    }
+
+    public void setDiasRestantes(long diasRestantes) {
+        this.diasRestantes = diasRestantes;
     }
 }

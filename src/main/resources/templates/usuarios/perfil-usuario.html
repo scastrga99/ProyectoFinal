@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    <div class="container mt-5">
+        <h1 class="mb-4">Perfil de Usuario</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></h5>
+                <p class="card-text"><strong>Correo:</strong> <span th:text="${usuario.correo}"></span></p>
+                <p class="card-text"><strong>Rol:</strong> <span th:text="${usuario.rol}"></span></p>
+                <p class="card-text"><strong>Departamento:</strong> <span th:text="${usuario.departamento.nombre}"></span></p>
+                <div class="mt-4 d-flex justify-content-between">
+                    <a th:href="@{/}" class="btn btn-dark">
+                        <i class="fas fa-arrow-left"></i> Regresar
+                    </a>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#cambiarPasswordModal">
+                        <i class="fas fa-key"></i> Cambiar contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar contraseña -->
+    <div class="modal fade" id="cambiarPasswordModal" tabindex="-1" role="dialog" aria-labelledby="cambiarPasswordModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <form th:action="@{/api/usuarios/{id}(id=${usuario.idUsuario})}" method="post" autocomplete="off">
+            <input type="hidden" name="fromPerfil" value="true" />
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="cambiarPasswordModalLabel">Cambiar contraseña</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <!-- Campos ocultos para enviar todos los datos necesarios -->
+                  <input type="hidden" name="idUsuario" th:value="${usuario.idUsuario}" />
+                  <input type="hidden" name="nombre" th:value="${usuario.nombre}" />
+                  <input type="hidden" name="apellidos" th:value="${usuario.apellidos}" />
+                  <input type="hidden" name="correo" th:value="${usuario.correo}" />
+                  <input type="hidden" name="rol" th:value="${usuario.rol}" />
+                  <input type="hidden" name="departamento.idDepartamento" th:value="${usuario.departamento.idDepartamento}" />
+                  <div class="form-group">
+                      <label for="password">Nueva Contraseña:</label>
+                      <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" required />
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -57,8 +57,20 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public String crearUsuario(@ModelAttribute Usuario usuario) {
-        usuarioService.save(usuario);
+    public String crearUsuario(@ModelAttribute Usuario usuario, Model model) {
+        try {
+            usuarioService.save(usuario);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("departamentos", departamentoService.findAll());
+            model.addAttribute("error", e.getMessage());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            if (usuarioDetails != null) {
+                model.addAttribute("usuario", usuarioDetails.getUsuario());
+                model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+            }
+            return "usuarios/alta-usuario";
+        }
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         registroService.registrarOperacion("Usuario", usuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", usuario.getNombre() + " " + usuario.getApellidos());
         return "redirect:/api/usuarios";
@@ -78,7 +90,11 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}")
-    public String actualizarUsuario(@PathVariable int id, @ModelAttribute Usuario usuario) {
+    public String actualizarUsuario(
+            @PathVariable int id,
+            @ModelAttribute Usuario usuario,
+            @RequestParam(value = "fromPerfil", required = false) String fromPerfil
+    ) {
         Usuario existingUsuario = usuarioService.findById(id);
         if (existingUsuario != null) {
             existingUsuario.setNombre(usuario.getNombre());
@@ -93,6 +109,9 @@ public class UsuarioController {
             UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
             registroService.registrarOperacion("Usuario", existingUsuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR ", existingUsuario.getNombre() + " " + existingUsuario.getApellidos());
         }
+        if ("true".equals(fromPerfil)) {
+            return "redirect:/api/usuarios/perfil";
+        }
         return "redirect:/api/usuarios";
     }
 
@@ -106,5 +125,66 @@ public class UsuarioController {
             registroService.registrarOperacion("Usuario", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", usuario.getNombre() + " " + usuario.getApellidos());
         }
         return "redirect:/api/usuarios";
+    }
+
+    @GetMapping("/multiples")
+    public String mostrarFormularioMultiplesUsuarios(Model model) {
+        model.addAttribute("departamentos", departamentoService.findAll());
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+        }
+        return "usuarios/alta-multiples-usuarios";
+    }
+
+    @PostMapping("/multiples")
+    public String crearMultiplesUsuarios(
+            @RequestParam("usuariosData") String usuariosData,
+            @RequestParam("departamentoId") int departamentoId,
+            @RequestParam("rol") String rol,
+            Model model
+    ) {
+        String[] lineas = usuariosData.split("\\r?\\n");
+        StringBuilder errores = new StringBuilder();
+        for (String linea : lineas) {
+            String[] partes = linea.split(",");
+            if (partes.length >= 4) {
+                String correo = partes[2].trim();
+                if (usuarioService.findByCorreo(correo) != null) {
+                    errores.append(correo).append("<br>");
+                    continue;
+                }
+                Usuario usuario = new Usuario();
+                usuario.setNombre(partes[0].trim());
+                usuario.setApellidos(partes[1].trim());
+                usuario.setCorreo(correo);
+                usuario.setPassword(partes[3].trim());
+                usuario.setRol(rol);
+                usuario.setDepartamento(departamentoService.findById(departamentoId));
+                usuarioService.save(usuario);
+            }
+        }
+        if (errores.length() > 0) {
+            model.addAttribute("departamentos", departamentoService.findAll());
+            model.addAttribute("error", "Los siguientes correos ya están registrados:<br>" + errores.toString());
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            if (usuarioDetails != null) {
+                model.addAttribute("usuario", usuarioDetails.getUsuario());
+                model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+            }
+            return "usuarios/alta-multiples-usuarios";
+        }
+        return "redirect:/api/usuarios";
+    }
+
+    @GetMapping("/perfil")
+    public String perfilUsuario(Model model) {
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+        }
+        return "usuarios/perfil-usuario";
     }
 }

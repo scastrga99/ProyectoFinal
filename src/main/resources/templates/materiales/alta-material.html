@@ -6,12 +6,14 @@
     <title>Nuevo Material</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div th:replace="~{fragments/nav :: nav}"></div>
     <div class="container mt-5">
         <h1 class="mb-4">Nuevo Material</h1>
-        <form th:action="@{/api/materiales}" th:object="${material}" method="post">
+        <form action="#" th:action="@{/api/materiales}" th:object="${material}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
@@ -40,11 +42,11 @@
                 <label for="fechaBaja">Fecha Baja:</label>
                 <input type="date" id="fechaBaja" th:field="*{fechaBaja}" class="form-control">
             </div>
+            <!-- Campo oculto para el departamento seleccionado -->
+            <input type="hidden" name="departamentoId" th:value="${departamentoId}" />
             <div class="form-group">
-                <label for="departamento">Departamento:</label>
-                <select id="departamento" th:field="*{departamento.idDepartamento}" class="form-control">
-                    <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
-                </select>
+                <label for="foto">Imagen:</label>
+                <input type="file" id="foto" name="foto" class="form-control" />
             </div>
             <div class="button-container mt-4 d-flex justify-content-between">
                 <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>

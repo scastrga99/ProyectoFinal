@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Múltiples Usuarios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div th:replace="~{fragments/nav :: nav}"></div>
+    <div class="container mt-5">
+        <h1 class="mb-4">Agregar Múltiples Usuarios</h1>
+        <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
+        <form th:action="@{/api/usuarios/multiples}" method="post" id="multiplesUsuariosForm">
+            <div class="form-group">
+                <label for="usuariosData">Usuarios (un usuario por línea, formato: nombre,apellidos,correo,contraseña):</label>
+                <textarea id="usuariosData" name="usuariosData" class="form-control" rows="8" required placeholder="Ejemplo:
+Juan,Pérez,juanperez@email.com,123456
+Ana,López,analopez@email.com,abcdef"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="departamentoId">Departamento:</label>
+                <select id="departamentoId" name="departamentoId" class="form-control" required>
+                    <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rol">Rol:</label>
+                <select id="rol" name="rol" class="form-control" required>
+                    <option value="ROLE_USER">Usuario</option>
+                    <option value="ROLE_PROFESOR">Profesor</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                </select>
+            </div>
+            <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/usuarios}" class="btn btn-dark">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar Usuarios
+                </button>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    document.getElementById('multiplesUsuariosForm').addEventListener('submit', function(e) {
+        const textarea = document.getElementById('usuariosData');
+        const lines = textarea.value.trim().split('\n');
+        let valid = true;
+        let errorMsg = '';
+        lines.forEach((line, idx) => {
+            const parts = line.split(',');
+            if (parts.length !== 4) {
+                valid = false;
+                errorMsg += `Línea ${idx + 1}: Debe tener 4 campos separados por coma.\n`;
+            } else {
+                const email = parts[2].trim();
+                const password = parts[3].trim();
+                if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$/.test(email)) {
+                    valid = false;
+                    errorMsg += `Línea ${idx + 1}: Correo no válido.\n`;
+                }
+                if (password.length < 6) {
+                    valid = false;
+                    errorMsg += `Línea ${idx + 1}: La contraseña debe tener al menos 6 caracteres.\n`;
+                }
+            }
+        });
+        if (!valid) {
+            alert(errorMsg);
+            e.preventDefault();
+        }
+    });
+    </script>
+</body>
+</html>

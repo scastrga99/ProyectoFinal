@@ -37,6 +37,31 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Tabla de préstamos próximos a la fecha límite (solo para ADMIN o PROFESOR) -->
+        <div th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR')}">
+            <h2 class="mb-4">Préstamos Próximos a la Fecha Límite</h2>
+            <table id="prestamosProximosTable" class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Usuario que recibe</th>
+                        <th>Libro</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Límite</th>
+                        <th>Días Restantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prestamo : ${prestamosProximos}">
+                        <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
+                        <td th:text="${prestamo.libro.titulo}"></td>
+                        <td th:text="${#dates.format(prestamo.fechaPrestamo, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${#dates.format(prestamo.fechaPlazo, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${prestamo.diasRestantes}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -47,6 +72,7 @@
     <script>
         $(document).ready(function() {
             $('#registrosTable').DataTable();
+            $('#prestamosProximosTable').DataTable();
         });
     </script>
 </body>

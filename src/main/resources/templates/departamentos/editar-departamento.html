@@ -16,7 +16,7 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     
     <!-- Contenedor principal con espacio -->
-    <div class="container">
+    <div class="container mt-5">
         <!-- Título de la página -->
         <h1 class="mb-4">Editar Departamento</h1>
         <!-- Formulario para editar un departamento existente -->
@@ -28,7 +28,7 @@
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
             </div>
-            <div class="button-container mt-4">
+            <div class="button-container mt-4 d-flex justify-content-between">
                 <!-- Botón para regresar a la lista de departamentos -->
                 <a th:href="@{/api/departamentos}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
                 <!-- Botón para guardar los cambios -->

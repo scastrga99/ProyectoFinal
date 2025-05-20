@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Enlace a Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
         @media (max-width: 991px) {
             .nav-link span {
@@ -28,27 +29,27 @@
                             <i class="fas fa-home"></i> <span>Home</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles.contains('ROLE_ADMIN')}">
+                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
                         <a class="nav-link text-white text-center" th:href="@{/api/usuarios}">
                             <i class="fas fa-users"></i> <span>Usuarios</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
+                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles != null and (roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN'))}">
                         <a class="nav-link text-white text-center" th:href="@{/api/materiales}">
                             <i class="fas fa-boxes"></i> <span>Materiales</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR')}">
+                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles != null and (roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
                         <a class="nav-link text-white text-center" th:href="@{/api/departamentos}">
                             <i class="fas fa-building"></i> <span>Departamentos</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles.contains('ROLE_USER') or roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR')}">
+                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles != null and (roles.contains('ROLE_USER') or roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
                         <a class="nav-link text-white text-center" th:href="@{/api/libros}">
                             <i class="fas fa-book"></i> <span>Libros</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles.contains('ROLE_USER') or roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR')}">
+                    <li class="nav-item mx-2 flex-grow-1" th:if="${roles != null and (roles.contains('ROLE_USER') or roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
                         <a class="nav-link text-white text-center" th:href="@{/api/prestamos}">
                             <i class="fas fa-handshake"></i> <span>Prestamos</span>
                         </a>
@@ -56,9 +57,10 @@
                 </ul>
                 <ul class="navbar-nav ml-auto d-flex align-items-center">
                     <li class="nav-item mx-2">
-                        <span class="nav-link text-white text-center" th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}">
-                            <i class="fas fa-user"></i> <span>Usuario</span>
-                        </span>
+                        <a class="nav-link text-white text-center" th:href="@{/api/usuarios/perfil}">
+                            <i class="fas fa-user"></i>
+                            <span th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></span>
+                        </a>
                     </li>
                     <li class="nav-item mx-2">
                         <form th:action="@{/logout}" method="post">
