@@ -14,9 +14,14 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +63,18 @@ public class MaterialController {
                 .collect(Collectors.groupingBy(
                         material -> material.getNombre() + " - " + material.getMarca()
                 ));
+        // Nueva lógica: obtener la URL de la primera imagen disponible de cada grupo
+        Map<String, String> fotosMateriales = materialesAgrupados.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .filter(mat -> mat.getFoto() != null)
+                                .findFirst()
+                                .map(mat -> "/api/materiales/foto/" + mat.getIdMaterial())
+                                .orElse("")
+                ));
         model.addAttribute("materialesAgrupados", materialesAgrupados);
+        model.addAttribute("fotosMateriales", fotosMateriales);
         List<Departamento> departamentos = departamentoService.findAll();
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("departamento", departamentoService.findById(id));
@@ -125,7 +141,7 @@ public class MaterialController {
             material.setDepartamento(departamentoService.findById(departamentoId));
             materialService.save(material);
         }
-        return "redirect:/api/materiales";
+        return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
     @PostMapping("/ajustar")
@@ -135,14 +151,23 @@ public class MaterialController {
                                   @RequestParam("ajuste") String ajuste,
                                   @RequestParam("cantidad") int cantidad) {
         if (ajuste.equals("aumentar")) {
+            // Buscar un material original como referencia
+            List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
+            Material original = materiales.isEmpty() ? null : materiales.get(0);
             for (int i = 0; i < cantidad; i++) {
                 Material material = new Material();
-                material.setNombre(nombre);
-                material.setMarca(marca);
-                material.setEstado("Nuevo");
-                material.setFechaAlta(new Date());
-                material.setNumSerie("XX");
-                material.setDepartamento(departamentoService.findById(departamentoId));
+                if (original != null) {
+                    material.setNombre(original.getNombre());
+                    material.setMarca(original.getMarca());
+                    material.setDescripcion(original.getDescripcion());
+                    material.setEstado(original.getEstado());
+                    material.setFechaAlta(new Date());
+                    material.setFechaBaja(original.getFechaBaja());
+                    material.setDepartamento(original.getDepartamento());
+                    material.setFoto(original.getFoto());
+                }
+                // Generar un número de serie único
+                material.setNumSerie("XXX-XXXX");
                 materialService.save(material);
             }
         } else if (ajuste.equals("reducir")) {
@@ -151,7 +176,7 @@ public class MaterialController {
                 materialService.deleteById(materiales.get(i).getIdMaterial());
             }
         }
-        return "redirect:/api/materiales";
+        return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
     @GetMapping("/editar/{id}")
@@ -179,7 +204,19 @@ public class MaterialController {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
             model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
-        return "materiales/materiales-asociados";
+        return "materiales/materiales-lista";
+    }
+
+    @GetMapping("/eliminar-multiples/{nombre}/{marca}")
+    public String eliminarMaterialesAsociados(
+            @PathVariable String nombre,
+            @PathVariable String marca,
+            @RequestParam("departamentoId") int departamentoId) {
+        List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
+        for (Material material : materiales) {
+            materialService.deleteById(material.getIdMaterial());
+        }
+        return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
     @PostMapping("/{id}")
@@ -202,13 +239,23 @@ public class MaterialController {
                 }
             }
             materialService.save(existingMaterial);
+            // Redirigir al departamento
+            int departamentoId = existingMaterial.getDepartamento().getIdDepartamento();
+            return "redirect:/api/materiales/departamento/" + departamentoId + "?materialId=" + existingMaterial.getIdMaterial();
         }
         return "redirect:/api/materiales";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarMaterial(@PathVariable int id) {
+        Material material = materialService.findById(id);
+        int departamentoId = (material != null && material.getDepartamento() != null)
+            ? material.getDepartamento().getIdDepartamento()
+            : -1;
         materialService.deleteById(id);
+        if (departamentoId != -1) {
+            return "redirect:/api/materiales/departamento/" + departamentoId;
+        }
         return "redirect:/api/materiales";
     }
 
@@ -222,6 +269,132 @@ public class MaterialController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/lista")
+    public String verListaMateriales(Model model) {
+        List<Material> materiales = materialService.findAll();
+        model.addAttribute("materiales", materiales);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+        }
+        return "materiales/materiales-lista";
+    }
+
+    @GetMapping("/alta-multiples-materiales")
+    public String mostrarFormularioAltaMultiplesMateriales(@RequestParam(value = "departamentoId", required = false) Integer departamentoId, Model model) {
+        model.addAttribute("departamentos", departamentoService.findAll());
+        model.addAttribute("departamentoId", departamentoId);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            model.addAttribute("usuario", usuarioDetails.getUsuario());
+            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
+        }
+        return "materiales/alta-multiples-materiales";
+    }
+
+    @GetMapping("/exportar")
+    public ResponseEntity<byte[]> exportarMaterialesPorDepartamento(@RequestParam("departamentoId") int departamentoId) {
+        List<Material> materiales = materialService.findByDepartamentoId(departamentoId);
+
+        StringBuilder csv = new StringBuilder();
+        csv.append("ID,Nombre,Número de Serie,Marca,Descripción,Estado,Fecha Alta,Fecha Baja,Departamento\n");
+        for (Material m : materiales) {
+            csv.append(m.getIdMaterial()).append(",");
+            csv.append("\"").append(m.getNombre() != null ? m.getNombre().replace("\"", "\"\"") : "").append("\",");
+            csv.append("\"").append(m.getNumSerie() != null ? m.getNumSerie().replace("\"", "\"\"") : "").append("\",");
+            csv.append("\"").append(m.getMarca() != null ? m.getMarca().replace("\"", "\"\"") : "").append("\",");
+            csv.append("\"").append(m.getDescripcion() != null ? m.getDescripcion().replace("\"", "\"\"") : "").append("\",");
+            csv.append("\"").append(m.getEstado() != null ? m.getEstado().replace("\"", "\"\"") : "").append("\",");
+            csv.append(m.getFechaAlta() != null ? m.getFechaAlta() : "").append(",");
+            csv.append(m.getFechaBaja() != null ? m.getFechaBaja() : "").append(",");
+            csv.append("\"").append(m.getDepartamento() != null ? m.getDepartamento().getNombre().replace("\"", "\"\"") : "").append("\"\n");
+        }
+
+        byte[] csvBytes = csv.toString().getBytes(StandardCharsets.UTF_8);
+        String filename = "materiales_departamento_" + departamentoId + ".csv";
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+            .contentType(MediaType.parseMediaType("text/csv"))
+            .body(csvBytes);
+    }
+
+    @PostMapping("/importar-csv")
+    public String importarMaterialesDesdeCsv(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("departamentoId") int departamentoId,
+            Model model
+    ) {
+        if (file.isEmpty()) {
+            model.addAttribute("error", "Por favor, selecciona un archivo CSV.");
+            return "redirect:/api/materiales/departamento/" + departamentoId;
+        }
+        StringBuilder errores = new StringBuilder();
+        List<Material> materialesAInsertar = new java.util.ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+            String linea;
+            int fila = 1;
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length < 5) {
+                    errores.append("Fila ").append(fila).append(": Formato incorrecto.<br>");
+                    fila++;
+                    continue;
+                }
+                String nombre = partes[0].trim();
+                String numSerie = partes[1].trim();
+                String marca = partes[2].trim();
+                String descripcion = partes.length > 3 ? partes[3].trim() : "";
+                String estado = partes.length > 4 ? partes[4].trim() : "";
+                String fechaAltaStr = partes.length > 5 ? partes[5].trim() : "";
+                String fechaBajaStr = partes.length > 6 ? partes[6].trim() : "";
+
+                if (materialService.existsByNumSerie(numSerie)) {
+                    errores.append("Fila ").append(fila).append(": El número de serie ya existe (" + numSerie + ").<br>");
+                    fila++;
+                    continue;
+                }
+                Material material = new Material();
+                material.setNombre(nombre);
+                material.setNumSerie(numSerie);
+                material.setMarca(marca);
+                material.setDescripcion(descripcion);
+                material.setEstado(estado);
+                try {
+                    if (!fechaAltaStr.isEmpty()) {
+                        material.setFechaAlta(sdf.parse(fechaAltaStr));
+                    }
+                    if (!fechaBajaStr.isEmpty()) {
+                        material.setFechaBaja(sdf.parse(fechaBajaStr));
+                    }
+                } catch (Exception e) {
+                    errores.append("Fila ").append(fila).append(": Fecha inválida.<br>");
+                    fila++;
+                    continue;
+                }
+                material.setDepartamento(departamentoService.findById(departamentoId));
+                materialesAInsertar.add(material);
+                fila++;
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al procesar el archivo: " + e.getMessage());
+            model.addAttribute("departamento", departamentoService.findById(departamentoId));
+            model.addAttribute("materialesAgrupados", materialService.findByDepartamentoId(departamentoId));
+            return "materiales/materiales-departamento";
+        }
+        if (errores.length() > 0) {
+            model.addAttribute("error", errores.toString());
+            model.addAttribute("departamento", departamentoService.findById(departamentoId));
+            model.addAttribute("materialesAgrupados", materialService.findByDepartamentoId(departamentoId));
+            return "materiales/materiales-departamento";
+        }
+        for (Material material : materialesAInsertar) {
+            materialService.save(material);
+        }
+        return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
     private String generarNumeroDeSerieUnico() {

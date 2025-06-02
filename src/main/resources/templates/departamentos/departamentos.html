@@ -38,7 +38,7 @@
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <!-- Enlace para borrar el departamento -->
-                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm">
+                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm btn-borrar-departamento">
                             <i class="fas fa-trash-alt"></i> Borrar
                         </a>
                     </td>
@@ -66,6 +66,21 @@
     <script>
         $(document).ready(function() {
             $('#departamentosTable').DataTable();
+        });
+
+
+        $(document).ready(function() {
+            $('#departamentosTable').DataTable();
+
+            // Confirmación antes de borrar un departamento
+            $('.btn-danger').on('click', function(e) {
+                if ($(this).hasClass('btn-borrar-departamento')) {
+                    var confirmMsg = '¿Estás seguro de que deseas borrar este departamento? Esta acción no se puede deshacer.';
+                    if (!confirm(confirmMsg)) {
+                        e.preventDefault();
+                    }
+                }
+            });
         });
     </script>
 </body>

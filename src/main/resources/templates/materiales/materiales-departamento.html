@@ -20,6 +20,30 @@
                 <i class="fas fa-table"></i>
             </button>
         </div>
+
+        <!-- Botón para agregar material (abre modal o redirige a alta-material) -->
+        <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
+                <div>
+                    <!-- Botón para abrir modal de importar materiales desde CSV -->
+                    <button type="button" class="btn btn-dark mr-1" data-toggle="modal" data-target="#importarMaterialCsvModal">
+                        <i class="fas fa-file-csv"></i> Importar desde CSV
+                    </button>
+                    <!-- Botón para abrir modal de agregar múltiples materiales -->
+                    <a th:href="@{/api/materiales/alta-multiples-materiales}" class="btn btn-warning mr-1">
+                        <i class="fas fa-plus"></i> Agregar Múltiples Materiales
+                    </a>
+                    <!-- Botón para abrir modal de nuevo material -->
+                    <a th:href="@{/api/materiales/nuevo(departamentoId=${departamento.idDepartamento})}" class="btn btn btn-warning mr-2">
+                        <i class="fas fa-plus"></i> Agregar Material
+                    </a>
+                    <a th:href="@{/api/materiales/exportar(departamentoId=${departamento.idDepartamento})}" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Exportar Materiales
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Vista de tarjetas -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 card-view" id="materialesContainer">
             <div class="col mb-4" th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
@@ -39,8 +63,8 @@
                             <!-- Columna de imagen -->
                             <div class="col-12 col-md-5 d-flex align-items-center justify-content-center">
                                 <div style="width:100%; display:flex; justify-content:center;">
-                                    <img th:if="${entry.value[0].foto != null}"
-                                         th:src="@{/api/materiales/foto/{id}(id=${entry.value[0].idMaterial})}"
+                                    <img th:if="${fotosMateriales[entry.key] != ''}"
+                                         th:src="${fotosMateriales[entry.key]}"
                                          alt="Imagen"
                                          class="img-fluid rounded"
                                          style="max-width: 100%; max-height: 300px; object-fit: contain;" />
@@ -49,14 +73,10 @@
                         </div>
                         <!-- Botones alineados abajo y ocupando todo el ancho -->
                         <div class="row mt-4 w-100">
-                            <div class="col-6 pr-1">
-                                <a th:href="@{/api/materiales/editar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-warning btn-block">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                            </div>
-                            <div class="col-6 pl-1">
-                                <a th:href="@{/api/materiales/eliminar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-danger btn-block">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
+                            <div class="col-12 mt-2">
+                                <!-- Botón para abrir la vista de lista de materiales -->
+                                <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning btn-block">
+                                    <i class="fas fa-list"></i> Ver Lista
                                 </a>
                             </div>
                             <div class="col-12 mt-2">
@@ -67,6 +87,15 @@
                                 >
                                     <i class="fas fa-sliders-h"></i> Ajustar Cantidad
                                 </button>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
+                                   class="btn btn-danger btn-block btn-eliminar-material"
+                                   th:data-nombre="${parts[0]}"
+                                   th:data-marca="${parts[1]}"
+                                   th:data-departamento="${entry.value[0].departamento.idDepartamento}">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -94,136 +123,23 @@
                         <td th:text="${entry.value[0].descripcion}"></td>
                         <td th:text="${entry.value[0].departamento.nombre}"></td>
                         <td>
-                            <a th:href="@{/api/materiales/editar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Editar
-                            </a>
-                            <a th:href="@{/api/materiales/eliminar/{id}(id=${entry.value[0].idMaterial})}" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </a>
+                            <div class="d-flex flex-column">
+                                <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mb-2">
+                                    <i class="fas fa-list"></i> Ver Lista
+                                </a>
+                                <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
+                                    class="btn btn-danger btn-sm btn-eliminar-material"
+                                    th:data-nombre="${parts[0]}"
+                                    th:data-marca="${parts[1]}"
+                                    th:data-departamento="${entry.value[0].departamento.idDepartamento}">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <!-- Botón para agregar material (abre modal o redirige a alta-material) -->
-        <div class="button-container mt-4 d-flex justify-content-between">
-            <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
-            <div>
-                <!-- Botón para abrir modal de agregar múltiples materiales -->
-                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#agregarMultiplesMaterialesModal">
-                    <i class="fas fa-layer-group"></i> Agregar Múltiples
-                </button>
-                <!-- Botón para abrir modal de nuevo material -->
-                <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#nuevoMaterialModal">
-                    <i class="fas fa-plus"></i> Nuevo Material
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para nuevo material -->
-    <div class="modal fade" id="nuevoMaterialModal" tabindex="-1" role="dialog" aria-labelledby="nuevoMaterialModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="nuevoMaterialModalLabel">Nuevo Material</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form th:action="@{/api/materiales}" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre" name="nombre" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="numSerie">Número de Serie:</label>
-                            <input type="text" id="numSerie" name="numSerie" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="marca">Marca:</label>
-                            <input type="text" id="marca" name="marca" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="descripcion">Descripción:</label>
-                            <textarea id="descripcion" name="descripcion" class="form-control"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="estado">Estado:</label>
-                            <input type="text" id="estado" name="estado" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fechaAlta">Fecha Alta:</label>
-                            <input type="date" id="fechaAlta" name="fechaAlta" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fechaBaja">Fecha Baja:</label>
-                            <input type="date" id="fechaBaja" name="fechaBaja" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="departamento">Departamento:</label>
-                            <select id="departamento" name="departamento" class="form-control">
-                                <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="foto">Imagen:</label>
-                            <input type="file" id="foto" name="foto" class="form-control" />
-                        </div>
-                        <div class="button-container mt-4 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para agregar múltiples materiales -->
-    <div class="modal fade" id="agregarMultiplesMaterialesModal" tabindex="-1" role="dialog" aria-labelledby="agregarMultiplesMaterialesModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="agregarMultiplesMaterialesModalLabel">Agregar Múltiples Materiales</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form th:action="@{/api/materiales/agregar-multiples}" method="post">
-                        <div class="form-group">
-                            <label for="numSeries">Números de Serie (separados por comas):</label>
-                            <textarea id="numSeries" name="numSeries" class="form-control" rows="5" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre" name="nombre" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="marca">Marca:</label>
-                            <input type="text" id="marca" name="marca" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="estado">Estado:</label>
-                            <input type="text" id="estado" name="estado" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="departamento">Departamento:</label>
-                            <select id="departamento" name="departamento" class="form-control">
-                                <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
-                            </select>
-                        </div>
-                        <div class="button-container mt-4 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal para ajustar materiales -->
     <div th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
@@ -261,6 +177,37 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal Importar Materiales CSV -->
+    <div class="modal fade" id="importarMaterialCsvModal" tabindex="-1" role="dialog" aria-labelledby="importarMaterialCsvModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <form th:action="@{/api/materiales/importar-csv(departamentoId=${departamento.idDepartamento})}" method="post" enctype="multipart/form-data">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importarMaterialCsvModalLabel">Importar Materiales desde CSV</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
+              <div class="form-group">
+                <label for="csvMaterialFile">Selecciona el archivo CSV</label>
+                <input type="file" class="form-control-file" id="csvMaterialFile" name="file" accept=".csv" required>
+                <small class="form-text text-muted">
+                  El archivo debe tener las columnas: nombre, numSerie, marca, descripcion, estado, fechaAlta, fechaBaja
+                  <br>(fechaAlta y fechaBaja en formato yyyy-MM-dd, pueden dejarse vacías)
+                </small>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -322,6 +269,29 @@
         $(document).ready(function() {
             $('#materialesTable').DataTable({
                 searching: false // Desactiva el buscador de DataTables
+            });
+        });
+
+        // Confirmación antes de eliminar materiales asociados
+        document.querySelectorAll('.btn-eliminar-material').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var nombre = btn.getAttribute('data-nombre');
+                var marca = btn.getAttribute('data-marca');
+                var confirmMsg = '¿Estás seguro de que deseas eliminar TODOS los materiales asociados a "' + nombre + '" (Marca: ' + marca + ')? Esta acción no se puede deshacer.';
+                if (!confirm(confirmMsg)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Validar cantidad no negativa en formularios de ajuste de materiales
+        document.querySelectorAll('form[action*="/api/materiales/ajustar"]').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                var cantidadInput = form.querySelector('input[name="cantidad"]');
+                if (cantidadInput && parseInt(cantidadInput.value, 10) < 0) {
+                    alert('La cantidad no puede ser negativa.');
+                    e.preventDefault();
+                }
             });
         });
     </script>

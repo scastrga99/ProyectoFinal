@@ -48,7 +48,6 @@ public class Usuario {
     @Column(nullable = false)
     private String rol; // Roles: "ROLE_USER", "ROLE_PROFESOR", "ROLE_ADMIN"
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[a-zA-Z]{2,}(?:\\.[a-zA-Z]{2,})?$");
 
     @PrePersist
     protected void onCreate() {
@@ -56,10 +55,6 @@ public class Usuario {
     }
 
     public Usuario save(Usuario usuario) {
-        if (!EMAIL_PATTERN.matcher(usuario.getCorreo()).matches()) {
-            throw new IllegalArgumentException("El correo no es válido");
-        }
-        // Save logic here
         return usuario;
     }
 

@@ -19,7 +19,7 @@
                 <p class="card-text"><strong>Rol:</strong> <span th:text="${usuario.rol}"></span></p>
                 <p class="card-text"><strong>Departamento:</strong> <span th:text="${usuario.departamento.nombre}"></span></p>
                 <div class="mt-4 d-flex justify-content-between">
-                    <a th:href="@{/}" class="btn btn-dark">
+                    <a th:href="${volverUrl}" class="btn btn-dark">
                         <i class="fas fa-arrow-left"></i> Regresar
                     </a>
                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#cambiarPasswordModal">
@@ -27,6 +27,10 @@
                     </button>
                 </div>
             </div>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${param.success}" class="alert alert-success">
+            Contraseña actualizada correctamente.
         </div>
     </div>
 
@@ -50,6 +54,10 @@
                   <input type="hidden" name="correo" th:value="${usuario.correo}" />
                   <input type="hidden" name="rol" th:value="${usuario.rol}" />
                   <input type="hidden" name="departamento.idDepartamento" th:value="${usuario.departamento.idDepartamento}" />
+                  <div class="form-group">
+                      <label for="currentPassword">Contraseña Actual:</label>
+                      <input type="password" id="currentPassword" name="currentPassword" class="form-control" autocomplete="current-password" required />
+                  </div>
                   <div class="form-group">
                       <label for="password">Nueva Contraseña:</label>
                       <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" required />

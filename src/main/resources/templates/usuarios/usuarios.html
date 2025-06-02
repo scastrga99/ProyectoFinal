@@ -14,6 +14,8 @@
     
     <div class="container-fluid">
         <h1 class="mb-4">Lista de Usuarios</h1>
+        <!-- Mensaje de error global -->
+        <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
         <table id="usuariosTable" class="table table-striped rounded-table">
             <thead class="thead-dark">
                 <tr>
@@ -36,7 +38,8 @@
                         <a th:href="@{/api/usuarios/editar/{id}(id=${usuario.idUsuario})}" class="btn btn-warning">
                             <i class="fas fa-edit"></i> Editar
                         </a>
-                        <a th:href="@{/api/usuarios/eliminar/{id}(id=${usuario.idUsuario})}" class="btn btn-danger">
+                        <a th:href="@{/api/usuarios/eliminar/{id}(id=${usuario.idUsuario})}" class="btn btn-danger"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
                             <i class="fas fa-trash"></i> Eliminar
                         </a>
                     </td>
@@ -53,7 +56,41 @@
             <a th:href="@{/api/usuarios/multiples}" class="btn btn-dark">
                 <i class="fas fa-users"></i> Agregar Múltiples Usuarios
             </a>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#importarCsvModal">
+                <i class="fas fa-file-csv"></i> Importar desde CSV
+            </button>
         </div>
+    </div>
+
+    <!-- Modal Importar CSV -->
+    <div class="modal fade" id="importarCsvModal" tabindex="-1" role="dialog" aria-labelledby="importarCsvModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <form id="importarCsvForm" th:action="@{/api/usuarios/importar-csv}" method="post" enctype="multipart/form-data">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importarCsvModalLabel">Importar Usuarios desde CSV</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- Mensaje de error en el modal -->
+              <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
+              <div class="form-group">
+                <label for="csvFile">Selecciona el archivo CSV</label>
+                <input type="file" class="form-control-file" id="csvFile" name="file" accept=".csv" required>
+                <small class="form-text text-muted">
+                  El archivo debe tener las columnas: nombre, apellidos, correo, rol (ADMIN, PROFESOR, USUARIO)
+                </small>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

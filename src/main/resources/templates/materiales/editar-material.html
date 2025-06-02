@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label for="marca">Marca:</label>
-                <input type="text" id="marca" th:field="*{marca}" class="form-control">
+                <input type="text" id="marca" th:field="*{marca}" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="descripcion">Descripción:</label>
@@ -32,7 +32,13 @@
             </div>
             <div class="form-group">
                 <label for="estado">Estado:</label>
-                <input type="text" id="estado" th:field="*{estado}" class="form-control" required>
+                <select id="estado" th:field="*{estado}" class="form-control" required>
+                    <option value="">Seleccione un estado</option>
+                    <option value="Nuevo" th:selected="${material.estado == 'Nuevo'}">Nuevo</option>
+                    <option value="Buen estado" th:selected="${material.estado == 'Buen estado'}">Buen estado</option>
+                    <option value="Mal estado" th:selected="${material.estado == 'Mal estado'}">Mal estado</option>
+                    <option value="Roto" th:selected="${material.estado == 'Roto'}">Roto</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="fechaAlta">Fecha Alta:</label>
@@ -56,7 +62,9 @@
                 </div>
             </div>
             <div class="button-container mt-4 d-flex justify-content-between">
-                <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
+                <button type="button" class="btn btn-dark" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </button>
                 <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
             </div>
         </form>

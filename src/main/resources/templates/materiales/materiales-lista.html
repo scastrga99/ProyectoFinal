@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Materiales</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container-fluid">
+    <h1 class="mb-4">Lista de Materiales</h1>
+    <table id="materialesTable" class="table table-striped rounded-table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Número de Serie</th>
+                <th>Marca</th>
+                <th>Estado</th>
+                <th>Departamento</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="material : ${materiales}">
+                <td th:text="${material.nombre}"></td>
+                <td th:text="${material.numSerie}"></td>
+                <td th:text="${material.marca}"></td>
+                <td th:text="${material.estado}"></td>
+                <td th:text="${material.departamento.nombre}"></td>
+                <td>
+                    <a th:href="@{/api/materiales/editar/{id}(id=${material.idMaterial})}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a th:href="@{/api/materiales/eliminar/{id}(id=${material.idMaterial})}" class="btn btn-danger btn-sm"
+                       onclick="return confirmarEliminacion();">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="button-container mt-4">
+        <button type="button" class="btn btn-dark" onclick="window.history.back();">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#materialesTable').DataTable();
+    });
+
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro de que deseas eliminar este material? Esta acción no se puede deshacer.');
+    }
+</script>
+</body>
+</html>

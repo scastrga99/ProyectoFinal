@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Múltiples Materiales</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container mt-5">
+    <h1 class="mb-4">Agregar Múltiples Materiales</h1>
+    <form th:action="@{/api/materiales/multiples}" method="post">
+        <div class="form-group">
+            <label for="numSeries">Números de Serie (uno por línea):</label>
+            <textarea id="numSeries" name="numSeries" class="form-control" rows="5" required placeholder="Ejemplo:
+SN-001
+SN-002
+SN-003"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" name="marca" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="estado">Estado:</label>
+            <select id="estado" name="estado" class="form-control" required>
+                <option value="">Seleccione un estado</option>
+                <option value="Nuevo">Nuevo</option>
+                <option value="Buen estado">Buen estado</option>
+                <option value="Mal estado">Mal estado</option>
+                <option value="Roto">Roto</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="departamento">Departamento:</label>
+            <select id="departamento" name="departamento" class="form-control" required>
+                <option th:each="departamento : ${departamentos}" th:value="${departamento.idDepartamento}" th:text="${departamento.nombre}"></option>
+            </select>
+        </div>
+        <div class="button-container mt-4 d-flex justify-content-between">
+            <button type="button" class="btn btn-dark" onclick="window.history.back();">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </button>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Materiales
+            </button>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

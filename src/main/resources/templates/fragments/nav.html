@@ -59,7 +59,8 @@
                     <li class="nav-item mx-2">
                         <a class="nav-link text-white text-center" th:href="@{/api/usuarios/perfil}">
                             <i class="fas fa-user"></i>
-                            <span th:text="${usuario.nombre} + ' ' + ${usuario.apellidos}"></span>
+                            <span th:if="${usuario != null}" th:text="${usuario.nombre}"></span>
+                            <span th:if="${usuario == null}">Invitado</span>
                         </a>
                     </li>
                     <li class="nav-item mx-2">

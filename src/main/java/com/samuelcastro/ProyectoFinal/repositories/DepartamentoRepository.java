@@ -1,16 +1,13 @@
 package com.samuelcastro.ProyectoFinal.repositories;
 
 import com.samuelcastro.ProyectoFinal.entities.Departamento;
-
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
-public interface DepartamentoRepository extends JpaRepository<Departamento, Integer> {
+public interface DepartamentoRepository extends CrudRepository<Departamento, Integer> {
     boolean existsByNombre(String nombre);
     Departamento findByNombre(String nombre);
-    @Query("SELECT d FROM Departamento d JOIN d.materiales m WHERE m IS NOT NULL")
-    List<Departamento> findDepartamentosConMateriales();
-    
+    @Query("SELECT DISTINCT d FROM Departamento d LEFT JOIN FETCH d.materiales")
+    List<Departamento> findAllWithMateriales();
 }

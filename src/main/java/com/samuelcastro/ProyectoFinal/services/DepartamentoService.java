@@ -26,7 +26,7 @@ public class DepartamentoService {
      * @return Lista de todos los departamentos.
      */
     public List<Departamento> findAll() {
-        return departamentoRepository.findAll();
+        return (List<Departamento>) departamentoRepository.findAll();
     }
 
     /**
@@ -75,7 +75,17 @@ public class DepartamentoService {
         }
     }
 
-    public List<Departamento> findDepartamentosConMateriales() {
-        return departamentoRepository.findDepartamentosConMateriales();
+    /**
+     * Obtener un departamento por su nombre.
+     * 
+     * @param nombre Nombre del departamento.
+     * @return El departamento con el nombre especificado, o null si no se encuentra.
+     */
+    public Departamento findByNombre(String nombre) {
+        return departamentoRepository.findByNombre(nombre);
+    }
+
+    public List<Departamento> findAllWithMateriales() {
+        return departamentoRepository.findAllWithMateriales();
     }
 }

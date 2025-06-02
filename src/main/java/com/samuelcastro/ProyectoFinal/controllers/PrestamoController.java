@@ -40,9 +40,16 @@ public class PrestamoController {
 
     @GetMapping
     public String getAllPrestamos(Model model) {
-        List<Prestamo> prestamos = prestamoService.findAll();
-        model.addAttribute("prestamos", prestamos);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        List<Prestamo> prestamos;
+        if (usuarioDetails != null && "ROLE_USER".equals(usuarioDetails.getUsuario().getRol())) {
+            // Solo préstamos donde el usuario es quien realiza o recibe
+            prestamos = prestamoService.findByUsuarioId(usuarioDetails.getUsuario().getIdUsuario());
+        } else {
+            // Admin y profesor ven todos
+            prestamos = prestamoService.findAll();
+        }
+        model.addAttribute("prestamos", prestamos);
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
             model.addAttribute("roles", usuarioDetails.getUsuario().getRol());

@@ -27,7 +27,7 @@
                     <th class="text-center">Fecha Plazo</th>
                     <th class="text-center">Fecha Devolución</th>
                     <th class="text-center">Devuelto</th>
-                    <th class="text-center">Acciones</th>
+                    <th class="text-center" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +39,7 @@
                     <td class="text-center" th:text="${prestamo.fechaPlazo}"></td>
                     <td class="text-center" th:text="${prestamo.fechaDevolucion}"></td>
                     <td class="text-center" th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
-                    <td class="text-center">
+                    <td class="text-center" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
                         <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success btn-fixed-width" th:if="${!prestamo.devuelto}">
                             <i class="fas fa-undo-alt"></i> Devolver
                         </a>
