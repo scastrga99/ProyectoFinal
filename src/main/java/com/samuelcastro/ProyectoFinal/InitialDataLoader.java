@@ -8,7 +8,7 @@ import com.samuelcastro.ProyectoFinal.repositories.LibroRepository;
 import com.samuelcastro.ProyectoFinal.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +24,7 @@ public class InitialDataLoader implements CommandLineRunner {
     private LibroRepository libroRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
