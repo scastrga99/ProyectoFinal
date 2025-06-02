@@ -47,14 +47,14 @@ public class InitialDataLoader implements CommandLineRunner {
             usuarioRepository.save(usuario);
         }
 
-        // Crear un usuario con rol "ROLE_DATOS" si no existe
-        if (!usuarioRepository.existsByRol("ROLE_DATOS")) {
+        // Crear un usuario con rol "ROLE_PROFESOR" si no existe
+        if (!usuarioRepository.existsByRol("ROLE_PROFESOR")) {
             Usuario usuario = new Usuario();
             usuario.setNombre("missingUser");
             usuario.setApellidos("missingUser");
             usuario.setCorreo("missingUser@gmail.com");
             usuario.setPassword(passwordEncoder.encode("missingUser")); // Encriptar la contraseña
-            usuario.setRol("ROLE_DATOS");
+            usuario.setRol("ROLE_PROFESOR");
             usuario.setDepartamento(departamentoRepository.findByNombre("Sin departamento"));
             usuarioRepository.save(usuario);
         }
