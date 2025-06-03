@@ -72,6 +72,23 @@
     <script>
         $(document).ready(function() {
             $('#prestamosTable').DataTable();
+
+            $('#prestamosTable tbody tr').each(function() {
+                var fechaPlazo = $(this).find('td').eq(4).text().trim(); // Columna 5: Fecha Plazo
+                var devuelto = $(this).find('td').eq(6).text().trim();   // Columna 7: Devuelto
+
+                if (devuelto === 'No' && fechaPlazo) {
+                    var hoy = new Date();
+                    var partes = fechaPlazo.split('-');
+                    // Ajusta el formato si es necesario (aquí se asume yyyy-MM-dd)
+                    var fechaLimite = new Date(partes[0], partes[1] - 1, partes[2]);
+                    if (fechaLimite < hoy.setHours(0,0,0,0)) {
+                        $(this).addClass('text-danger');
+                        var acciones = $(this).find('td').last();
+                        acciones.prepend('<span title="¡Plazo vencido!"><i class="fas fa-exclamation-triangle text-danger mr-2"></i></span>');
+                    }
+                }
+            });
         });
     </script>
 </body>

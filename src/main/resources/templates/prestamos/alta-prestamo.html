@@ -64,5 +64,25 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var fechaPlazoInput = document.getElementById("fechaPlazo");
+            var hoy = new Date();
+            hoy.setDate(hoy.getDate() + 7); // Suma 7 días
+            var minDate = hoy.toISOString().split('T')[0];
+            fechaPlazoInput.setAttribute("min", minDate);
+
+            // Validación al enviar el formulario
+            var form = fechaPlazoInput.form;
+            form.addEventListener("submit", function(e) {
+                var seleccionada = new Date(fechaPlazoInput.value);
+                if (seleccionada < hoy) {
+                    e.preventDefault();
+                    alert("La fecha de plazo debe ser al menos una semana después de hoy.");
+                    fechaPlazoInput.focus();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

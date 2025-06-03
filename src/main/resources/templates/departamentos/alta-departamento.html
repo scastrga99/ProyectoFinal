@@ -18,6 +18,8 @@
     <div class="container mt-5">
         <!-- Título de la página -->
         <h1 class="mb-4">Alta Departamento</h1>
+        <!-- Mensaje de error, si existe -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         <!-- Formulario para crear un nuevo departamento -->
         <form action="#" th:action="@{/api/departamentos}" th:object="${departamento}" method="post">
             <div class="form-group">

@@ -30,7 +30,13 @@ public class DepartamentoController {
     }
 
     @PostMapping
-    public String crearDepartamento(Departamento departamento) {
+    public String crearDepartamento(Departamento departamento, Model model) {
+        if (departamentoService.findByNombre(departamento.getNombre()) != null) {
+            model.addAttribute("departamento", departamento);
+            model.addAttribute("error", "Ya existe un departamento con ese nombre.");
+            addAuthenticatedUserToModel(model);
+            return "departamentos/alta-departamento";
+        }
         departamentoService.save(departamento);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", departamento.getNombre());
