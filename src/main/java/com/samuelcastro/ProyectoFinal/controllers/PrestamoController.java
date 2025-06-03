@@ -1,6 +1,7 @@
 package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Prestamo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samuelcastro.ProyectoFinal.entities.Libro;
 import com.samuelcastro.ProyectoFinal.services.UsuarioService;
 import com.samuelcastro.ProyectoFinal.services.LibroService;
@@ -67,6 +68,14 @@ public class PrestamoController {
                         libro -> libro.getTitulo() + " - " + libro.getAutor() + " - " + libro.getEditorial()
                 ));
         model.addAttribute("librosAgrupados", librosAgrupados);
+        ObjectMapper mapper = new ObjectMapper();
+        String librosAgrupadosJson = "";
+        try {
+            librosAgrupadosJson = mapper.writeValueAsString(librosAgrupados);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("librosAgrupadosJson", librosAgrupadosJson);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
             model.addAttribute("usuario", usuarioDetails.getUsuario());
