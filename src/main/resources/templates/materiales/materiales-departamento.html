@@ -56,24 +56,26 @@
                     <div class="row mt-4 w-100">
                         <div class="col-12 mt-2">
                             <!-- Botón para abrir la vista de lista de materiales -->
-                            <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning btn-block">
+                            <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning w-100">
                                 <i class="fas fa-list"></i> Ver Lista
                             </a>
                         </div>
                         <div class="col-12 mt-2">
+                            <!-- Botón Ajustar Cantidad -->
                             <button type="button"
-                                class="btn btn-info btn-block"
+                                class="btn btn-info w-100"
                                 data-toggle="modal"
                                 th:data-target="'#ajustarMaterialesModal-' + ${entry.key.replace(' ', '-')}">
                                 <i class="fas fa-sliders-h"></i> Ajustar Cantidad
                             </button>
                         </div>
                         <div class="col-12 mt-2">
+                            <!-- Botón Eliminar -->
                             <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
-                            class="btn btn-danger btn-block btn-eliminar-material"
-                            th:data-nombre="${parts[0]}"
-                            th:data-marca="${parts[1]}"
-                            th:data-departamento="${entry.value[0].departamento.idDepartamento}">
+                               class="btn btn-danger w-100 btn-eliminar-material"
+                               th:data-nombre="${parts[0]}"
+                               th:data-marca="${parts[1]}"
+                               th:data-departamento="${entry.value[0].departamento.idDepartamento}">
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
                         </div>
@@ -122,6 +124,28 @@
                 </table>
             </div>
         </div>
+        <!-- Botón para agregar material (abre modal o redirige a alta-material) -->
+        <div class="button-container mt-4 d-flex justify-content-between">
+                <a th:href="@{/api/materiales}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Regresar</a>
+                <div>
+                    <!-- Botón para abrir modal de importar materiales desde CSV -->
+                    <button type="button" class="btn btn-dark mr-1" data-toggle="modal" data-target="#importarMaterialCsvModal">
+                        <i class="fas fa-file-csv"></i> Importar desde CSV
+                    </button>
+                    <!-- Botón para abrir modal de agregar múltiples materiales -->
+                    <a th:href="@{/api/materiales/alta-multiples-materiales}" class="btn btn-warning mr-1">
+                        <i class="fas fa-plus"></i> Agregar Múltiples Materiales
+                    </a>
+                    <!-- Botón para abrir modal de nuevo material -->
+                    <a th:href="@{/api/materiales/nuevo(departamentoId=${departamento.idDepartamento})}" class="btn btn btn-warning mr-2">
+                        <i class="fas fa-plus"></i> Agregar Material
+                    </a>
+                    <a th:href="@{/api/materiales/exportar(departamentoId=${departamento.idDepartamento})}" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Exportar Materiales
+                    </a>
+                </div>
+            </div>
+        </div>  
     </div>
 
     <!-- Modal para ajustar materiales -->
