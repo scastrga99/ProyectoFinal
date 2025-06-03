@@ -12,11 +12,17 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void enviarRecordatorio(String destinatario, String nombrePersona, String tituloLibro, String fechaDevolucion) {
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(destinatario);
-        mensaje.setSubject("Recordatorio de Devolución de Libro");
-        mensaje.setText("Estimado " + nombrePersona + ",\n\nLe recordamos que debe devolver el libro titulado " + tituloLibro + " con fecha de devolucion el dia " + fechaDevolucion +".\n\nGracias.");
-        mailSender.send(mensaje);
+        try {
+            SimpleMailMessage mensaje = new SimpleMailMessage();
+            mensaje.setTo(destinatario);
+            mensaje.setSubject("Recordatorio de Devolución de Libro");
+            mensaje.setText("Estimado " + nombrePersona + ",\n\nLe recordamos que debe devolver el libro titulado " + tituloLibro + " con fecha de devolucion el dia " + fechaDevolucion +".\n\nGracias.");
+            mailSender.send(mensaje);
+            System.out.println("Correo de recordatorio enviado a: " + destinatario);
+        } catch (Exception e) {
+            System.err.println("Error enviando correo de recordatorio: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void enviarNuevaContraseña(String destinatario, String nuevaContraseña) {

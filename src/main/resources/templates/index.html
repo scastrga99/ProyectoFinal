@@ -19,7 +19,7 @@
     <!-- Contenedor principal -->
     <div class="container">
         <h2 class="mb-4">Registro de Operaciones</h2>
-        <table id="registrosTable" class="table table-striped" th:if="${roles.contains('ROLE_ADMIN')}">
+        <table id="registrosTable" class="table table-striped" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
             <thead class="thead-dark">
                 <tr>
                     <th><i class="fas fa-calendar-alt"></i> Fecha</th>
@@ -39,7 +39,7 @@
         </table>
 
         <!-- Tabla de préstamos próximos a la fecha límite (solo para ADMIN o PROFESOR) -->
-        <div th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR')}">
+        <div th:if="${roles != null and (roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
             <h2 class="mb-4">Préstamos Próximos a la Fecha Límite</h2>
             <table id="prestamosProximosTable" class="table table-striped">
                 <thead class="thead-dark">
