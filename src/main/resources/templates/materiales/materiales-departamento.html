@@ -52,33 +52,27 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Botones alineados abajo y ocupando todo el ancho -->
-                    <div class="row mt-4 w-100">
-                        <div class="col-12 mt-2">
-                            <!-- Botón para abrir la vista de lista de materiales -->
-                            <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning w-100">
-                                <i class="fas fa-list"></i> Ver Lista
-                            </a>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <!-- Botón Ajustar Cantidad -->
-                            <button type="button"
-                                class="btn btn-info w-100"
-                                data-toggle="modal"
-                                th:data-target="'#ajustarMaterialesModal-' + ${entry.key.replace(' ', '-')}">
-                                <i class="fas fa-sliders-h"></i> Ajustar Cantidad
-                            </button>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <!-- Botón Eliminar -->
-                            <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
-                               class="btn btn-danger w-100 btn-eliminar-material"
-                               th:data-nombre="${parts[0]}"
-                               th:data-marca="${parts[1]}"
-                               th:data-departamento="${entry.value[0].departamento.idDepartamento}">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </a>
-                        </div>
+                    <!-- Botones alineados abajo y centrados -->
+                    <div class="d-flex flex-column align-items-center justify-content-end w-100 px-3 pb-3">
+                        <!-- Botón para abrir la vista de lista de materiales -->
+                        <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning w-100 mb-2">
+                            <i class="fas fa-list"></i> Ver Lista
+                        </a>
+                        <!-- Botón Ajustar Cantidad -->
+                        <button type="button"
+                            class="btn btn-info w-100 mb-2"
+                            data-toggle="modal"
+                            th:data-target="'#ajustarMaterialesModal-' + ${entry.key.replace(' ', '-')}">
+                            <i class="fas fa-sliders-h"></i> Ajustar Cantidad
+                        </button>
+                        <!-- Botón Eliminar -->
+                        <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
+                           class="btn btn-danger w-100 btn-eliminar-material"
+                           th:data-nombre="${parts[0]}"
+                           th:data-marca="${parts[1]}"
+                           th:data-departamento="${entry.value[0].departamento.idDepartamento}">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </a>
                     </div>
                 </div>
             </div>
@@ -106,12 +100,14 @@
                             <td th:text="${entry.value[0].descripcion}"></td>
                             <td th:text="${entry.value[0].departamento.nombre}"></td>
                             <td>
-                                <div class="d-flex flex-row justify-content-center align-items-center">
-                                    <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mr-2">
-                                        
+                                <div class="d-flex flex-column align-items-center">
+                                    <!-- Botón Ver Lista (Editar) -->
+                                    <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning btn-sm w-100 mb-2">
+                                        <i class="fas fa-list"></i> Ver Lista
                                     </a>
+                                    <!-- Botón Eliminar -->
                                     <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
-                                    class="btn btn-danger btn-sm btn-eliminar-material"
+                                    class="btn btn-danger btn-sm w-100 btn-eliminar-material"
                                     th:data-nombre="${parts[0]}"
                                     th:data-marca="${parts[1]}"
                                     th:data-departamento="${entry.value[0].departamento.idDepartamento}">
