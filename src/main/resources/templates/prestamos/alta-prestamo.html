@@ -30,13 +30,29 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="libro">Libro:</label>
+                <label for="libroTitulo">Libro:</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-book"></i></span>
                     </div>
-                    <select id="libro" th:field="*{libro.idLibro}" class="form-control">
-                        <option th:each="entry : ${librosAgrupados}" th:with="parts=${entry.key.split(' - ')}" th:if="${entry.key.split(' - ')[0] != 'missingLibro'}" th:value="${entry.value[0].idLibro}" th:text="${parts[0]} + ' (Cantidad: ' + ${#lists.size(entry.value)} + ')'"></option>
+                    <select id="libroTitulo" class="form-control">
+                        <option value="">Selecciona un libro</option>
+                        <option th:each="entry : ${librosAgrupados}" 
+                                th:with="parts=${entry.key.split(' - ')}"
+                                th:if="${entry.key.split(' - ')[0] != 'missingLibro'}"
+                                th:value="${parts[0]}"
+                                th:text="${parts[0]}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="isbn">ISBN:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                    </div>
+                    <select id="isbn" name="libro.idLibro" class="form-control" required>
+                        <option value="">Selecciona un ISBN</option>
                     </select>
                 </div>
             </div>
@@ -80,6 +96,27 @@
                     e.preventDefault();
                     alert("La fecha de plazo debe ser al menos una semana después de hoy.");
                     fechaPlazoInput.focus();
+                }
+            });
+
+            // Prepara los datos de libros e ISBNs
+            var librosData = /*[[${librosAgrupadosJson}]]*/ {};
+
+            var libroTituloSelect = document.getElementById("libroTitulo");
+            var isbnSelect = document.getElementById("isbn");
+
+            libroTituloSelect.addEventListener("change", function() {
+                var titulo = this.value;
+                // Limpia el select de ISBN
+                isbnSelect.innerHTML = '<option value="">Selecciona un ISBN</option>';
+                if (titulo && librosData[titulo + " - "]) {
+                    var ejemplares = librosData[titulo + " - "];
+                    ejemplares.forEach(function(libro) {
+                        var option = document.createElement("option");
+                        option.value = libro.idLibro;
+                        option.text = libro.isbn + " (" + libro.editorial + ", " + libro.autor + ")";
+                        isbnSelect.appendChild(option);
+                    });
                 }
             });
         });
