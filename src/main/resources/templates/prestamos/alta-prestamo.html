@@ -111,17 +111,19 @@
 
             libroTituloSelect.addEventListener("change", function() {
                 var titulo = this.value;
-                // Limpia el select de ISBN
                 isbnSelect.innerHTML = '<option value="">Selecciona un ISBN</option>';
-                if (titulo && librosData[titulo + " - "]) {
-                    var ejemplares = librosData[titulo + " - "];
-                    ejemplares.forEach(function(libro) {
-                        var option = document.createElement("option");
-                        option.value = libro.idLibro;
-                        option.text = libro.isbn + " (" + libro.editorial + ", " + libro.autor + ")";
-                        isbnSelect.appendChild(option);
-                    });
-                }
+                // Busca la clave que empieza por el título seleccionado
+                Object.keys(librosData).forEach(function(key) {
+                    if (key.startsWith(titulo + " - ")) {
+                        var ejemplares = librosData[key];
+                        ejemplares.forEach(function(libro) {
+                            var option = document.createElement("option");
+                            option.value = libro.idLibro;
+                            option.text = libro.isbn + " (" + libro.editorial + ", " + libro.autor + ")";
+                            isbnSelect.appendChild(option);
+                        });
+                    }
+                });
             });
         });
     </script>
