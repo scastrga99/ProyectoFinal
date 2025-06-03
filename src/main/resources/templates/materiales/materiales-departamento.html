@@ -123,8 +123,8 @@
                         <td th:text="${entry.value[0].descripcion}"></td>
                         <td th:text="${entry.value[0].departamento.nombre}"></td>
                         <td>
-                            <div class="d-flex flex-column">
-                                <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mb-2">
+                            <div class="d-flex flex-row justify-content-center align-items-center">
+                                <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mr-2">
                                     <i class="fas fa-list"></i> Ver Lista
                                 </a>
                                 <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"

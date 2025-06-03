@@ -84,7 +84,8 @@
         document.addEventListener("DOMContentLoaded", function() {
             var fechaPlazoInput = document.getElementById("fechaPlazo");
             var hoy = new Date();
-            hoy.setDate(hoy.getDate() + 7); // Suma 7 días
+            hoy.setHours(0,0,0,0);
+            hoy.setDate(hoy.getDate() + 7); // Suma 7 días completos
             var minDate = hoy.toISOString().split('T')[0];
             fechaPlazoInput.setAttribute("min", minDate);
 
@@ -92,6 +93,7 @@
             var form = fechaPlazoInput.form;
             form.addEventListener("submit", function(e) {
                 var seleccionada = new Date(fechaPlazoInput.value);
+                seleccionada.setHours(0,0,0,0);
                 if (seleccionada < hoy) {
                     e.preventDefault();
                     alert("La fecha de plazo debe ser al menos una semana después de hoy.");
