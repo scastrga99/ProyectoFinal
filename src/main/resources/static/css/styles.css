@@ -137,6 +137,11 @@ tr:hover {
 
 .btn-fixed-width {
     width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .text-center {

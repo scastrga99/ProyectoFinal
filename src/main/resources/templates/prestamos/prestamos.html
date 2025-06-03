@@ -41,11 +41,15 @@
                         <td class="text-center" th:text="${prestamo.fechaDevolucion}"></td>
                         <td class="text-center" th:text="${prestamo.devuelto ? 'Sí' : 'No'}"></td>
                         <td class="text-center" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}">
-                            <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" class="btn btn-success btn-fixed-width" th:if="${!prestamo.devuelto}">
+                            <a th:href="@{/api/prestamos/devolver/{id}(id=${prestamo.idPrestamo})}" 
+                               class="btn btn-success btn-fixed-width mb-1" 
+                               th:if="${!prestamo.devuelto}">
                                 <i class="fas fa-undo-alt"></i> Devolver
                             </a>
                             <h4 th:if="${prestamo.devuelto}">-</h4>
-                            <a th:href="@{/api/prestamos/recordatorio/{id}(id=${prestamo.idPrestamo})}" class="btn btn-warning btn-fixed-width" th:if="${(roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')) and !prestamo.devuelto}">
+                            <a th:href="@{/api/prestamos/recordatorio/{id}(id=${prestamo.idPrestamo})}" 
+                               class="btn btn-warning btn-fixed-width mb-1" 
+                               th:if="${(roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')) and !prestamo.devuelto}">
                                 <i class="fas fa-envelope"></i> Recordatorio
                             </a>
                         </td>
