@@ -5,6 +5,7 @@ import com.samuelcastro.ProyectoFinal.entities.Departamento;
 import com.samuelcastro.ProyectoFinal.entities.Material;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
 import com.samuelcastro.ProyectoFinal.services.MaterialService;
+import com.samuelcastro.ProyectoFinal.services.RegistroService;
 import com.samuelcastro.ProyectoFinal.services.UsuarioDetails;
 import com.samuelcastro.ProyectoFinal.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class MaterialController {
 
     @Autowired
     private DepartamentoService departamentoService;
+
+    @Autowired
+    private RegistroService registroService;
 
     @InitBinder
     public void InitBinder(WebDataBinder binder) {
@@ -121,6 +125,10 @@ public class MaterialController {
         material.setDepartamento(departamento);
 
         materialService.save(material);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (usuarioDetails != null) {
+            registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", material.getNombre());
+        }
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
@@ -131,6 +139,7 @@ public class MaterialController {
                                              @RequestParam("estado") String estado,
                                              @RequestParam("departamento") int departamentoId) {
         String[] series = numSeries.split(",");
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (String serie : series) {
             Material material = new Material();
             material.setNumSerie(serie.trim());
@@ -140,6 +149,9 @@ public class MaterialController {
             material.setFechaAlta(new Date());
             material.setDepartamento(departamentoService.findById(departamentoId));
             materialService.save(material);
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", material.getNombre());
+            }
         }
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
@@ -150,6 +162,7 @@ public class MaterialController {
                                   @RequestParam("departamento") int departamentoId,
                                   @RequestParam("ajuste") String ajuste,
                                   @RequestParam("cantidad") int cantidad) {
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (ajuste.equals("aumentar")) {
             // Buscar un material original como referencia
             List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
@@ -169,10 +182,16 @@ public class MaterialController {
                 // Generar un número de serie único
                 material.setNumSerie("XXX-XXXX");
                 materialService.save(material);
+                if (usuarioDetails != null) {
+                    registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", material.getNombre());
+                }
             }
         } else if (ajuste.equals("reducir")) {
             List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
             for (int i = 0; i < cantidad && i < materiales.size(); i++) {
+                if (usuarioDetails != null) {
+                    registroService.registrarOperacion("Material", materiales.get(i).getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", materiales.get(i).getNombre());
+                }
                 materialService.deleteById(materiales.get(i).getIdMaterial());
             }
         }
@@ -213,7 +232,11 @@ public class MaterialController {
             @PathVariable String marca,
             @RequestParam("departamentoId") int departamentoId) {
         List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (Material material : materiales) {
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", material.getNombre());
+            }
             materialService.deleteById(material.getIdMaterial());
         }
         return "redirect:/api/materiales/departamento/" + departamentoId;
@@ -239,6 +262,10 @@ public class MaterialController {
                 }
             }
             materialService.save(existingMaterial);
+            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Material", existingMaterial.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR ", existingMaterial.getNombre());
+            }
             // Redirigir al departamento
             int departamentoId = existingMaterial.getDepartamento().getIdDepartamento();
             return "redirect:/api/materiales/departamento/" + departamentoId + "?materialId=" + existingMaterial.getIdMaterial();
@@ -252,6 +279,10 @@ public class MaterialController {
         int departamentoId = (material != null && material.getDepartamento() != null)
             ? material.getDepartamento().getIdDepartamento()
             : -1;
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+        if (material != null && usuarioDetails != null) {
+            registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", material.getNombre());
+        }
         materialService.deleteById(id);
         if (departamentoId != -1) {
             return "redirect:/api/materiales/departamento/" + departamentoId;
@@ -391,8 +422,12 @@ public class MaterialController {
             model.addAttribute("materialesAgrupados", materialService.findByDepartamentoId(departamentoId));
             return "materiales/materiales-departamento";
         }
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (Material material : materialesAInsertar) {
             materialService.save(material);
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR (IMPORTAR CSV) ", material.getNombre());
+            }
         }
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }

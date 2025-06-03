@@ -168,6 +168,7 @@ public class UsuarioController {
     ) {
         String[] lineas = usuariosData.split("\\r?\\n");
         StringBuilder errores = new StringBuilder();
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (String linea : lineas) {
             String[] partes = linea.split(",");
             if (partes.length >= 4) {
@@ -184,12 +185,15 @@ public class UsuarioController {
                 usuario.setRol(rol);
                 usuario.setDepartamento(departamentoService.findById(departamentoId));
                 usuarioService.save(usuario);
+                if (usuarioDetails != null) {
+                    registroService.registrarOperacion("Usuario", usuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", usuario.getNombre() + " " + usuario.getApellidos());
+                }
             }
         }
         if (errores.length() > 0) {
             model.addAttribute("departamentos", departamentoService.findAll());
             model.addAttribute("error", "Los siguientes correos ya están registrados:<br>" + errores.toString());
-            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
+            usuarioDetails = SecurityUtils.getAuthenticatedUser();
             if (usuarioDetails != null) {
                 model.addAttribute("usuario", usuarioDetails.getUsuario());
                 model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
@@ -301,8 +305,12 @@ public class UsuarioController {
             return "usuarios/usuarios";
         }
         // Si no hay errores, guardar todos los usuarios
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (Usuario usuario : usuariosAInsertar) {
             usuarioService.save(usuario);
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Usuario", usuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", usuario.getNombre() + " " + usuario.getApellidos());
+            }
         }
         return "redirect:/api/usuarios";
     }

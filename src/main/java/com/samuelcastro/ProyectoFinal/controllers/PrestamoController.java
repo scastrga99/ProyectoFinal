@@ -85,8 +85,10 @@ public class PrestamoController {
         Libro libro = libroService.findById(prestamo.getLibro().getIdLibro());
         libro.setEstado("Prestado");
         libroService.save(libro);
-        registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), prestamo.getUsuarioRealiza().getNombre() + " " + prestamo.getUsuarioRealiza().getApellidos() + " EJECUTA CREAR SOBRE ", libro.getTitulo());
         prestamoService.save(prestamo);
+        if (usuarioDetails != null) {
+            registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR SOBRE ", libro.getTitulo());
+        }
         return "redirect:/api/prestamos";
     }
 
@@ -114,7 +116,9 @@ public class PrestamoController {
             existingPrestamo.setDevuelto(prestamo.isDevuelto());
             prestamoService.save(existingPrestamo);
             UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", existingPrestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR SOBRE ", libroService.findById(existingPrestamo.getLibro().getIdLibro()).getTitulo());
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Prestamo", existingPrestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR SOBRE ", libroService.findById(existingPrestamo.getLibro().getIdLibro()).getTitulo());
+            }
         }
         return "redirect:/api/prestamos";
     }
@@ -122,10 +126,12 @@ public class PrestamoController {
     @GetMapping("/eliminar/{id}")
     public String eliminarPrestamo(@PathVariable int id) {
         Prestamo prestamo = prestamoService.findById(id);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (prestamo != null) {
             prestamoService.deleteById(id);
-            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Prestamo", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            }
         }
         return "redirect:/api/prestamos";
     }
@@ -133,6 +139,7 @@ public class PrestamoController {
     @GetMapping("/devolver/{id}")
     public String devolverPrestamo(@PathVariable int id) {
         Prestamo prestamo = prestamoService.findById(id);
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (prestamo != null) {
             prestamo.setDevuelto(true);
             prestamo.setFechaDevolucion(new Date());
@@ -140,8 +147,9 @@ public class PrestamoController {
             libro.setEstado("Libre");
             libroService.save(libro);
             prestamoService.save(prestamo);
-            UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-            registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Prestamo", prestamo.getIdPrestamo(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA DEVOLVER SOBRE ", libroService.findById(prestamo.getLibro().getIdLibro()).getTitulo());
+            }
         }
         return "redirect:/api/prestamos";
     }

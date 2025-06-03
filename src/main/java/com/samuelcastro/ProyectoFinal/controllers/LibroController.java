@@ -215,6 +215,7 @@ public class LibroController {
         String titulo = parts.length > 0 ? parts[0] : "";
         String autor = parts.length > 1 ? parts[1] : "";
         String editorial = parts.length > 2 ? parts[2] : "";
+        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (String isbn : isbnArray) {
             Libro libro = new Libro();
             libro.setIsbn(isbn.trim());
@@ -223,6 +224,9 @@ public class LibroController {
             libro.setEditorial(editorial);
             libro.setEstado("Libre");
             libroService.save(libro);
+            if (usuarioDetails != null) {
+                registroService.registrarOperacion("Libro", libro.getIdLibro(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", libro.getTitulo());
+            }
         }
         return "redirect:/api/libros/editar/" + key;
     }
