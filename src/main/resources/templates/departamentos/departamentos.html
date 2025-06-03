@@ -20,31 +20,33 @@
     <div class="container-fluid">
         <h1 class="mb-4">Lista de Departamentos</h1>
         <!-- Tabla para mostrar la lista de departamentos -->
-        <table id="departamentosTable" class="table table-striped rounded-table">
-            <thead class="thead-dark">
-                <tr>
-                    <!-- Cabecera de la tabla -->
-                    <th>Nombre</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Iterar sobre la lista de departamentos y mostrar cada uno en una fila, excepto el departamento con id = 1 -->
-                <tr th:each="departamento : ${departamentos}" th:if="${departamento.idDepartamento} != 1">
-                    <td th:text="${departamento.nombre}">Nombre</td>
-                    <td>
-                        <!-- Enlace para editar el departamento -->
-                        <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <!-- Enlace para borrar el departamento -->
-                        <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm btn-borrar-departamento">
-                            <i class="fas fa-trash-alt"></i> Borrar
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="departamentosTable" class="table table-striped rounded-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <!-- Cabecera de la tabla -->
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterar sobre la lista de departamentos y mostrar cada uno en una fila, excepto el departamento con id = 1 -->
+                    <tr th:each="departamento : ${departamentos}" th:if="${departamento.idDepartamento} != 1">
+                        <td th:text="${departamento.nombre}">Nombre</td>
+                        <td>
+                            <!-- Enlace para editar el departamento -->
+                            <a th:href="@{/api/departamentos/edit/{id}(id=${departamento.idDepartamento})}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <!-- Enlace para borrar el departamento -->
+                            <a th:href="@{/api/departamentos/delete/{id}(id=${departamento.idDepartamento})}" class="btn btn-danger btn-sm btn-borrar-departamento">
+                                <i class="fas fa-trash-alt"></i> Borrar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <!-- Contenedor de botones -->
         <div class="button-container mt-4 d-flex justify-content-between">
             <!-- Botón para regresar a la página principal -->

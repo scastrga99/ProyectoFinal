@@ -66,31 +66,33 @@
         </div>
 
         <!-- Tabla para mostrar la lista de libros asociados -->
-        <table id="librosAsociadosTable" class="table table-striped rounded-table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ISBN</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editorial</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="libro : ${libros}">
-                    <td th:text="${libro.isbn}"></td>
-                    <td th:text="${libro.titulo}"></td>
-                    <td th:text="${libro.autor}"></td>
-                    <td th:text="${libro.editorial}"></td>
-                    <td th:text="${libro.estado}"></td>
-                    <td>
-                        <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                        <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro}, key=${key})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="librosAsociadosTable" class="table table-striped rounded-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Editorial</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="libro : ${libros}">
+                        <td th:text="${libro.isbn}"></td>
+                        <td th:text="${libro.titulo}"></td>
+                        <td th:text="${libro.autor}"></td>
+                        <td th:text="${libro.editorial}"></td>
+                        <td th:text="${libro.estado}"></td>
+                        <td>
+                            <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
+                            <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro}, key=${key})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="button-container mt-4 d-flex justify-content-between">

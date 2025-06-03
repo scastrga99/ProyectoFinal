@@ -104,41 +104,43 @@
         </div>
         <!-- Vista en modo tabla -->
         <div class="table-view" style="display: none;">
-            <table id="materialesTable" class="table table-striped rounded-table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Marca</th>
-                        <th>Cantidad</th>
-                        <th>Descripción</th>
-                        <th>Departamento</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
-                        <td th:text="${parts[0]}"></td>
-                        <td th:text="${parts[1]}"></td>
-                        <td th:text="${entry.value.size()}"></td>
-                        <td th:text="${entry.value[0].descripcion}"></td>
-                        <td th:text="${entry.value[0].departamento.nombre}"></td>
-                        <td>
-                            <div class="d-flex flex-row justify-content-center align-items-center">
-                                <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mr-2">
-                                    <i class="fas fa-list"></i> Ver Lista
-                                </a>
-                                <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
-                                    class="btn btn-danger btn-sm btn-eliminar-material"
-                                    th:data-nombre="${parts[0]}"
-                                    th:data-marca="${parts[1]}"
-                                    th:data-departamento="${entry.value[0].departamento.idDepartamento}">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="materialesTable" class="table table-striped rounded-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Cantidad</th>
+                            <th>Descripción</th>
+                            <th>Departamento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${materialesAgrupados}" th:with="parts=${entry.key.split(' - ')}">
+                            <td th:text="${parts[0]}"></td>
+                            <td th:text="${parts[1]}"></td>
+                            <td th:text="${entry.value.size()}"></td>
+                            <td th:text="${entry.value[0].descripcion}"></td>
+                            <td th:text="${entry.value[0].departamento.nombre}"></td>
+                            <td>
+                                <div class="d-flex flex-row justify-content-center align-items-center">
+                                    <a th:href="@{/api/materiales/lista}" class="btn btn-warning btn-sm mr-2">
+                                        <i class="fas fa-list"></i> Ver Lista
+                                    </a>
+                                    <a th:href="@{/api/materiales/eliminar-multiples/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}"
+                                        class="btn btn-danger btn-sm btn-eliminar-material"
+                                        th:data-nombre="${parts[0]}"
+                                        th:data-marca="${parts[1]}"
+                                        th:data-departamento="${entry.value[0].departamento.idDepartamento}">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     <!-- Modal para ajustar materiales -->
