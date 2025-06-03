@@ -2,6 +2,7 @@ package com.samuelcastro.ProyectoFinal.controllers;
 
 import com.samuelcastro.ProyectoFinal.entities.Usuario;
 import com.samuelcastro.ProyectoFinal.services.DepartamentoService;
+import com.samuelcastro.ProyectoFinal.services.EmailService;
 import com.samuelcastro.ProyectoFinal.services.UsuarioService;
 import com.samuelcastro.ProyectoFinal.services.PrestamoService;
 import com.samuelcastro.ProyectoFinal.services.RegistroService;
@@ -40,6 +41,9 @@ public class UsuarioController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final String NOMBRE_NUEVO_USUARIO = "missingUser"; // Nombre del usuario para reasignación
 
@@ -232,6 +236,7 @@ public class UsuarioController {
         }
         StringBuilder errores = new StringBuilder();
         List<Usuario> usuariosAInsertar = new java.util.ArrayList<>();
+        List<String[]> correosYPasswords = new java.util.ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String linea;
             int fila = 1;
@@ -279,9 +284,12 @@ public class UsuarioController {
                 usuario.setApellidos(apellidos);
                 usuario.setCorreo(correo);
                 usuario.setRol(rol);
-                usuario.setPassword("123456"); // Contraseña por defecto
+                // Generar contraseña aleatoria
+                String password = java.util.UUID.randomUUID().toString().substring(0, 8);
+                usuario.setPassword(password);
                 usuario.setDepartamento(departamento);
                 usuariosAInsertar.add(usuario);
+                correosYPasswords.add(new String[]{correo, password});
                 fila++;
             }
         } catch (Exception e) {
@@ -304,13 +312,18 @@ public class UsuarioController {
             }
             return "usuarios/usuarios";
         }
-        // Si no hay errores, guardar todos los usuarios
+        // Si no hay errores, guardar todos los usuarios y enviar correo
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-        for (Usuario usuario : usuariosAInsertar) {
+        for (int i = 0; i < usuariosAInsertar.size(); i++) {
+            Usuario usuario = usuariosAInsertar.get(i);
             usuarioService.save(usuario);
             if (usuarioDetails != null) {
                 registroService.registrarOperacion("Usuario", usuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", usuario.getNombre() + " " + usuario.getApellidos());
             }
+            // Enviar correo con la contraseña generada
+            String correo = correosYPasswords.get(i)[0];
+            String password = correosYPasswords.get(i)[1];
+            emailService.enviarNuevaContraseña(correo, password);
         }
         return "redirect:/api/usuarios";
     }
