@@ -37,29 +37,35 @@ public class IndexController {
 
             model.addAttribute("registros", registroService.findAll());
 
-            // Préstamos próximos a la fecha límite (solo para ADMIN o PROFESOR)
-            if (usuario.getRol().contains("ROLE_ADMIN") || usuario.getRol().contains("ROLE_PROFESOR")) {
-                // Obtiene todos los préstamos realizados por el usuario actual
-                List<Prestamo> prestamos = prestamoService.findByUsuarioRealizaId(usuario.getIdUsuario());
-                // Filtra los préstamos para quedarse solo con los que:
+            // Préstamos próximos a la fecha límite (para ADMIN, PROFESOR y USER)
+            if (usuario.getRol().contains("ROLE_ADMIN") ||
+                usuario.getRol().contains("ROLE_PROFESOR") ||
+                usuario.getRol().contains("ROLE_USER")) {
+
+                // Obtiene los préstamos asociados al usuario actual (como destinatario si es USER, como realiza si es ADMIN/PROFESOR)
+                List<Prestamo> prestamos;
+                if (usuario.getRol().contains("ROLE_USER") && 
+                    !usuario.getRol().contains("ROLE_ADMIN") && 
+                    !usuario.getRol().contains("ROLE_PROFESOR")) {
+                    // Solo ROLE_USER: préstamos donde el usuario es el que recibe
+                    prestamos = prestamoService.findByUsuarioRecibeId(usuario.getIdUsuario());
+                } else {
+                    // ADMIN o PROFESOR (o ambos): préstamos realizados por el usuario actual
+                    prestamos = prestamoService.findByUsuarioRealizaId(usuario.getIdUsuario());
+                }
+
                 List<Prestamo> proximos = prestamos.stream()
-                    // No han sido devueltos
                     .filter(p -> !p.isDevuelto())
-                    // La fecha límite está entre hoy y 3 días adelante (inclusive)
                     .filter(p -> {
                         LocalDate fechaPlazo = null;
-                        // Convierte la fecha de plazo a LocalDate según el tipo de dato
                         if (p.getFechaPlazo() instanceof java.sql.Date) {
                             fechaPlazo = ((java.sql.Date) p.getFechaPlazo()).toLocalDate();
                         } else if (p.getFechaPlazo() instanceof java.util.Date) {
                             fechaPlazo = new java.sql.Date(p.getFechaPlazo().getTime()).toLocalDate();
                         }
-                        // Calcula los días entre hoy y la fecha límite
                         long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaPlazo);
-                        // Solo incluye si faltan entre 0 y 3 días
                         return dias >= 0 && dias <= 3;
                     })
-                    // Para cada préstamo, calcula y asigna los días restantes
                     .map(p -> {
                         LocalDate fechaPlazo = null;
                         if (p.getFechaPlazo() instanceof java.sql.Date) {
@@ -71,9 +77,7 @@ public class IndexController {
                         p.setDiasRestantes(diasRestantes);
                         return p;
                     })
-                    // Convierte el stream filtrado y mapeado a una lista
                     .collect(Collectors.toList());
-                // Agrega la lista de préstamos próximos al modelo para mostrarla en la vista
                 model.addAttribute("prestamosProximos", proximos);
             }
         }

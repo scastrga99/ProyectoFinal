@@ -18,6 +18,9 @@ public interface PrestamoRepository extends JpaRepository<Prestamo, Integer> {
     @Query("SELECT p FROM Prestamo p WHERE p.usuarioRealiza.idUsuario = :usuarioId")
     List<Prestamo> findByUsuarioRealizaId(@Param("usuarioId") int usuarioId);
 
+    @Query("SELECT p FROM Prestamo p WHERE p.usuarioRecibe.idUsuario = :usuarioId")
+    List<Prestamo> findByUsuarioRecibeId(@Param("usuarioId") int usuarioId);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Prestamo p WHERE p.libro.idLibro = :libroId")

@@ -276,12 +276,3 @@ table.dataTable.no-footer {
 .oculto {
     display: none !important;
 }
-
-.navbar-nav .nav-link {
-    padding-top: 8px;
-    padding-bottom: 0;
-    font-size: 1rem;
-}
-.navbar-nav .fa-lg {
-    margin-bottom: 2px;
-}

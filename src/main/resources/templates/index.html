@@ -18,49 +18,66 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     <!-- Contenedor principal -->
     <div class="container">
-        <h2 class="mb-4">Registro de Operaciones</h2>
-        <table id="registrosTable" class="table table-striped" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
-            <thead class="thead-dark">
-                <tr>
-                    <th><i class="fas fa-calendar-alt"></i> Fecha</th>
-                    <th><i class="fas fa-building"></i> Entidad</th>
-                    <th><i class="fas fa-tasks"></i> Operación</th>
-                    <th><i class="fas fa-info-circle"></i> Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="registro : ${registros}">
-                    <td th:text="${#dates.format(registro.fecha, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${registro.entidad}"></td>
-                    <td th:text="${registro.operacion}"></td>
-                    <td th:text="${registro.detalles}"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="jumbotron mt-4 py-4">
+            <h1 class="display-5">¡Bienvenido al Inventario del Instituto!</h1>
+            <p class="lead">
+                Esta plataforma te permite gestionar de forma sencilla y centralizada los materiales, libros y préstamos del instituto.<br>
+                Desde aquí podrás consultar registros, controlar el inventario, administrar usuarios y estar al tanto de los préstamos próximos a vencer.<br>
+                Utiliza el menú superior para navegar por las diferentes secciones.
+            </p>
+            <hr class="my-3">
+            <p th:if="${roles != null and (roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
+                Si tienes permisos de administrador o profesor, revisa los registros y préstamos próximos para mantener el control y evitar retrasos.
+            </p>
+        </div>
 
-        <!-- Tabla de préstamos próximos a la fecha límite (solo para ADMIN o PROFESOR) -->
-        <div th:if="${roles != null and (roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR'))}">
-            <h2 class="mb-4">Préstamos Próximos a la Fecha Límite</h2>
-            <table id="prestamosProximosTable" class="table table-striped">
+        <div class="table-responsive" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
+            <h2 class="mb-4">Registro de Operaciones</h2>
+            <table id="registrosTable" class="table table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Usuario que recibe</th>
-                        <th>Libro</th>
-                        <th>Fecha Préstamo</th>
-                        <th>Fecha Límite</th>
-                        <th>Días Restantes</th>
+                        <th><i class="fas fa-calendar-alt"></i> Fecha</th>
+                        <th><i class="fas fa-building"></i> Entidad</th>
+                        <th><i class="fas fa-tasks"></i> Operación</th>
+                        <th><i class="fas fa-info-circle"></i> Detalles</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="prestamo : ${prestamosProximos}">
-                        <td th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
-                        <td th:text="${prestamo.libro.titulo}"></td>
-                        <td th:text="${#dates.format(prestamo.fechaPrestamo, 'yyyy-MM-dd')}"></td>
-                        <td th:text="${#dates.format(prestamo.fechaPlazo, 'yyyy-MM-dd')}"></td>
-                        <td th:text="${prestamo.diasRestantes}"></td>
+                    <tr th:each="registro : ${registros}">
+                        <td th:text="${#dates.format(registro.fecha, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${registro.entidad}"></td>
+                        <td th:text="${registro.operacion}"></td>
+                        <td th:text="${registro.detalles}"></td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Tabla de préstamos próximos a la fecha límite (ADMIN, PROFESOR o USER) -->
+        <div th:if="${roles != null and (roles.contains('ROLE_ADMIN') or roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_USER'))}">
+            <h2 class="mb-4" th:text="${roles.contains('ROLE_USER')} ? 'Tus Préstamos Próximos a la Fecha Límite' : 'Préstamos Próximos a la Fecha Límite'"></h2>
+            <div class="table-responsive">
+                <table id="prestamosProximosTable" class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th th:if="${!roles.contains('ROLE_USER')}">Usuario que recibe</th>
+                            <th>Libro</th>
+                            <th>Fecha Préstamo</th>
+                            <th>Fecha Límite</th>
+                            <th>Días Restantes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prestamo : ${prestamosProximos}">
+                            <td th:if="${!roles.contains('ROLE_USER')}" th:text="${prestamo.usuarioRecibe.nombre} + ' ' + ${prestamo.usuarioRecibe.apellidos}"></td>
+                            <td th:text="${prestamo.libro.titulo}"></td>
+                            <td th:text="${#dates.format(prestamo.fechaPrestamo, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${#dates.format(prestamo.fechaPlazo, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${prestamo.diasRestantes}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>    
         </div>
     </div>
     <!-- Enlace a los archivos JavaScript de Bootstrap y sus dependencias -->
