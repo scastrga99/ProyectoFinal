@@ -102,6 +102,9 @@
             // Prepara los datos de libros e ISBNs
             /*<![CDATA[*/
             var librosData = /*[[${librosAgrupadosJson}]]*/ {};
+            if (typeof librosData === "string") {
+                librosData = JSON.parse(librosData);
+            }
             /*]]>*/
             var libroTituloSelect = document.getElementById("libroTitulo");
             var isbnSelect = document.getElementById("isbn");
