@@ -22,6 +22,9 @@ public class DepartamentoController {
     @Autowired
     private RegistroService registroService;
 
+    /**
+     * Muestra el formulario para crear un nuevo departamento.
+     */
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoDepartamento(Model model) {
         model.addAttribute("departamento", new Departamento());
@@ -29,6 +32,10 @@ public class DepartamentoController {
         return "departamentos/alta-departamento";
     }
 
+    /**
+     * Procesa la creación de un nuevo departamento.
+     * Si el nombre ya existe, muestra un error.
+     */
     @PostMapping
     public String crearDepartamento(Departamento departamento, Model model) {
         if (departamentoService.findByNombre(departamento.getNombre()) != null) {
@@ -38,11 +45,15 @@ public class DepartamentoController {
             return "departamentos/alta-departamento";
         }
         departamentoService.save(departamento);
+        // Registrar la operación de creación
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", departamento.getNombre());
         return "redirect:/api/departamentos";
     }
 
+    /**
+     * Lista todos los departamentos.
+     */
     @GetMapping
     public String listarDepartamentos(Model model) {
         List<Departamento> departamentos = departamentoService.findAll();
@@ -51,6 +62,9 @@ public class DepartamentoController {
         return "departamentos/departamentos";
     }
 
+    /**
+     * Muestra el formulario para editar un departamento existente.
+     */
     @GetMapping("/edit/{id}")
     public String mostrarFormularioEditarDepartamento(@PathVariable int id, Model model) {
         Departamento departamento = departamentoService.findById(id);
@@ -59,25 +73,36 @@ public class DepartamentoController {
         return "departamentos/editar-departamento";
     }
 
+    /**
+     * Procesa la actualización de un departamento.
+     */
     @PostMapping("/update")
     public String actualizarDepartamento(Departamento departamento) {
         departamentoService.save(departamento);
+        // Registrar la operación de actualización
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         registroService.registrarOperacion("Departamento", departamento.getIdDepartamento(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ACTUALIZAR ", departamento.getNombre());
         return "redirect:/api/departamentos";
     }
 
+    /**
+     * Elimina un departamento por su ID.
+     */
     @GetMapping("/delete/{id}")
     public String borrarDepartamento(@PathVariable int id) {
         Departamento departamento = departamentoService.findById(id);
         if (departamento != null) {
             departamentoService.deleteById(id);
+            // Registrar la operación de eliminación
             UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
             registroService.registrarOperacion("Departamento", id, usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA ELIMINAR ", departamento.getNombre());
         }
         return "redirect:/api/departamentos";
     }
 
+    /**
+     * Añade información del usuario autenticado al modelo para su uso en las vistas.
+     */
     private void addAuthenticatedUserToModel(Model model) {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {

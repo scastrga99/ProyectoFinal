@@ -47,7 +47,9 @@ public class MaterialController {
         binder.registerCustomEditor(byte[].class, new MultipartFileToByteArrayEditor());
     }
 
-
+    /**
+     * Lista todos los departamentos con sus materiales.
+     */
     @GetMapping
     public String getAllDepartamentosConMateriales(Model model) {
         List<Departamento> departamentos = departamentoService.findAll();
@@ -60,6 +62,10 @@ public class MaterialController {
         return "materiales/departamentos-materiales";
     }
 
+    /**
+     * Muestra los materiales de un departamento agrupados por nombre y marca.
+     * Añade la URL de la primera foto disponible de cada grupo.
+     */
     @GetMapping("/departamento/{id}")
     public String getMaterialesPorDepartamento(@PathVariable int id, Model model) {
         List<Material> materiales = materialService.findByDepartamentoId(id);
@@ -90,6 +96,9 @@ public class MaterialController {
         return "materiales/materiales-departamento";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo material en un departamento.
+     */
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoMaterial(@RequestParam("departamentoId") int departamentoId, Model model) {
         model.addAttribute("material", new Material());
@@ -102,6 +111,10 @@ public class MaterialController {
         return "materiales/alta-material";
     }
 
+    /**
+     * Procesa la creación de un nuevo material.
+     * Si no se proporciona número de serie, genera uno único.
+     */
     @PostMapping
     public String crearMaterial(
         @ModelAttribute Material material,
@@ -132,6 +145,9 @@ public class MaterialController {
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
+    /**
+     * Agrega múltiples materiales a partir de una lista de números de serie.
+     */
     @PostMapping("/agregar-multiples")
     public String agregarMultiplesMateriales(@RequestParam("numSeries") String numSeries,
                                              @RequestParam("nombre") String nombre,
@@ -156,6 +172,9 @@ public class MaterialController {
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
+    /**
+     * Ajusta la cantidad de materiales (aumentar o reducir) de un tipo.
+     */
     @PostMapping("/ajustar")
     public String ajustarMaterial(@RequestParam("nombre") String nombre,
                                   @RequestParam("marca") String marca,
@@ -198,6 +217,9 @@ public class MaterialController {
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
+    /**
+     * Muestra el formulario para editar un material específico.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditarMaterial(@PathVariable int id, Model model) {
         Material material = materialService.findById(id);
@@ -212,6 +234,9 @@ public class MaterialController {
         return "materiales/editar-material";
     }
 
+    /**
+     * Muestra todos los materiales asociados a un nombre y marca.
+     */
     @GetMapping("/editar/{nombre}/{marca}")
     public String mostrarMaterialesAsociados(@PathVariable String nombre,
                                              @PathVariable String marca,
@@ -226,6 +251,9 @@ public class MaterialController {
         return "materiales/materiales-lista";
     }
 
+    /**
+     * Elimina todos los materiales asociados a un nombre y marca en un departamento.
+     */
     @GetMapping("/eliminar-multiples/{nombre}/{marca}")
     public String eliminarMaterialesAsociados(
             @PathVariable String nombre,
@@ -242,6 +270,9 @@ public class MaterialController {
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
+    /**
+     * Actualiza los datos de un material.
+     */
     @PostMapping("/{id}")
     public String actualizarMaterial(@PathVariable int id, @ModelAttribute Material material, @RequestParam(value = "foto", required = false) MultipartFile foto) {
         Material existingMaterial = materialService.findById(id);
@@ -273,6 +304,9 @@ public class MaterialController {
         return "redirect:/api/materiales";
     }
 
+    /**
+     * Elimina un material por su ID.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminarMaterial(@PathVariable int id) {
         Material material = materialService.findById(id);
@@ -290,6 +324,9 @@ public class MaterialController {
         return "redirect:/api/materiales";
     }
 
+    /**
+     * Devuelve la foto de un material como respuesta HTTP.
+     */
     @GetMapping("/foto/{id}")
     public ResponseEntity<byte[]> obtenerFoto(@PathVariable int id) {
         Material material = materialService.findById(id);
@@ -302,6 +339,9 @@ public class MaterialController {
         }
     }
 
+    /**
+     * Lista todos los materiales.
+     */
     @GetMapping("/lista")
     public String verListaMateriales(Model model) {
         List<Material> materiales = materialService.findAll();
@@ -314,6 +354,9 @@ public class MaterialController {
         return "materiales/materiales-lista";
     }
 
+    /**
+     * Muestra el formulario para alta de múltiples materiales.
+     */
     @GetMapping("/alta-multiples-materiales")
     public String mostrarFormularioAltaMultiplesMateriales(@RequestParam(value = "departamentoId", required = false) Integer departamentoId, Model model) {
         model.addAttribute("departamentos", departamentoService.findAll());
@@ -326,6 +369,9 @@ public class MaterialController {
         return "materiales/alta-multiples-materiales";
     }
 
+    /**
+     * Exporta los materiales de un departamento a un archivo CSV.
+     */
     @GetMapping("/exportar")
     public ResponseEntity<byte[]> exportarMaterialesPorDepartamento(@RequestParam("departamentoId") int departamentoId) {
         List<Material> materiales = materialService.findByDepartamentoId(departamentoId);
@@ -352,6 +398,10 @@ public class MaterialController {
             .body(csvBytes);
     }
 
+    /**
+     * Importa materiales desde un archivo CSV.
+     * Valida formato, número de serie duplicado y fechas.
+     */
     @PostMapping("/importar-csv")
     public String importarMaterialesDesdeCsv(
             @RequestParam("file") MultipartFile file,
@@ -432,6 +482,9 @@ public class MaterialController {
         return "redirect:/api/materiales/departamento/" + departamentoId;
     }
 
+    /**
+     * Genera un número de serie único para un material.
+     */
     private String generarNumeroDeSerieUnico() {
         String numSerie;
         do {

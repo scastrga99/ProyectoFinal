@@ -14,20 +14,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Configura la cadena de filtros de seguridad de Spring Security.
+     * Define las rutas públicas, las rutas protegidas por roles y la configuración de login/logout.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**", "/forgot-password").permitAll() // Permitir acceso sin autenticación
+                    // Rutas públicas sin autenticación
+                    .requestMatchers("/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**", "/forgot-password").permitAll()
+                    // Rutas accesibles solo para ADMIN o PROFESOR
                     .requestMatchers("/api/usuarios", "/api/departamentos").hasAnyRole("ADMIN", "PROFESOR")
+                    // Rutas accesibles para USER, ADMIN o PROFESOR
                     .requestMatchers("/api/materiales", "/api/libros", "/api/prestamos").hasAnyRole("USER", "ADMIN", "PROFESOR")
-                    .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
+                    // Cualquier otra ruta requiere autenticación
+                    .anyRequest().authenticated()
             )
             .formLogin(formLogin ->
                 formLogin
-                    .loginPage("/login") // Página de inicio de sesión personalizada
-                    .defaultSuccessUrl("/", true) // Redirigir a la página principal después de iniciar sesión
+                    // Página de login personalizada
+                    .loginPage("/login")
+                    // Redirección tras login exitoso
+                    .defaultSuccessUrl("/", true)
                     .permitAll()
             )
             .logout(logout ->
@@ -38,11 +48,17 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Bean para codificar contraseñas usando BCrypt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Bean para obtener el AuthenticationManager de la configuración.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

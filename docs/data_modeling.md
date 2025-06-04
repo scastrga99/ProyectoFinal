@@ -1,7 +1,7 @@
-# Documentación del Modelado de Datos
+# Modelado de Datos
 
 ## 1. Introducción
-El modelado de datos de la aplicación está diseñado para gestionar entidades relacionadas con usuarios, departamentos, materiales, libros, préstamos y registros de operaciones. Este documento describe las entidades principales, sus atributos y relaciones, junto con un diagrama de clases que ilustra su interacción.
+Este documento describe el modelo de datos de la aplicación, detallando las entidades principales, sus atributos y relaciones, así como un diagrama de clases que ilustra la estructura general del sistema.
 
 ---
 
@@ -9,136 +9,107 @@ El modelado de datos de la aplicación está diseñado para gestionar entidades 
 
 ### 2.1 Usuario
 **Descripción:**  
-Representa a los usuarios del sistema.
+Entidad que representa a cada usuario registrado en el sistema.
 
-**Atributos principales:**
-- Identificador único del usuario.
-- Nombre y apellidos.
-- Correo electrónico.
-- Contraseña encriptada.
-- Fecha de alta y fecha de baja (opcional).
-- Rol del usuario (`ROLE_USER`, `ROLE_PROFESOR`, `ROLE_ADMIN`).
-- Relación con un departamento.
+**Atributos:**
+- idUsuario: Identificador único.
+- nombre: Nombre del usuario.
+- apellidos: Apellidos del usuario.
+- correo: Correo electrónico.
+- password: Contraseña cifrada.
+- fechaAlta: Fecha de registro.
+- fechaBaja: Fecha de baja (opcional).
+- rol: Rol asignado (`ROLE_USER`, `ROLE_PROFESOR`, `ROLE_ADMIN`).
+- departamento: Referencia al departamento al que pertenece.
 
 **Relaciones:**
-- Muchos a Uno con la entidad `Departamento`.
+- Muchos usuarios pertenecen a un departamento.
 
 ---
 
 ### 2.2 Departamento
 **Descripción:**  
-Representa los departamentos a los que pertenecen los usuarios y materiales.
+Define los departamentos a los que pueden pertenecer usuarios y materiales.
 
-**Atributos principales:**
-- Identificador único del departamento.
-- Nombre del departamento.
+**Atributos:**
+- idDepartamento: Identificador único.
+- nombre: Nombre del departamento.
 
 **Relaciones:**
-- Uno a Muchos con la entidad `Usuario`.
-- Uno a Muchos con la entidad `Material`.
+- Un departamento tiene muchos usuarios.
+- Un departamento tiene muchos materiales.
 
 ---
 
 ### 2.3 Material
 **Descripción:**  
-Representa los materiales gestionados por el sistema.
+Entidad para la gestión de materiales.
 
-**Atributos principales:**
-- Identificador único del material.
-- Nombre y número de serie único.
-- Marca y descripción (opcional).
-- Estado del material (e.g., "Nuevo", "Usado").
-- Fecha de alta y fecha de baja (opcional).
-- Imagen asociada al material (opcional).
-- Relación con un departamento.
+**Atributos:**
+- idMaterial: Identificador único.
+- nombre: Nombre del material.
+- numSerie: Número de serie único.
+- marca: Marca (opcional).
+- descripcion: Descripción (opcional).
+- estado: Estado actual (ej. "Nuevo", "Usado").
+- fechaAlta: Fecha de alta.
+- fechaBaja: Fecha de baja (opcional).
+- imagen: Imagen asociada (opcional).
+- departamento: Referencia al departamento.
 
 **Relaciones:**
-- Muchos a Uno con la entidad `Departamento`.
+- Muchos materiales pertenecen a un departamento.
 
 ---
 
 ### 2.4 Libro
 **Descripción:**  
-Representa los libros gestionados por el sistema.
+Entidad para la gestión de libros.
 
-**Atributos principales:**
-- Identificador único del libro.
-- ISBN, título, autor y editorial.
-- Estado del libro (e.g., "Libre", "Prestado").
-- Imagen asociada al libro (opcional).
+**Atributos:**
+- idLibro: Identificador único.
+- isbn: Código ISBN.
+- titulo: Título del libro.
+- autor: Autor.
+- editorial: Editorial.
+- estado: Estado (ej. "Libre", "Prestado").
+- foto: Imagen asociada (opcional).
 
 **Relaciones:**
-- Uno a Muchos con la entidad `Prestamo`.
+- Un libro puede estar asociado a varios préstamos.
 
 ---
 
 ### 2.5 Prestamo
 **Descripción:**  
-Representa los préstamos realizados en el sistema.
+Registra los préstamos de libros.
 
-**Atributos principales:**
-- Identificador único del préstamo.
-- Relación con el usuario que realiza el préstamo.
-- Relación con el usuario que recibe el préstamo.
-- Relación con el libro prestado.
-- Fecha de préstamo, fecha límite para la devolución y fecha de devolución (opcional).
-- Indicador de si el libro fue devuelto.
+**Atributos:**
+- idPrestamo: Identificador único.
+- usuarioRealiza: Usuario que realiza el préstamo.
+- usuarioRecibe: Usuario que recibe el préstamo.
+- libro: Libro prestado.
+- fechaPrestamo: Fecha del préstamo.
+- fechaPlazo: Fecha límite de devolución.
+- fechaDevolucion: Fecha de devolución (opcional).
+- devuelto: Indicador de devolución.
 
 **Relaciones:**
-- Muchos a Uno con la entidad `Usuario` (usuario que realiza y usuario que recibe).
-- Muchos a Uno con la entidad `Libro`.
+- Un préstamo está asociado a un usuario que realiza, uno que recibe y un libro.
 
 ---
 
 ### 2.6 Registro
 **Descripción:**  
-Representa el historial de operaciones realizadas en el sistema.
+Historial de operaciones realizadas en el sistema.
 
-**Atributos principales:**
-- Identificador único del registro.
-- Nombre de la entidad afectada (e.g., "Usuario", "Libro").
-- Identificador de la entidad afectada.
-- Tipo de operación realizada (e.g., "CREAR", "ACTUALIZAR", "ELIMINAR").
-- Detalles adicionales sobre la operación (opcional).
-- Fecha en que se realizó la operación.
-
----
-
-## 3. Diagrama de Clases
-El siguiente diagrama de clases muestra las entidades del sistema y sus relaciones:
-
-```plaintext
-+-------------------+       +-------------------+       +-------------------+
-|     Usuario       |       |   Departamento    |       |      Material     |
-+-------------------+       +-------------------+       +-------------------+
-| - idUsuario       |       | - idDepartamento  |       | - idMaterial      |
-| - nombre          |       | - nombre          |       | - nombre          |
-| - apellidos       |       +-------------------+       | - numSerie        |
-| - correo          |              ^                   | - marca           |
-| - password        |              |                   | - descripcion     |
-| - fechaAlta       |              |                   | - estado          |
-| - fechaBaja       |              |                   | - fechaAlta       |
-| - rol             |              |                   | - fechaBaja       |
-| - departamento    |              |                   | - departamento    |
-+-------------------+              |                   +-------------------+
-        ^                          |
-        |                          |
-        |                          |
-+-------------------+       +-------------------+       +-------------------+
-|     Prestamo      |       |      Libro        |       |     Registro      |
-+-------------------+       +-------------------+       +-------------------+
-| - idPrestamo      |       | - idLibro         |       | - idRegistro      |
-| - usuarioRealiza  |       | - isbn            |       | - entidad         |
-| - usuarioRecibe   |       | - titulo          |       | - entidadId       |
-| - libro           |       | - autor           |       | - operacion       |
-| - fechaPrestamo   |       | - editorial       |       | - detalles        |
-| - fechaPlazo      |       | - estado          |       | - fecha           |
-| - fechaDevolucion |       | - foto            |       +-------------------+
-| - devuelto        |       +-------------------+
-+-------------------+
-```
-
----
+**Atributos:**
+- idRegistro: Identificador único.
+- entidad: Nombre de la entidad afectada.
+- entidadId: Identificador de la entidad.
+- operacion: Tipo de operación ("CREAR", "ACTUALIZAR", "ELIMINAR").
+- detalles: Información adicional (opcional).
+- fecha: Fecha de la operación.
 
 ## 4. Conclusión
-El modelado de datos de la aplicación refleja las entidades principales del sistema y sus relaciones. Este diseño garantiza la integridad de los datos y facilita la implementación de las funcionalidades requeridas en el sistema. Además, el diagrama de clases proporciona una visión clara de cómo interactúan las entidades entre sí.
+El modelo de datos propuesto cubre las necesidades de gestión de usuarios, departamentos, materiales, libros, préstamos y registros, asegurando integridad y trazabilidad en el sistema.

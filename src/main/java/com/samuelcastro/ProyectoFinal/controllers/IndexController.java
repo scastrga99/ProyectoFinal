@@ -27,6 +27,13 @@ public class IndexController {
     @Autowired
     private RegistroService registroService;
 
+    /**
+     * Controlador para la página principal.
+     * Si el usuario está autenticado, añade información relevante al modelo:
+     * - Usuario y roles
+     * - Registros de operaciones
+     * - Préstamos próximos a vencer (según el rol)
+     */
     @GetMapping("/")
     public String index(Model model) {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
@@ -42,7 +49,9 @@ public class IndexController {
                 usuario.getRol().contains("ROLE_PROFESOR") ||
                 usuario.getRol().contains("ROLE_USER")) {
 
-                // Obtiene los préstamos asociados al usuario actual (como destinatario si es USER, como realiza si es ADMIN/PROFESOR)
+                // Obtiene los préstamos asociados al usuario actual:
+                // Si es solo USER, obtiene los préstamos donde es destinatario.
+                // Si es ADMIN o PROFESOR, obtiene los préstamos realizados por él.
                 List<Prestamo> prestamos;
                 if (usuario.getRol().contains("ROLE_USER") && 
                     !usuario.getRol().contains("ROLE_ADMIN") && 
@@ -54,6 +63,7 @@ public class IndexController {
                     prestamos = prestamoService.findByUsuarioRealizaId(usuario.getIdUsuario());
                 }
 
+                // Filtra préstamos no devueltos y próximos a vencer (0-3 días)
                 List<Prestamo> proximos = prestamos.stream()
                     .filter(p -> !p.isDevuelto())
                     .filter(p -> {
@@ -66,6 +76,7 @@ public class IndexController {
                         long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaPlazo);
                         return dias >= 0 && dias <= 3;
                     })
+                    // Calcula y asigna los días restantes a cada préstamo
                     .map(p -> {
                         LocalDate fechaPlazo = null;
                         if (p.getFechaPlazo() instanceof java.sql.Date) {

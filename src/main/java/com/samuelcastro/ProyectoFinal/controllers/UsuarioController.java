@@ -47,6 +47,9 @@ public class UsuarioController {
 
     private static final String NOMBRE_NUEVO_USUARIO = "missingUser"; // Nombre del usuario para reasignación
 
+    /**
+     * Lista todos los usuarios y añade información del usuario autenticado al modelo.
+     */
     @GetMapping
     public String getAllUsuarios(Model model) {
         List<Usuario> usuarios = usuarioService.findAll();
@@ -59,6 +62,9 @@ public class UsuarioController {
         return "usuarios/usuarios";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo usuario.
+     */
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoUsuario(Model model) {
         model.addAttribute("usuario", new Usuario());
@@ -71,6 +77,10 @@ public class UsuarioController {
         return "usuarios/alta-usuario";
     }
 
+    /**
+     * Procesa la creación de un nuevo usuario.
+     * Si hay error (por ejemplo, correo duplicado), muestra el error.
+     */
     @PostMapping
     public String crearUsuario(@ModelAttribute Usuario usuario, Model model) {
         try {
@@ -91,6 +101,9 @@ public class UsuarioController {
         return "redirect:/api/usuarios";
     }
 
+    /**
+     * Muestra el formulario para editar un usuario existente.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditarUsuario(@PathVariable int id, Model model) {
         Usuario usuario = usuarioService.findById(id);
@@ -104,6 +117,10 @@ public class UsuarioController {
         return "usuarios/editar-usuario";
     }
 
+    /**
+     * Actualiza los datos de un usuario.
+     * Permite cambiar la contraseña si viene del perfil y valida la contraseña actual.
+     */
     @PostMapping("/{id}")
     public String actualizarUsuario(
             @PathVariable int id,
@@ -140,6 +157,9 @@ public class UsuarioController {
         return "redirect:/api/usuarios";
     }
 
+    /**
+     * Elimina un usuario por su ID y reasigna sus préstamos.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable int id) {
         Usuario usuario = usuarioService.findById(id);
@@ -152,6 +172,9 @@ public class UsuarioController {
         return "redirect:/api/usuarios";
     }
 
+    /**
+     * Muestra el formulario para alta de múltiples usuarios.
+     */
     @GetMapping("/multiples")
     public String mostrarFormularioMultiplesUsuarios(Model model) {
         model.addAttribute("departamentos", departamentoService.findAll());
@@ -163,6 +186,11 @@ public class UsuarioController {
         return "usuarios/alta-multiples-usuarios";
     }
 
+    /**
+     * Procesa la creación de múltiples usuarios desde un textarea.
+     * Si algún correo ya existe, muestra los errores.
+     * (NO SE ESTÁ USANDO)
+     */
     @PostMapping("/multiples")
     public String crearMultiplesUsuarios(
             @RequestParam("usuariosData") String usuariosData,
@@ -207,6 +235,9 @@ public class UsuarioController {
         return "redirect:/api/usuarios";
     }
 
+    /**
+     * Muestra el perfil del usuario autenticado.
+     */
     @GetMapping("/perfil")
     public String perfilUsuario(HttpServletRequest request, Model model) {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
@@ -219,6 +250,11 @@ public class UsuarioController {
         return "usuarios/perfil-usuario";
     }
 
+    /**
+     * Importa usuarios desde un archivo CSV.
+     * Valida formato, roles, departamentos y correos duplicados.
+     * Envía correo con contraseña generada a cada usuario importado.
+     */
     @PostMapping("/importar-csv")
     public String importarUsuariosDesdeCsv(
             @RequestParam("file") MultipartFile file,

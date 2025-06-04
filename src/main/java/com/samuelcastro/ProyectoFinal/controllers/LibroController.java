@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador para la gestión de libros.
+ */
 @Controller
 @RequestMapping("/api/libros")
 public class LibroController {
@@ -43,6 +46,10 @@ public class LibroController {
         binder.registerCustomEditor(byte[].class, new MultipartFileToByteArrayEditor());
     }
 
+    /**
+     * Lista todos los libros agrupados por título, autor y editorial.
+     * Añade la cantidad de libros libres y la URL de la primera foto disponible de cada grupo.
+     */
     @GetMapping
     public String getAllLibros(Model model) {
         List<Libro> libros = libroService.findAll();
@@ -81,6 +88,9 @@ public class LibroController {
         return "libros/libros";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo libro.
+     */
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoLibro(Model model) {
         model.addAttribute("libro", new Libro());
@@ -93,6 +103,10 @@ public class LibroController {
         return "libros/alta-libro";
     }
 
+    /**
+     * Procesa la creación de un nuevo libro.
+     * El estado inicial es "Libre".
+     */
     @PostMapping
     public String crearLibro(@ModelAttribute Libro libro, @RequestParam("foto") MultipartFile foto, Model model) {
         libro.setEstado("Libre");
@@ -111,6 +125,9 @@ public class LibroController {
         return "redirect:/api/libros";
     }
 
+    /**
+     * Muestra todos los libros asociados a una clave (título, autor, editorial).
+     */
     @GetMapping("/editar/{key}")
     public String mostrarLibrosAsociados(@PathVariable String key, Model model) {
         String[] parts = key.split(" - ");
@@ -128,6 +145,9 @@ public class LibroController {
         return "libros/libros-asociados";
     }
 
+    /**
+     * Muestra el formulario para editar un libro específico.
+     */
     @GetMapping("/editar/libro/{id}")
     public String mostrarFormularioEditarLibro(@PathVariable int id, Model model) {
         Libro libro = libroService.findById(id);
@@ -141,6 +161,9 @@ public class LibroController {
         return "libros/editar-libro";
     }
 
+    /**
+     * Actualiza los datos de un libro.
+     */
     @PostMapping("/{id}")
     public String actualizarLibro(@PathVariable int id, @ModelAttribute Libro libro, @RequestParam("foto") MultipartFile foto) {
         Libro existingLibro = libroService.findById(id);
@@ -164,6 +187,10 @@ public class LibroController {
         return "redirect:/api/libros";
     }
 
+    /**
+     * Elimina todos los libros asociados a una clave (título, autor, editorial).
+     * Reasigna los préstamos de esos libros.
+     */
     @GetMapping("/eliminar/{key}")
     public String eliminarLibrosPorClave(@PathVariable String key) {
         String[] parts = key.split(" - ");
@@ -184,6 +211,9 @@ public class LibroController {
         return "redirect:/api/libros/editar/" + key;
     }
 
+    /**
+     * Elimina un libro por su ID y reasigna sus préstamos.
+     */
     @GetMapping("/eliminar/libro/{id}")
     public String eliminarLibroPorId(@PathVariable int id, @RequestParam("key") String key) {
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
@@ -195,6 +225,9 @@ public class LibroController {
         return "redirect:/api/libros/editar/" + key;
     }
 
+    /**
+     * Devuelve la foto de un libro como respuesta HTTP.
+     */
     @GetMapping("/foto/{id}")
     public ResponseEntity<byte[]> obtenerFoto(@PathVariable int id) {
         Libro libro = libroService.findById(id);
@@ -207,6 +240,9 @@ public class LibroController {
         }
     }
 
+    /**
+     * Agrega múltiples libros a partir de una lista de ISBNs para una clave dada.
+     */
     @PostMapping("/agregar-multiples")
     public String agregarMultiplesLibros(@RequestParam("isbns") String isbns, @RequestParam("key") String key) {
         String[] isbnArray = isbns.split(",");
