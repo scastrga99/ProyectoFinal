@@ -29,7 +29,10 @@ public class UsuarioService {
         if (usuarioRepository.findByCorreo(usuario.getCorreo()) != null && usuario.getIdUsuario() == 0) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        // Solo encripta si la contraseña no empieza por $2a$ (es decir, no es un hash)
+        if (!usuario.getPassword().startsWith("$2a$")) {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
         return usuarioRepository.save(usuario);
     }
 
