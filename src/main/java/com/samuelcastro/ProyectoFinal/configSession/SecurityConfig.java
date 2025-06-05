@@ -23,10 +23,12 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
+                    // Rutas públicas sin autenticación
+                    .requestMatchers("/forgot-password").permitAll()
                     // Rutas accesibles solo para ADMIN o PROFESOR
                     .requestMatchers("/api/usuarios", "/api/departamentos").hasAnyRole("ADMIN", "PROFESOR")
                     // Rutas accesibles para USER, ADMIN o PROFESOR
-                    .requestMatchers("/api/materiales", "/api/libros", "/api/prestamos", "/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**", "/forgot-password").hasAnyRole("USER", "ADMIN", "PROFESOR")
+                    .requestMatchers("/api/materiales", "/api/libros", "/api/prestamos", "/", "/api/libros", "/api/libros/**", "/css/**", "/js/**", "/img/**").hasAnyRole("USER", "ADMIN", "PROFESOR")
                     // Cualquier otra ruta requiere autenticación
                     .anyRequest().authenticated()
             )
