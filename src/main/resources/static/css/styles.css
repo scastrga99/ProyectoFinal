@@ -1,4 +1,6 @@
-/* Importa la fuente Inter y Roboto desde Google Fonts */
+/* =========================
+   FUENTES Y ESTILOS GENERALES
+   ========================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&display=swap');
 
 body {
@@ -9,6 +11,9 @@ body {
     color: #333;
 }
 
+/* =========================
+   NAVBAR Y MENÚ SUPERIOR
+   ========================= */
 nav {
     background-color: #333;
     overflow: hidden;
@@ -38,39 +43,88 @@ nav ul li a:hover {
     background-color: #575757;
 }
 
+/* =========================
+   NAVBAR BOOTSTRAP PERSONALIZADO
+   ========================= */
+/* Centra icono sobre texto en escritorio */
+.navbar-nav.ml-auto .nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Menú responsive: centra y pone icono a la izquierda en móvil */
+@media (max-width: 991px) {
+    .navbar-nav.ml-auto {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100%;
+    }
+    .navbar-nav.ml-auto .nav-item {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .navbar-nav.ml-auto .nav-link {
+        flex-direction: row !important;      /* Icono a la izquierda */
+        justify-content: center;
+        align-items: center;
+        width: auto;
+    }
+    .navbar-nav.ml-auto .nav-link i {
+        margin-right: 8px;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* =========================
+   CONTENEDORES Y TABLAS
+   ========================= */
 .container {
     padding: 20px;
     text-align: center;
 }
 
+.container-fluid {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+@media (max-width: 991px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+/* =========================
+   TABLAS
+   ========================= */
 table {
-    width: 90%; /* Reduce el ancho de la tabla para añadir espacio a los lados */
-    border-collapse: separate; /* Cambia a separate para permitir border-radius */
+    width: 90%;
+    border-collapse: separate;
     border-spacing: 0;
-    margin: 20px auto; /* Centra la tabla horizontalmente y añade margen superior e inferior */
-    border-radius: 12px; /* Esquinas redondeadas */
-    overflow: hidden;    /* Oculta bordes sobresalientes */
+    margin: 20px auto;
+    border-radius: 12px;
+    overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
-/* Elimina el borde inferior añadido por DataTables */
 table.dataTable.no-footer {
     border-bottom: none !important;
 }
 
-/* Estilo para las celdas de la tabla */
 th, td {
     padding: 12px;
     text-align: left;
 }
 
-/* Estilo para las cabeceras de la tabla */
 th {
     background-color: #007BFF;
     color: white;
 }
 
-/* Esquinas redondeadas solo en las cabeceras y la última fila */
 th:first-child {
     border-top-left-radius: 12px;
 }
@@ -84,70 +138,21 @@ tr:last-child td:last-child {
     border-bottom-right-radius: 12px;
 }
 
-/* Estilo para las filas pares de la tabla */
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-/* Estilo para las filas al pasar el ratón por encima */
 tr:hover {
     background-color: #ddd;
 }
 
-/* Contenedor de botones con flexbox para distribuir el espacio */
-.button-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
+.rounded-table tr:last-child td {
+    border-bottom: none !important;
 }
 
-/* Espaciado lateral para container-fluid */
-.container-fluid {
-    padding-left: 32px;
-    padding-right: 32px;
-}
-
-@media (max-width: 991px) {
-    .container-fluid {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-}
-
-/* Estilo para los grupos de formularios */
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-/* Estilo para las etiquetas de los formularios */
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-/* Estilo para los campos de entrada de los formularios */
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-.btn-fixed-width {
-    width: 140px;
-    min-width: 140px;
-    max-width: 140px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.text-center {
-    text-align: center;
-}
-
+/* =========================
+   TARJETAS Y VISTAS
+   ========================= */
 .card {
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -164,6 +169,8 @@ tr:hover {
 .card-title {
     font-size: 1.15rem;
     font-weight: bold;
+    text-align: center;
+    word-break: break-word;
 }
 .card-subtitle {
     font-size: 1rem;
@@ -172,38 +179,6 @@ tr:hover {
 .card-text {
     font-size: 0.95rem;
     color: #777;
-}
-.btn {
-    min-width: 120px;
-}
-.button-container .btn {
-    margin-left: 10px;
-    margin-right: 10px;
-}
-@media (max-width: 991px) {
-    .button-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .button-container .btn {
-        margin-bottom: 10px;
-        width: 100%;
-    }
-}
-
-.btn-block {
-    display: block;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.toggle-view-btn {
-    background: none;
-    border: none;
-    color: #343a40;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 .card-img {
     border-bottom-left-radius: 10px;
@@ -224,19 +199,11 @@ tr:hover {
     }
 }
 
-/* Elimina el borde inferior añadido por DataTables */
-table.dataTable.no-footer {
-    border-bottom: none !important;
-}
-.rounded-table tr:last-child td {
-    border-bottom: none !important;
-}
-
-/* Relación de aspecto más baja y ancho máximo para tarjetas */
+/* Relación de aspecto para tarjetas */
 .aspect-ratio-custom {
     position: relative;
     width: 100%;
-    padding-top: 32%; /* Más bajo que 16:9 para menos altura */
+    padding-top: 32%;
     max-width: 340px;
     margin: 0 auto;
 }
@@ -249,18 +216,72 @@ table.dataTable.no-footer {
     align-items: center;
     padding: 18px;
 }
-.card-title {
-    text-align: center;
-    font-size: 1.05rem;
-    word-break: break-word;
+
+/* =========================
+   FORMULARIOS Y BOTONES
+   ========================= */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+.button-container .btn {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+@media (max-width: 991px) {
+    .button-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .button-container .btn {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+
+.btn-fixed-width {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn {
+    min-width: 120px;
+}
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* =========================
+   BUSCADOR DEPARTAMENTO
+   ========================= */
 .buscador-departamento-wrapper {
     display: flex;
     justify-content: center;
     margin-bottom: 24px;
 }
-
 .buscador-departamento-input {
     width: 100%;
     max-width: 400px;
@@ -272,12 +293,24 @@ table.dataTable.no-footer {
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     transition: border-color 0.2s;
 }
-
 .buscador-departamento-input:focus {
     outline: none;
     border-color: #007bff;
 }
 
+/* =========================
+   UTILIDADES
+   ========================= */
+.text-center {
+    text-align: center;
+}
 .oculto {
     display: none !important;
+}
+.toggle-view-btn {
+    background: none;
+    border: none;
+    color: #343a40;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
