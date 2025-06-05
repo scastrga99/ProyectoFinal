@@ -140,7 +140,10 @@ public class UsuarioController {
                     model.addAttribute("error", "La contraseña actual es incorrecta.");
                     return "usuarios/perfil-usuario";
                 }
-                existingUsuario.setPassword(usuario.getPassword());
+                existingUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            } else if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+                // Si el admin cambia la contraseña desde editar usuario
+                existingUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             }
             existingUsuario.setNombre(usuario.getNombre());
             existingUsuario.setApellidos(usuario.getApellidos());
