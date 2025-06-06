@@ -291,6 +291,14 @@ public class UsuarioController {
                 String correo = partes[2].trim();
                 String rolCsv = partes[3].trim().toUpperCase();
                 String departamentoNombre = partes[4].trim();
+
+                // Validación de correo
+                if (!correo.matches("^[^\\s@]+@[^\\s@]+\\.[a-zA-Z]{2,}(?:\\.[a-zA-Z]{2,})?$")) {
+                    errores.append("Fila ").append(fila).append(": Correo no válido (" + correo + ").<br>");
+                    fila++;
+                    continue;
+                }
+
                 String rol;
                 switch (rolCsv) {
                     case "ADMIN":
@@ -341,6 +349,8 @@ public class UsuarioController {
             }
             return "usuarios/usuarios";
         }
+
+        // Si hay errores, NO guardar ni enviar correos
         if (errores.length() > 0) {
             model.addAttribute("error", errores.toString());
             model.addAttribute("usuarios", usuarioService.findAll());
@@ -351,6 +361,7 @@ public class UsuarioController {
             }
             return "usuarios/usuarios";
         }
+
         // Si no hay errores, guardar todos los usuarios y enviar correo
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         for (int i = 0; i < usuariosAInsertar.size(); i++) {
