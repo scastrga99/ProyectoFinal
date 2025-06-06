@@ -274,7 +274,7 @@ public class UsuarioController {
             return "usuarios/usuarios";
         }
         StringBuilder errores = new StringBuilder();
-        List<Usuario> usuariosAInsertar = new java.util.ArrayList<>();
+        List<String[]> datosUsuarios = new java.util.ArrayList<>();
         List<String[]> correosYPasswords = new java.util.ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String linea;
@@ -292,13 +292,21 @@ public class UsuarioController {
                 String rolCsv = partes[3].trim().toUpperCase();
                 String departamentoNombre = partes[4].trim();
 
-                // Validación de correo
+                if (nombre.length() < 2 || nombre.length() > 50) {
+                    errores.append("Fila ").append(fila).append(": El nombre debe tener entre 2 y 50 caracteres.<br>");
+                    fila++;
+                    continue;
+                }
+                if (apellidos.length() < 2 || apellidos.length() > 100) {
+                    errores.append("Fila ").append(fila).append(": Los apellidos deben tener entre 2 y 100 caracteres.<br>");
+                    fila++;
+                    continue;
+                }
                 if (!correo.matches("^[^\\s@]+@[^\\s@]+\\.[a-zA-Z]{2,}(?:\\.[a-zA-Z]{2,})?$")) {
                     errores.append("Fila ").append(fila).append(": Correo no válido (" + correo + ").<br>");
                     fila++;
                     continue;
                 }
-
                 String rol;
                 switch (rolCsv) {
                     case "ADMIN":
@@ -326,17 +334,8 @@ public class UsuarioController {
                     fila++;
                     continue;
                 }
-                Usuario usuario = new Usuario();
-                usuario.setNombre(nombre);
-                usuario.setApellidos(apellidos);
-                usuario.setCorreo(correo);
-                usuario.setRol(rol);
-                // Generar contraseña aleatoria
-                String password = java.util.UUID.randomUUID().toString().substring(0, 8);
-                usuario.setPassword(password);
-                usuario.setDepartamento(departamento);
-                usuariosAInsertar.add(usuario);
-                correosYPasswords.add(new String[]{correo, password});
+                // Guardar los datos válidos para después
+                datosUsuarios.add(new String[]{nombre, apellidos, correo, rol, departamentoNombre});
                 fila++;
             }
         } catch (Exception e) {
@@ -347,7 +346,7 @@ public class UsuarioController {
                 model.addAttribute("usuario", usuarioDetails.getUsuario());
                 model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
             }
-            return "redirect:/api/usuarios";
+            return "usuarios/usuarios";
         }
 
         // Si hay errores, NO guardar ni enviar correos
@@ -359,20 +358,31 @@ public class UsuarioController {
                 model.addAttribute("usuario", usuarioDetails.getUsuario());
                 model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
             }
-            return "redirect:/api/usuarios";
+            return "usuarios/usuarios";
         }
 
-        // Si no hay errores, guardar todos los usuarios y enviar correo
+        // Si no hay errores, ahora sí creamos y guardamos los usuarios
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-        for (int i = 0; i < usuariosAInsertar.size(); i++) {
-            Usuario usuario = usuariosAInsertar.get(i);
+        for (String[] datos : datosUsuarios) {
+            String nombre = datos[0];
+            String apellidos = datos[1];
+            String correo = datos[2];
+            String rol = datos[3];
+            String departamentoNombre = datos[4];
+            var departamento = departamentoService.findByNombre(departamentoNombre);
+
+            Usuario usuario = new Usuario();
+            usuario.setNombre(nombre);
+            usuario.setApellidos(apellidos);
+            usuario.setCorreo(correo);
+            usuario.setRol(rol);
+            String password = java.util.UUID.randomUUID().toString().substring(0, 8);
+            usuario.setPassword(password);
+            usuario.setDepartamento(departamento);
             usuarioService.save(usuario);
             if (usuarioDetails != null) {
                 registroService.registrarOperacion("Usuario", usuario.getIdUsuario(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", usuario.getNombre() + " " + usuario.getApellidos());
             }
-            // Enviar correo con la contraseña generada
-            String correo = correosYPasswords.get(i)[0];
-            String password = correosYPasswords.get(i)[1];
             emailService.enviarNuevaContraseña(correo, password);
         }
         return "redirect:/api/usuarios";
