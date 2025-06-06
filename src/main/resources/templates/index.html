@@ -31,7 +31,7 @@
             </p>
         </div>
 
-        <h2 class="mb-4">Registro de Operaciones</h2>
+        <h2 class="mb-4" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">Registro de Operaciones</h2>
         <div class="table-responsive">
             <table id="registrosTable" class="table table-striped" th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
                 <thead class="thead-dark">
@@ -90,6 +90,17 @@
         $(document).ready(function() {
             $('#registrosTable').DataTable();
             $('#prestamosProximosTable').DataTable();
+
+            // Resalta en rojo los préstamos vencidos y no devueltos
+            $('#prestamosProximosTable tbody tr').each(function() {
+                var fechaLimite = $(this).find('td').eq(-3).text().trim(); // Columna de Fecha Límite
+                var diasRestantes = parseInt($(this).find('td').last().text().trim(), 10);
+
+                // Si días restantes es negativo, el préstamo está vencido
+                if (!isNaN(diasRestantes) && diasRestantes < 0) {
+                    $(this).addClass('text-rojo');
+                }
+            });
         });
     </script>
 </body>

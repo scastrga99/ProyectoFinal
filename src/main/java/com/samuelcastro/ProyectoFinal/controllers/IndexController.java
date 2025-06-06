@@ -74,9 +74,9 @@ public class IndexController {
                             fechaPlazo = new java.sql.Date(p.getFechaPlazo().getTime()).toLocalDate();
                         }
                         long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaPlazo);
-                        return dias >= 0 && dias <= 3;
+                        // Incluir vencidos (dias < 0) y próximos a vencer (dias entre 0 y 3)
+                        return dias <= 3;
                     })
-                    // Calcula y asigna los días restantes a cada préstamo
                     .map(p -> {
                         LocalDate fechaPlazo = null;
                         if (p.getFechaPlazo() instanceof java.sql.Date) {

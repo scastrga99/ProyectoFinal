@@ -314,3 +314,7 @@ tr:hover {
     font-size: 1.5rem;
     cursor: pointer;
 }
+.text-rojo {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
