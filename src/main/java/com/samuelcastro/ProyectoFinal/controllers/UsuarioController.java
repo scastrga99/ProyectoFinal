@@ -347,7 +347,7 @@ public class UsuarioController {
                 model.addAttribute("usuario", usuarioDetails.getUsuario());
                 model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
             }
-            return "usuarios/usuarios";
+            return "redirect:/api/usuarios";
         }
 
         // Si hay errores, NO guardar ni enviar correos
@@ -359,7 +359,7 @@ public class UsuarioController {
                 model.addAttribute("usuario", usuarioDetails.getUsuario());
                 model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
             }
-            return "usuarios/usuarios";
+            return "redirect:/api/usuarios";
         }
 
         // Si no hay errores, guardar todos los usuarios y enviar correo
