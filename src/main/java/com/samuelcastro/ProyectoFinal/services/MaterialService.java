@@ -41,4 +41,8 @@ public class MaterialService {
         return materialRepository.findByNombreAndMarca(nombre, marca);
     }
 
+    public List<Material> findByNombreAndMarcaAndDepartamentoId(String nombre, String marca, int departamentoId) {
+        return materialRepository.findByNombreAndMarcaAndDepartamentoId(nombre, marca, departamentoId);
+    }
+
 }

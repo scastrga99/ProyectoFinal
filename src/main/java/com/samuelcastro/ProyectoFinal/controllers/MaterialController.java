@@ -199,7 +199,7 @@ public class MaterialController {
                     material.setFoto(original.getFoto());
                 }
                 // Generar un número de serie único
-                material.setNumSerie("XXX-XXXX");
+                material.setNumSerie(generarNumeroDeSerieUnico());
                 materialService.save(material);
                 if (usuarioDetails != null) {
                     registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", material.getNombre());
@@ -240,8 +240,9 @@ public class MaterialController {
     @GetMapping("/editar/{nombre}/{marca}")
     public String mostrarMaterialesAsociados(@PathVariable String nombre,
                                              @PathVariable String marca,
+                                             @RequestParam("departamentoId") int departamentoId,
                                              Model model) {
-        List<Material> materiales = materialService.findByNombreAndMarca(nombre, marca);
+        List<Material> materiales = materialService.findByNombreAndMarcaAndDepartamentoId(nombre, marca, departamentoId);
         model.addAttribute("materiales", materiales);
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
         if (usuarioDetails != null) {
@@ -432,6 +433,11 @@ public class MaterialController {
                 String estado = partes.length > 4 ? partes[4].trim() : "";
                 String fechaAltaStr = partes.length > 5 ? partes[5].trim() : "";
                 String fechaBajaStr = partes.length > 6 ? partes[6].trim() : "";
+
+                // Generar número de serie si está vacío
+                if (numSerie.isEmpty()) {
+                    numSerie = generarNumeroDeSerieUnico();
+                }
 
                 if (materialService.existsByNumSerie(numSerie)) {
                     errores.append("Fila ").append(fila).append(": El número de serie ya existe (" + numSerie + ").<br>");

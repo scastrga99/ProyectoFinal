@@ -55,7 +55,7 @@
                     <!-- Botones alineados abajo y centrados -->
                     <div class="d-flex flex-column align-items-center justify-content-end w-100 px-3 pb-3">
                         <!-- Botón para abrir la vista de lista de materiales -->
-                        <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning w-100 mb-2">
+                        <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}" class="btn btn-warning w-100 mb-2">
                             <i class="fas fa-list"></i> Ver Lista
                         </a>
                         <!-- Botón Ajustar Cantidad -->
@@ -102,7 +102,7 @@
                             <td>
                                 <div class="d-flex flex-column align-items-center">
                                     <!-- Botón Ver Lista (Editar) -->
-                                    <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]})}" class="btn btn-warning btn-sm w-100 mb-2">
+                                    <a th:href="@{/api/materiales/editar/{nombre}/{marca}(nombre=${parts[0]}, marca=${parts[1]}, departamentoId=${entry.value[0].departamento.idDepartamento})}" class="btn btn-warning btn-sm w-100 mb-2">
                                         <i class="fas fa-list"></i> Ver Lista
                                     </a>
                                     <!-- Botón Eliminar -->

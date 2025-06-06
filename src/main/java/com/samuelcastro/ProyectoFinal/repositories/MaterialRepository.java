@@ -15,5 +15,7 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
     @Query("SELECT m FROM Material m WHERE m.nombre = :nombre AND m.marca = :marca")
     List<Material> findByNombreAndMarca(@Param("nombre") String nombre, @Param("marca") String marca);
-                                                           
+    
+    @Query("SELECT m FROM Material m WHERE m.nombre = :nombre AND m.marca = :marca AND m.departamento.idDepartamento = :departamentoId")
+    List<Material> findByNombreAndMarcaAndDepartamentoId(@Param("nombre") String nombre, @Param("marca") String marca, @Param("departamentoId") int departamentoId);
 }
