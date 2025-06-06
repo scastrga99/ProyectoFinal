@@ -207,8 +207,8 @@ public class LibroController {
             prestamoService.reasignarPrestamosPorLibro(libro.getIdLibro(), "missingLibro");
             libroService.deleteById(libro.getIdLibro());
         }
-        // Mantenerse en la misma vista de libros asociados
-        return "redirect:/api/libros/editar/" + key;
+        // Redirigir a la pantalla principal de libros
+        return "redirect:/api/libros";
     }
 
     /**
