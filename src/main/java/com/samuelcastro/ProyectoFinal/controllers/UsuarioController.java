@@ -275,7 +275,6 @@ public class UsuarioController {
         }
         StringBuilder errores = new StringBuilder();
         List<String[]> datosUsuarios = new java.util.ArrayList<>();
-        List<String[]> correosYPasswords = new java.util.ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String linea;
             int fila = 1;
