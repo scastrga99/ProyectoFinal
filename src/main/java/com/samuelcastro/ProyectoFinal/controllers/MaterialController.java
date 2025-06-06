@@ -414,7 +414,7 @@ public class MaterialController {
             return "redirect:/api/materiales/departamento/" + departamentoId;
         }
         StringBuilder errores = new StringBuilder();
-        List<Material> materialesAInsertar = new java.util.ArrayList<>();
+        List<String[]> datosMateriales = new java.util.ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String linea;
@@ -434,36 +434,46 @@ public class MaterialController {
                 String fechaAltaStr = partes.length > 5 ? partes[5].trim() : "";
                 String fechaBajaStr = partes.length > 6 ? partes[6].trim() : "";
 
+                // Validaciones
+                if (nombre.length() < 2 || nombre.length() > 100) {
+                    errores.append("Fila ").append(fila).append(": El nombre debe tener entre 2 y 100 caracteres.<br>");
+                    fila++;
+                    continue;
+                }
+                if (marca.length() < 2 || marca.length() > 50) {
+                    errores.append("Fila ").append(fila).append(": La marca debe tener entre 2 y 50 caracteres.<br>");
+                    fila++;
+                    continue;
+                }
+                if (estado.isEmpty() || !(estado.equals("Nuevo") || estado.equals("Buen estado") || estado.equals("Mal estado") || estado.equals("Roto"))) {
+                    errores.append("Fila ").append(fila).append(": Estado no válido (debe ser: Nuevo, Buen estado, Mal estado o Roto).<br>");
+                    fila++;
+                    continue;
+                }
+                if (fechaAltaStr.isEmpty()) {
+                    errores.append("Fila ").append(fila).append(": La fecha de alta es obligatoria.<br>");
+                    fila++;
+                    continue;
+                }
+                try {
+                    sdf.parse(fechaAltaStr);
+                } catch (Exception e) {
+                    errores.append("Fila ").append(fila).append(": Fecha de alta inválida.<br>");
+                    fila++;
+                    continue;
+                }
+
                 // Generar número de serie si está vacío
                 if (numSerie.isEmpty()) {
                     numSerie = generarNumeroDeSerieUnico();
                 }
-
                 if (materialService.existsByNumSerie(numSerie)) {
                     errores.append("Fila ").append(fila).append(": El número de serie ya existe (" + numSerie + ").<br>");
                     fila++;
                     continue;
                 }
-                Material material = new Material();
-                material.setNombre(nombre);
-                material.setNumSerie(numSerie);
-                material.setMarca(marca);
-                material.setDescripcion(descripcion);
-                material.setEstado(estado);
-                try {
-                    if (!fechaAltaStr.isEmpty()) {
-                        material.setFechaAlta(sdf.parse(fechaAltaStr));
-                    }
-                    if (!fechaBajaStr.isEmpty()) {
-                        material.setFechaBaja(sdf.parse(fechaBajaStr));
-                    }
-                } catch (Exception e) {
-                    errores.append("Fila ").append(fila).append(": Fecha inválida.<br>");
-                    fila++;
-                    continue;
-                }
-                material.setDepartamento(departamentoService.findById(departamentoId));
-                materialesAInsertar.add(material);
+
+                datosMateriales.add(new String[]{nombre, numSerie, marca, descripcion, estado, fechaAltaStr, fechaBajaStr});
                 fila++;
             }
         } catch (Exception e) {
@@ -478,8 +488,23 @@ public class MaterialController {
             model.addAttribute("materialesAgrupados", materialService.findByDepartamentoId(departamentoId));
             return "materiales/materiales-departamento";
         }
+
+        // Solo aquí se crean y guardan los materiales
         UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-        for (Material material : materialesAInsertar) {
+        for (String[] datos : datosMateriales) {
+            Material material = new Material();
+            material.setNombre(datos[0]);
+            material.setNumSerie(datos[1]);
+            material.setMarca(datos[2]);
+            material.setDescripcion(datos[3]);
+            material.setEstado(datos[4]);
+            try {
+                material.setFechaAlta(sdf.parse(datos[5]));
+                if (datos[6] != null && !datos[6].isEmpty()) {
+                    material.setFechaBaja(sdf.parse(datos[6]));
+                }
+            } catch (Exception ignored) {}
+            material.setDepartamento(departamentoService.findById(departamentoId));
             materialService.save(material);
             if (usuarioDetails != null) {
                 registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR (IMPORTAR CSV) ", material.getNombre());
