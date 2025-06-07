@@ -87,7 +87,7 @@
                         <td th:text="${libro.estado}"></td>
                         <td>
                             <a th:href="@{/api/libros/editar/libro/{id}(id=${libro.idLibro})}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                            <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro}, key=${key})}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                            <a th:href="@{/api/libros/eliminar/libro/{id}(id=${libro.idLibro}, key=${key})}" class="btn btn-danger btn-eliminar-libro"><i class="fas fa-trash-alt"></i> Eliminar</a>
                         </td>
                     </tr>
                 </tbody>
@@ -113,6 +113,18 @@
     <script>
         $(document).ready(function() {
             $('#librosAsociadosTable').DataTable();
+        });
+
+        $(document).ready(function() {
+            $('#librosAsociadosTable').DataTable();
+
+            // Validación para borrar libros
+            $('.btn-eliminar-libro').on('click', function(e) {
+                var confirmado = confirm('¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.');
+                if (!confirmado) {
+                    e.preventDefault();
+                }
+            });
         });
     </script>
 </body>
