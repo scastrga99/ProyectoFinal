@@ -16,7 +16,7 @@
         <form th:action="@{/api/materiales/{id}(id=${material.idMaterial})}" th:object="${material}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+" title="Solo letras, números y espacios">
             </div>
             <div class="form-group">
                 <label for="numSerie">Número de Serie:</label>
@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label for="marca">Marca:</label>
-                <input type="text" id="marca" th:field="*{marca}" class="form-control" required>
+                <input type="text" id="marca" th:field="*{marca}" class="form-control" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+" title="Solo letras, números y espacios">
             </div>
             <div class="form-group">
                 <label for="descripcion">Descripción:</label>

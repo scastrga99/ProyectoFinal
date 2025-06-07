@@ -25,7 +25,7 @@
             <div class="form-group">
                 <!-- Campo de entrada para el nombre del departamento -->
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" />
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios" required />
             </div>
             <div class="button-container mt-4 d-flex justify-content-between">
                 <!-- Botón para regresar a la lista de departamentos -->
