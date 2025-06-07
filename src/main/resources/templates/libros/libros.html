@@ -34,8 +34,12 @@
                         <div class="col-6">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="'Titulo: ' + ${parts[0]}"></h5>
-                                <h6 class="card-subtitle mb-2 text-muted" th:text="'Autor: ' + ${parts[1]}"></h6>
-                                <h6 class="card-subtitle mb-2 text-muted" th:text="'Editorial: ' + ${parts[2]}"></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <strong>Autor:</strong> <span th:text="${parts[1]}"></span>
+                                </h6>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <strong>Editorial:</strong> <span th:text="${parts[2]}"></span>
+                                </h6>
                                 <p class="card-text"><strong>Cantidad Disponible:</strong> 
                                     <span th:text="${librosLibres[entry.key] != null ? librosLibres[entry.key] : 0}"></span>
                                 </p>
