@@ -13,6 +13,7 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
     <div class="container-fluid">
         <h1 class="mb-4">Materiales del Departamento</h1>
+        <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
         <!-- Buscador y botón de cambio de vista -->
         <div class="mb-4 d-flex align-items-center">
             <input type="text" id="searchMaterialInput" class="form-control" placeholder="Buscar materiales..." style="max-width: 300px;">

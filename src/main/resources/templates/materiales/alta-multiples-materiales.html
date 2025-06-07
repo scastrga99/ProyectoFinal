@@ -11,7 +11,7 @@
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div class="container mt-5">
     <h1 class="mb-4">Agregar Múltiples Materiales</h1>
-    <form th:action="@{/api/materiales/multiples}" method="post">
+    <form th:action="@{/api/materiales/agregar-multiples}" method="post">
         <div class="form-group">
             <label for="numSeries">Números de Serie (uno por línea):</label>
             <textarea id="numSeries" name="numSeries" class="form-control" rows="5" required placeholder="Ejemplo:
