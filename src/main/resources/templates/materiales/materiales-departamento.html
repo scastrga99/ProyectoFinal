@@ -12,7 +12,7 @@
 <body>
     <div th:replace="~{fragments/nav :: nav}"></div>
     <div class="container-fluid">
-        <h1 class="mb-4">Materiales del Departamento</h1>
+        <h1 class="mb-4">Materiales del Departamento: <span th:text="${departamento.nombre}"></span></h1>
         <div th:if="${error}" class="alert alert-danger" th:utext="${error}"></div>
         <!-- Buscador y botón de cambio de vista -->
         <div class="mb-4 d-flex align-items-center">
@@ -129,10 +129,6 @@
                     <button type="button" class="btn btn-dark mr-1" data-toggle="modal" data-target="#importarMaterialCsvModal">
                         <i class="fas fa-file-csv"></i> Importar desde CSV
                     </button>
-                    <!-- Botón para abrir modal de agregar múltiples materiales -->
-                    <a th:href="@{/api/materiales/alta-multiples-materiales}" class="btn btn-warning mr-1">
-                        <i class="fas fa-plus"></i> Agregar Múltiples Materiales
-                    </a>
                     <!-- Botón para abrir modal de nuevo material -->
                     <a th:href="@{/api/materiales/nuevo(departamentoId=${departamento.idDepartamento})}" class="btn btn btn-warning mr-2">
                         <i class="fas fa-plus"></i> Agregar Material

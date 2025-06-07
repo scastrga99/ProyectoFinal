@@ -146,33 +146,6 @@ public class MaterialController {
     }
 
     /**
-     * Agrega múltiples materiales a partir de una lista de números de serie.
-     */
-    @PostMapping("/agregar-multiples")
-    public String agregarMultiplesMateriales(@RequestParam("numSeries") String numSeries,
-                                             @RequestParam("nombre") String nombre,
-                                             @RequestParam("marca") String marca,
-                                             @RequestParam("estado") String estado,
-                                             @RequestParam("departamento") int departamentoId) {
-        String[] series = numSeries.split(",");
-        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-        for (String serie : series) {
-            Material material = new Material();
-            material.setNumSerie(serie.trim());
-            material.setNombre(nombre);
-            material.setMarca(marca);
-            material.setEstado(estado);
-            material.setFechaAlta(new Date());
-            material.setDepartamento(departamentoService.findById(departamentoId));
-            materialService.save(material);
-            if (usuarioDetails != null) {
-                registroService.registrarOperacion("Material", material.getIdMaterial(), usuarioDetails.getUsuario().getNombre() + " " + usuarioDetails.getUsuario().getApellidos() + " EJECUTA CREAR ", material.getNombre());
-            }
-        }
-        return "redirect:/api/materiales/departamento/" + departamentoId;
-    }
-
-    /**
      * Ajusta la cantidad de materiales (aumentar o reducir) de un tipo.
      */
     @PostMapping("/ajustar")
@@ -353,21 +326,6 @@ public class MaterialController {
             model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
         }
         return "materiales/materiales-lista";
-    }
-
-    /**
-     * Muestra el formulario para alta de múltiples materiales.
-     */
-    @GetMapping("/alta-multiples-materiales")
-    public String mostrarFormularioAltaMultiplesMateriales(@RequestParam(value = "departamentoId", required = false) Integer departamentoId, Model model) {
-        model.addAttribute("departamentos", departamentoService.findAll());
-        model.addAttribute("departamentoId", departamentoId);
-        UsuarioDetails usuarioDetails = SecurityUtils.getAuthenticatedUser();
-        if (usuarioDetails != null) {
-            model.addAttribute("usuario", usuarioDetails.getUsuario());
-            model.addAttribute("roles", usuarioDetails.getUsuario().getRol());
-        }
-        return "materiales/alta-multiples-materiales";
     }
 
     /**
