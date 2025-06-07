@@ -42,7 +42,7 @@
                                 <p class="card-text" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><strong>Cantidad Total:</strong> 
                                     <span th:text="${entry.value.size()}"></span>
                                 </p>
-                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><i class="fas fa-edit"></i> Editar</a>
+                                <a th:href="@{/api/libros/editar/{key}(key=${entry.key})}" class="btn btn-warning" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><i class="fas fa-edit"></i> Mostrar Lista</a>
                                 <a th:href="@{/api/libros/eliminar/{key}(key=${entry.key})}" class="btn btn-danger" th:if="${roles.contains('ROLE_PROFESOR') or roles.contains('ROLE_ADMIN')}"><i class="fas fa-trash-alt"></i> Eliminar</a>
                             </div>
                         </div>
